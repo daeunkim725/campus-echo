@@ -55,7 +55,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                     Feed
                   </button>
                   <button
-                    onClick={() => window.location.href = createPageUrl("Market")}
+                    onClick={() => window.location.href = createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")}
                     className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                   >
                     Market
