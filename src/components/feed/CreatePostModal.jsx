@@ -4,9 +4,9 @@ import { base44 } from "@/api/base44Client";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/schoolDepartments";
 
-const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice", "events"];
+const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
-export default function CreatePostModal({ onClose, onCreated, currentUser, schoolConfig }) {
+export default function CreatePostModal({ onClose, onCreated, currentUser, schoolConfig, isEvent = false }) {
   const schoolCode = currentUser?.school;
   const departments = getSchoolDepartments(schoolCode);
   const levels = getSchoolLevels(schoolCode);
@@ -14,7 +14,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("general");
+  const [category, setCategory] = useState(isEvent ? "events" : "general");
   const [department, setDepartment] = useState(null);
   const [level, setLevel] = useState(null);
   const [postType, setPostType] = useState("text");
@@ -146,6 +146,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
           </div>
 
           {/* Category */}
+          {!isEvent && (
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Category</p>
             <div className="flex gap-2 flex-wrap">
@@ -163,6 +164,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               ))}
             </div>
           </div>
+          )}
 
           {/* Department tags (school-specific) */}
           {departments.length > 0 && (

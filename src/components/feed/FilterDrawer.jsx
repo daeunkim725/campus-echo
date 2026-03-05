@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 
-const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice", "events"];
+const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
 const ETH_DEPTS = [
   { code: "D-ARCH", name: "Architecture" },

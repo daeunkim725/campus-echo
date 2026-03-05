@@ -2,24 +2,22 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import PostCard from "@/components/feed/PostCard";
-import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
-import { getSchoolConfig, SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
+import TopBar from "@/components/feed/TopBar";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
-const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
-
-export default function SchoolFeed() {
+export default function Events() {
   const params = new URLSearchParams(window.location.search);
   const schoolCode = params.get("school");
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const schoolConfig = getSchoolConfig(schoolCode);
+  const configSchoolCode = schoolCode || currentUser?.school;
+  const schoolConfig = getSchoolConfig(configSchoolCode);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -28,38 +26,24 @@ export default function SchoolFeed() {
         window.location.href = createPageUrl("Onboarding");
         return;
       }
-      // Non-admin users can only see their own school
-      if (u?.role !== "admin" && u?.school !== schoolCode) {
-        window.location.href = createPageUrl("SchoolFeed") + `?school=${u.school}`;
+      if (u?.role !== "admin" && u?.school !== schoolCode && schoolCode) {
+        window.location.href = createPageUrl("Events") + `?school=${u.school}`;
       }
-    }).catch(() => base44.auth.redirectToLogin(createPageUrl("SchoolFeed") + `?school=${schoolCode}`));
+    }).catch(() => base44.auth.redirectToLogin(createPageUrl("Events") + (schoolCode ? `?school=${schoolCode}` : "")));
   }, [schoolCode]);
 
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      let data = await base44.entities.Post.list("-created_date", 200);
+      let data = await base44.entities.Post.filter({ category: "events" }, "-created_date", 200);
 
       // Filter to this school's posts
-      if (schoolCode) {
+      if (configSchoolCode) {
         data = data.filter(p => {
           if (!p.department || p.department === "all") return true;
-          if (schoolCode === "ETH") return p.department.startsWith("D-") || p.department === "ETH";
-          return p.department === schoolCode;
+          if (configSchoolCode === "ETH") return p.department.startsWith("D-") || p.department === "ETH";
+          return p.department === configSchoolCode;
         });
-      }
-
-      // Keep deleted posts visible (they show [deleted] label)
-
-      if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
-      else data = data.filter(p => p.category !== "events");
-      if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
-      if (filters.level !== "all") data = data.filter(p => p.academic_level === filters.level);
-
-      if (filters.sort === "hot") {
-        data = data.sort((a, b) => ((b.upvotes || 0) + (b.comment_count || 0)) - ((a.upvotes || 0) + (a.comment_count || 0)));
-      } else if (filters.sort === "top") {
-        data = data.sort((a, b) => ((b.upvotes || 0) - (b.downvotes || 0)) - ((a.upvotes || 0) - (a.downvotes || 0)));
       }
 
       setPosts(data);
@@ -69,27 +53,32 @@ export default function SchoolFeed() {
   };
 
   useEffect(() => {
-    if (schoolCode) fetchPosts();
-  }, [filters, schoolCode]);
+    fetchPosts();
+  }, [configSchoolCode]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
-      <SchoolTopBar
-        currentUser={currentUser}
-        onUserUpdate={u => setCurrentUser(u)}
-        onPost={() => setShowCreate(true)}
-        activePage="feed"
-        schoolConfig={schoolConfig}
-        schoolCode={schoolCode}
-      />
+      {schoolCode ? (
+        <SchoolTopBar
+          currentUser={currentUser}
+          onUserUpdate={u => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          activePage="events"
+          schoolConfig={schoolConfig}
+          schoolCode={schoolCode}
+        />
+      ) : (
+        <TopBar
+          currentUser={currentUser}
+          onUserUpdate={u => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          postLabel="Post Event"
+          activePage="events"
+          schoolConfig={schoolConfig}
+        />
+      )}
 
-      <div className="sticky top-[65px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-xl mx-auto px-4 py-2.5">
-          <FilterDrawer filters={filters} onChange={setFilters} userSchool={schoolCode} />
-        </div>
-      </div>
-
-      <div className="max-w-xl mx-auto px-4 py-4 space-y-3">
+      <div className="max-w-xl mx-auto px-4 py-6 space-y-3">
         {loading ? (
           Array(5).fill(0).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
@@ -108,20 +97,20 @@ export default function SchoolFeed() {
           ))
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">👻</div>
-            <p className="text-slate-500 font-medium">No posts yet</p>
-            <p className="text-slate-400 text-sm mt-1">Be the first to post something!</p>
+            <div className="text-5xl mb-4">📅</div>
+            <p className="text-slate-500 font-medium">No events yet</p>
+            <p className="text-slate-400 text-sm mt-1">Be the first to post an event!</p>
             <button
               onClick={() => setShowCreate(true)}
               className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
               style={{ backgroundColor: schoolConfig.primary }}
             >
-              Create a post
+              Create an event
             </button>
           </div>
         ) : (
           posts.map(post => (
-            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} schoolConfig={schoolConfig} />
+            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} />
           ))
         )}
       </div>
@@ -132,6 +121,7 @@ export default function SchoolFeed() {
           onCreated={fetchPosts}
           currentUser={currentUser}
           schoolConfig={schoolConfig}
+          isEvent={true}
         />
       )}
     </div>

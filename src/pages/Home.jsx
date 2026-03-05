@@ -44,6 +44,7 @@ export default function Home() {
       }
 
       if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
+      else data = data.filter(p => p.category !== "events");
       if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
       if (filters.level !== "all") data = data.filter(p => p.academic_level === filters.level);
 

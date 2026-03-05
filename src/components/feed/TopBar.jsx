@@ -40,6 +40,12 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
                   >
                     Market
                   </button>
+                  <button
+                    onClick={() => window.location.href = createPageUrl("Events")}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                  >
+                    Events
+                  </button>
                 </div>
               </div>
             </div>

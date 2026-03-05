@@ -60,6 +60,12 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                   >
                     Market
                   </button>
+                  <button
+                    onClick={() => window.location.href = createPageUrl("Events") + `?school=${schoolCode}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                  >
+                    Events
+                  </button>
                 </div>
               </div>
             </div>
