@@ -101,8 +101,12 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-sm bg-white h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left"
+        className="relative w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left transition-colors duration-300"
         onClick={e => e.stopPropagation()}
+        style={{
+          backgroundColor: darkMode ? (schoolConfig?.darkCard || "#1A1F2E") : "white",
+          color: darkMode ? (schoolConfig?.darkText || "#E8EAED") : "rgb(15, 23, 42)"
+        }}
       >
         {/* Header */}
         <div className="p-5 border-b border-slate-100" style={{ borderTopColor: primary, borderTopWidth: 4 }}>
