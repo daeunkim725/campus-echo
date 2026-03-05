@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
         const response = await fetch(url);
         const data = await response.json();
 
-        return Response.json({ raw_data: data, url: url.replace(apiKey, 'HIDDEN') });
+        return Response.json({ data: data.data || [] });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
