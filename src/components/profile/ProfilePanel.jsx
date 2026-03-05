@@ -203,7 +203,11 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           </button>
           <button
             onClick={() => base44.auth.logout(createPageUrl("Home"))}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-50 text-red-500 text-sm font-medium transition-all"
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+            style={{
+              color: "#ef4444",
+              backgroundColor: darkMode ? "rgba(239, 68, 68, 0.1)" : ""
+            }}
           >
             <LogOut className="w-4 h-4" />
             Sign out
@@ -212,17 +216,20 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
         {/* My Posts */}
         <div className="p-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Your Posts ({myPosts.length})</p>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-3 transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>Your Posts ({myPosts.length})</p>
           {loading ? (
             <div className="space-y-3">
-              {[1,2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+              {[1,2].map(i => <div key={i} className="h-16 rounded-xl animate-pulse transition-colors duration-300" style={{ backgroundColor: darkMode ? schoolConfig?.darkBg : "rgb(226, 232, 240)" }} />)}
             </div>
-          ) : myPosts.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
+            ) : myPosts.length === 0 ? (
+            <p className="text-sm text-center py-8 transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>You haven't posted anything yet.</p>
           ) : (
             <div className="space-y-3">
               {myPosts.map(post => (
-                <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <div key={post.id} className="rounded-2xl p-4 border transition-colors duration-300" style={{ 
+                  backgroundColor: darkMode ? schoolConfig?.darkBg : "rgb(248, 250, 252)",
+                  borderColor: darkMode ? "#2A3139" : "rgb(226, 232, 240)"
+                }}>
                   {editingPost === post.id ? (
                     <div>
                       <textarea
