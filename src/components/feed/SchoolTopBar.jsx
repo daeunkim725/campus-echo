@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Plus, ChevronDown } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus, ChevronDown, Bell } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 import ProfilePanel from "@/components/profile/ProfilePanel";
 import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
@@ -14,6 +15,15 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
   const primary = tokens.primary;
   const isAdmin = currentUser?.role === "admin";
   const scrollDirection = useScrollDirection();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (currentUser?.email) {
+      base44.entities.Notification.filter({ user_email: currentUser.email, read: false })
+        .then(res => setUnreadCount(res.length))
+        .catch(() => {});
+    }
+  }, [currentUser]);
 
   const navigateToSchool = (code) => {
     setShowSchoolPicker(false);
@@ -26,7 +36,11 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {/* Profile avatar with mood emoji */}
+              {/* Profile avatar & Notifications */}
+              <button onClick={() => window.location.href = createPageUrl("Notifications")} className="relative w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{unreadCount}</span>}
+              </button>
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-sm transition-transform active:scale-95"

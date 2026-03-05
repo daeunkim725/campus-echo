@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
@@ -26,9 +26,32 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const [localPost, setLocalPost] = useState(post);
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showInterestMenu, setShowInterestMenu] = useState(false);
   const navigate = useNavigate();
 
   const userId = currentUser?.id || "anon";
+  const hasVotedBell = localPost.interested_users?.some(u => u.user_id === userId);
+
+  const handleAddInterest = async (minutes) => {
+    setShowInterestMenu(false);
+    if (!currentUser) return;
+    const newUsers = [...(localPost.interested_users || []), {
+      user_id: currentUser.id,
+      email: currentUser.email,
+      reminder_minutes: minutes,
+      notified: false
+    }];
+    setLocalPost({ ...localPost, interested_users: newUsers });
+    await base44.entities.Post.update(localPost.id, { interested_users: newUsers });
+    onUpdate?.();
+  };
+
+  const handleRemoveInterest = async () => {
+    const newUsers = (localPost.interested_users || []).filter(u => u.user_id !== userId);
+    setLocalPost({ ...localPost, interested_users: newUsers });
+    await base44.entities.Post.update(localPost.id, { interested_users: newUsers });
+    onUpdate?.();
+  };
   const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
@@ -251,7 +274,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
+        <div className="flex items-center gap-1 pt-2 border-t border-slate-50 relative">
           {localPost.category !== "events" && (
             <>
               <button onClick={(e) => handleVote(e, "up")}
@@ -263,6 +286,30 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
                 <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
               </button>
             </>
+          )}
+          {localPost.category === "events" && (
+            <div className="relative">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (hasVotedBell) handleRemoveInterest();
+                  else setShowInterestMenu(!showInterestMenu);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${hasVotedBell ? "bg-indigo-100 text-indigo-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
+              >
+                <Bell className={`w-4 h-4 ${hasVotedBell ? "fill-current" : ""}`} />
+                <span>{localPost.interested_users?.length || 0}</span>
+              </button>
+
+              {showInterestMenu && (
+                <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-40">
+                  <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Remind me</p>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(15);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">15 mins before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(60);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 hour before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(1440);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 day before</button>
+                </div>
+              )}
+            </div>
           )}
           <button onClick={e => e.stopPropagation()}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">

@@ -135,6 +135,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
       postData.event_location = eventLocation.trim();
       postData.event_type = eventType;
       postData.event_interests = eventInterests;
+      postData.interested_users = [{
+          user_id: currentUser?.id,
+          email: currentUser?.email,
+          reminder_minutes: 60,
+          notified: false
+      }];
     }
 
     if (postType === "poll") {

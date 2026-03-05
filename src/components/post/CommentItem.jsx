@@ -62,6 +62,18 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       upvotes: 0,
       voted_up_by: []
     });
+    
+    if (comment.created_by && comment.created_by !== currentUser.email) {
+      await base44.entities.Notification.create({
+        user_email: comment.created_by,
+        type: "reply",
+        post_id: comment.post_id,
+        actor_alias: alias,
+        content: replyText.trim() || "Sent a GIF",
+        read: false
+      });
+    }
+
     setReplyText("");
     setGifUrl(null);
     setStillUrl(null);

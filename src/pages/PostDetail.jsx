@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock, Smile, X } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock, Smile, X, Bell } from "lucide-react";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
@@ -47,6 +47,7 @@ export default function PostDetail() {
   const [commentSort, setCommentSort] = useState("new");
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showInterestMenu, setShowInterestMenu] = useState(false);
   const scrollDirection = useScrollDirection();
 
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
@@ -123,6 +124,19 @@ export default function PostDetail() {
     });
 
     await base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
+    
+    // Notify post author
+    if (post.created_by && post.created_by !== currentUser.email) {
+      await base44.entities.Notification.create({
+        user_email: post.created_by,
+        type: "comment",
+        post_id: post.id,
+        actor_alias: alias,
+        content: newComment.trim() || "Sent a GIF",
+        read: false
+      });
+    }
+
     setNewComment("");
     setGifUrl(null);
     setStillUrl(null);
@@ -157,6 +171,26 @@ export default function PostDetail() {
 
   const userId = currentUser?.id || "anon";
   const isOwner = post.created_by === currentUser?.email;
+  const hasVotedBell = post.interested_users?.some(u => u.user_id === userId);
+
+  const handleAddInterest = async (minutes) => {
+    setShowInterestMenu(false);
+    if (!currentUser) return;
+    const newUsers = [...(post.interested_users || []), {
+      user_id: currentUser.id,
+      email: currentUser.email,
+      reminder_minutes: minutes,
+      notified: false
+    }];
+    setPost({ ...post, interested_users: newUsers });
+    await base44.entities.Post.update(post.id, { interested_users: newUsers });
+  };
+
+  const handleRemoveInterest = async () => {
+    const newUsers = (post.interested_users || []).filter(u => u.user_id !== userId);
+    setPost({ ...post, interested_users: newUsers });
+    await base44.entities.Post.update(post.id, { interested_users: newUsers });
+  };
   const votedUp = post.voted_up_by?.includes(userId);
   const votedDown = post.voted_down_by?.includes(userId);
   const timeAgo = post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : "";
@@ -330,7 +364,7 @@ export default function PostDetail() {
           </div>
 
           {/* Vote Bar */}
-          <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+          <div className="flex items-center gap-2 pt-3 border-t border-slate-100 relative">
             {post.category !== "events" && (
               <>
                 <button
@@ -352,6 +386,29 @@ export default function PostDetail() {
                   {post.downvotes || 0}
                 </button>
               </>
+            )}
+            {post.category === "events" && (
+              <div className="relative">
+                <button 
+                  onClick={() => {
+                    if (hasVotedBell) handleRemoveInterest();
+                    else setShowInterestMenu(!showInterestMenu);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${hasVotedBell ? "bg-indigo-100 text-indigo-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
+                >
+                  <Bell className={`w-4 h-4 ${hasVotedBell ? "fill-current" : ""}`} />
+                  <span>{post.interested_users?.length || 0}</span>
+                </button>
+
+                {showInterestMenu && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-40">
+                    <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Remind me</p>
+                    <button onClick={() => handleAddInterest(15)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">15 mins before</button>
+                    <button onClick={() => handleAddInterest(60)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 hour before</button>
+                    <button onClick={() => handleAddInterest(1440)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 day before</button>
+                  </div>
+                )}
+              </div>
             )}
             <span className="ml-auto flex items-center gap-1.5 text-sm text-slate-400">
               <MessageCircle className="w-4 h-4" />
