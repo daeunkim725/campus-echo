@@ -192,17 +192,17 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
         {/* My Posts */}
         <div className="p-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Your Posts ({myPosts.length})</p>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-3 transition-colors duration-200" style={{ color: textMuted }}>Your Posts ({myPosts.length})</p>
           {loading ? (
             <div className="space-y-3">
-              {[1,2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+              {[1,2].map(i => <div key={i} className="h-16 rounded-xl animate-pulse transition-colors duration-200" style={{ backgroundColor: `${text}15` }} />)}
             </div>
           ) : myPosts.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
+            <p className="text-sm text-center py-8 transition-colors duration-200" style={{ color: textMuted }}>You haven't posted anything yet.</p>
           ) : (
             <div className="space-y-3">
               {myPosts.map(post => (
-                <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <div key={post.id} className="rounded-2xl p-4 transition-colors duration-200" style={{ backgroundColor: `${text}08`, borderColor: border, borderWidth: 1 }}>
                   {editingPost === post.id ? (
                     <div>
                       <textarea
