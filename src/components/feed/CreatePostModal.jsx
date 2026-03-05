@@ -212,9 +212,9 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               </div>
               <div className="col-span-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Interests</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {INTEREST_CATEGORIES.map((cat) =>
-                <button key={cat.id} onClick={() => toggleInterest(cat.id)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${eventInterests.includes(cat.id) ? "text-white border-transparent" : "border-slate-200 text-slate-600 hover:border-slate-300"}`} style={{ backgroundColor: eventInterests.includes(cat.id) ? primary : undefined }}>{cat.label}</button>
+                <button key={cat.id} onClick={() => toggleInterest(cat.id)} className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all border ${eventInterests.includes(cat.id) ? "text-white border-transparent" : "border-slate-200 text-slate-600 hover:border-slate-300"}`} style={{ backgroundColor: eventInterests.includes(cat.id) ? primary : undefined }}>{cat.label}</button>
                 )}
                 </div>
               </div>
@@ -243,12 +243,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
           {!isEvent &&
           <div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Category</p>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-1.5 flex-wrap">
                 {CATEGORIES.map((cat) =>
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all capitalize border ${category === cat ? "text-white border-transparent" : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"}`
+                className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-all capitalize border ${category === cat ? "text-white border-transparent" : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"}`
                 }
                 style={category === cat ? activeStyle : {}}>
 
@@ -265,12 +265,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                 Department <span className="normal-case font-normal text-slate-400">(optional)</span>
               </p>
-              <div className="flex gap-1.5 flex-wrap">
+              <div className="flex gap-1 flex-wrap">
                 {departments.map((d) =>
               <button
                 key={d.code}
                 onClick={() => setDepartment(department === d.code ? null : d.code)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${department === d.code ? "text-white border-transparent" : "border-slate-200 text-slate-400 hover:border-slate-300 bg-white"}`
+                className={`px-2 py-0.5 rounded-full text-[11px] font-medium transition-all border ${department === d.code ? "text-white border-transparent" : "border-slate-200 text-slate-400 hover:border-slate-300 bg-white"}`
                 }
                 style={department === d.code ? activeStyle : {}}>
 
@@ -286,12 +286,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
               Academic Level <span className="normal-case font-normal text-slate-400">(optional)</span>
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               {levels.map((l) =>
               <button
                 key={l}
                 onClick={() => setLevel(level === l ? null : l)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${level === l ? "text-white border-transparent" : "border-slate-200 text-slate-500 bg-white hover:border-slate-300"}`
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${level === l ? "text-white border-transparent" : "border-slate-200 text-slate-500 bg-white hover:border-slate-300"}`
                 }
                 style={level === l ? activeStyle : {}}>
 
@@ -359,8 +359,8 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               )}
               </div>
               {pollOptions.length < 6 &&
-            <button onClick={addPollOption} className="flex items-center gap-1.5 text-sm font-medium hover:opacity-75 transition-opacity" style={{ color: primary }}>
-                  <Plus className="w-4 h-4" /> Add option
+            <button onClick={addPollOption} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-75 transition-opacity" style={{ color: primary }}>
+                  <Plus className="w-3.5 h-3.5" /> Add option
                 </button>
             }
             </div>
@@ -371,16 +371,16 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
         <div className="flex items-center justify-between px-6 pb-5 pt-3 border-t border-slate-100 flex-shrink-0 relative">
           {postType === "text" ?
           <div className="flex items-center gap-2">
-              <label className="cursor-pointer w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
-                <Image className="w-4 h-4" />
+              <label className="cursor-pointer w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <Image className="w-3.5 h-3.5" />
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
               <button
               type="button"
               onClick={() => setShowGiphy(!showGiphy)}
-              className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+              className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
 
-                <Smile className="w-4 h-4" />
+                <Smile className="w-3.5 h-3.5" />
               </button>
               {showGiphy && <GiphyBrowser onSelect={handleGifSelect} onClose={() => setShowGiphy(false)} />}
             </div> :
@@ -389,10 +389,10 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
           <button
             onClick={handleSubmit}
             disabled={!isValid || loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm hover:opacity-90"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm hover:opacity-90"
             style={{ backgroundColor: primary }}>
 
-            {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
+            {loading ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             Post
           </button>
         </div>
