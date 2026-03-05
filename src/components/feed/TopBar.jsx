@@ -30,13 +30,13 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
                 <div className="flex bg-slate-100 p-1 rounded-lg">
                   <button
                     onClick={() => window.location.href = createPageUrl("Home")}
-                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                   >
                     Feed
                   </button>
                   <button
                     onClick={() => window.location.href = createPageUrl("Market")}
-                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                   >
                     Market
                   </button>

@@ -62,7 +62,7 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           <select
             value={filters.sort}
             onChange={e => set("sort", e.target.value)}
-            className="appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-full px-3.5 py-1.5 pr-7 focus:outline-none focus:border-violet-400 cursor-pointer"
+            className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-2.5 py-1 pr-6 focus:outline-none focus:border-violet-400 cursor-pointer"
           >
             <option value="new">🕐 New</option>
             <option value="hot">🔥 Hot</option>
@@ -78,7 +78,7 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
         {/* Category quick pills */}
         <button
           onClick={() => set("category", "all")}
-          className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
+          className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
             filters.category === "all"
               ? "bg-slate-800 text-white shadow-sm"
               : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
@@ -90,7 +90,7 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           <button
             key={cat}
             onClick={() => set("category", filters.category === cat ? "all" : cat)}
-            className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all capitalize ${
+            className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all capitalize ${
               filters.category === cat
                 ? "bg-slate-800 text-white shadow-sm"
                 : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
@@ -105,7 +105,7 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
         {/* Filter button */}
         <button
           onClick={() => setOpen(true)}
-          className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border ${
+          className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
             activeCount > 0
               ? "bg-violet-600 text-white border-violet-600"
               : "bg-white border-slate-200 text-slate-500 hover:text-slate-700"

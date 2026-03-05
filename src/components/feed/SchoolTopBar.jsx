@@ -37,26 +37,26 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                 {isAdmin ? (
                   <button
                     onClick={() => setShowSchoolPicker(true)}
-                    className="flex items-center gap-1 text-base font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
+                    className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
                   >
                     {schoolConfig?.name || "fizz"}
                     <ChevronDown className="w-4 h-4 text-slate-400" />
                   </button>
                 ) : (
-                  <h1 className="text-base font-black text-slate-900 tracking-tight">{schoolConfig?.name || "fizz"}</h1>
+                  <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "fizz"}</h1>
                 )}
 
                 {/* Nav tabs */}
                 <div className="flex bg-slate-100 p-1 rounded-lg">
                   <button
                     onClick={() => window.location.href = createPageUrl("SchoolFeed") + `?school=${schoolCode}`}
-                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                   >
                     Feed
                   </button>
                   <button
                     onClick={() => window.location.href = createPageUrl("Market")}
-                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                   >
                     Market
                   </button>
