@@ -51,6 +51,7 @@ import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
 import PostDetail from './pages/PostDetail';
 import Market from './pages/Market';
+import SchoolFeed from './pages/SchoolFeed';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +60,7 @@ export const PAGES = {
     "Onboarding": Onboarding,
     "PostDetail": PostDetail,
     "Market": Market,
+    "SchoolFeed": SchoolFeed,
 }
 
 export const pagesConfig = {
