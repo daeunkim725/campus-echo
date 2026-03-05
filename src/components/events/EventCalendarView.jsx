@@ -35,6 +35,11 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
+  const handleSelectDate = (day) => {
+    setSelectedDate(day);
+    onSelectDate(day);
+  };
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
       {/* Month Navigation */}
