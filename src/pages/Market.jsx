@@ -104,7 +104,7 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
           }
 
           <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-            <label className="cursor-pointer text-slate-400 hover:text-violet-600 transition-colors p-2 rounded-full hover:bg-violet-50">
+            <label className="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-50">
               <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
               <ImageIcon className="w-5 h-5" />
             </label>

@@ -129,7 +129,7 @@ export default function PostDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: schoolConfig?.primary || "#7C3AED", borderTopColor: "transparent" }} />
       </div>
     );
   }
@@ -138,7 +138,7 @@ export default function PostDetail() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
         <p className="text-slate-500">Post not found</p>
-        <button onClick={() => navigate(-1)} className="mt-3 text-violet-600 text-sm font-medium">Go back</button>
+        <button onClick={() => navigate(-1)} className="mt-3 text-sm font-medium" style={{ color: schoolConfig?.primary || "#7C3AED" }}>Go back</button>
       </div>
     );
   }
@@ -425,8 +425,10 @@ export default function PostDetail() {
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
               placeholder="Add a comment anonymously..."
-              className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:border-violet-300 focus:bg-white transition-colors"
+              className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:bg-white transition-colors"
               onKeyDown={e => e.key === 'Enter' && handleComment()}
+              onFocus={(e) => e.target.style.borderColor = schoolConfig?.primary || "#7C3AED"}
+              onBlur={(e) => e.target.style.borderColor = ""}
             />
             <button
               onClick={handleComment}
