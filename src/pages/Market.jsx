@@ -155,6 +155,7 @@ export default function Market() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const schoolConfig = getSchoolConfig(currentUser?.school);
 
   useEffect(() => {
     base44.auth.me().then(u => {
