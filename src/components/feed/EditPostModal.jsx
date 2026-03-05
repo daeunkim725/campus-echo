@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice", "events"];
 
-export default function EditPostModal({ post, onClose, onSaved }) {
+export default function EditPostModal({ post, onClose, onSaved, primaryColor = "#7C3AED" }) {
   const [title, setTitle] = useState(post.title || "");
   const [content, setContent] = useState(post.content || "");
   const [category, setCategory] = useState(post.category || "general");
@@ -44,7 +44,10 @@ export default function EditPostModal({ post, onClose, onSaved }) {
               value={title}
               onChange={e => setTitle(e.target.value)}
               maxLength={200}
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none transition-all"
+              style={{ borderColor: title.trim() ? primaryColor : undefined }}
+              onFocus={(e) => e.target.style.borderColor = primaryColor}
+              onBlur={(e) => e.target.style.borderColor = title.trim() ? primaryColor : ""}
             />
           </div>
 
@@ -56,8 +59,9 @@ export default function EditPostModal({ post, onClose, onSaved }) {
                   key={cat}
                   onClick={() => setCategory(cat)}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-all capitalize border ${
-                    category === cat ? "bg-violet-600 text-white border-violet-600" : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+                    category === cat ? "text-white border-transparent" : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
                   }`}
+                  style={category === cat ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
                 >
                   {cat}
                 </button>

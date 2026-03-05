@@ -386,6 +386,7 @@ export default function PostDetail() {
           post={post}
           onClose={() => setShowEdit(false)}
           onSaved={() => { setShowEdit(false); fetchData(); }}
+          primaryColor={schoolConfig?.primary || "#7C3AED"}
         />
       )}
 

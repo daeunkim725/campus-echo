@@ -270,6 +270,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
           post={localPost}
           onClose={() => setShowEdit(false)}
           onSaved={handleEditSaved}
+          primaryColor={primary}
         />
       )}
     </>
