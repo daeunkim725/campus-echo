@@ -131,7 +131,7 @@ export default function Events() {
         <div className="flex gap-2 sticky top-20 z-40">
           <button
             onClick={() => setShowFilterPanel(true)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${
               hasActiveFilters
                 ? "text-white shadow-md"
                 : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
@@ -144,7 +144,7 @@ export default function Events() {
 
           <button
             onClick={() => setShowCalendarView(!showCalendarView)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${
               showCalendarView
                 ? "text-white shadow-md"
                 : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
@@ -154,15 +154,6 @@ export default function Events() {
             <CalendarIcon className="w-4 h-4" />
             Calendar
           </button>
-
-          {selectedDate && (
-            <button
-              onClick={() => setSelectedDate(null)}
-              className="ml-auto px-3 py-2.5 rounded-full bg-white text-slate-500 text-sm border border-slate-200 hover:bg-slate-50 transition-all"
-            >
-              Clear date: {format(selectedDate, "MMM d")}
-            </button>
-          )}
         </div>
 
         {/* Calendar View */}
