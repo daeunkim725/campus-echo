@@ -139,7 +139,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           {/* Change mood */}
           {editingMood ? (
             <div className="mt-4">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">How are you feeling?</p>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-2 transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>How are you feeling?</p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {MOODS.map(m => (
                   <button
@@ -148,8 +148,9 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                       selectedMood === m.value
                         ? "text-white border-transparent"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                        : darkMode ? "border-slate-600 text-slate-300 hover:border-slate-500" : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
+                    style={!darkMode && selectedMood !== m.value ? { backgroundColor: "white" } : darkMode && selectedMood !== m.value ? { backgroundColor: schoolConfig?.darkBg } : {}}
                     style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
                   >
                     {m.label}
@@ -157,7 +158,10 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                 ))}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border border-slate-200 text-sm text-slate-500">Cancel</button>
+                <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border text-sm transition-colors duration-300" style={{ 
+                  borderColor: darkMode ? "#2A3139" : "rgb(226, 232, 240)",
+                  color: darkMode ? "#8B91A1" : "rgb(107, 114, 128)"
+                }}>Cancel</button>
                 <button
                   onClick={handleMoodSave}
                   disabled={!selectedMood || saving}
