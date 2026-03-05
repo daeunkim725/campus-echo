@@ -21,6 +21,7 @@ export default function Home() {
 
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
