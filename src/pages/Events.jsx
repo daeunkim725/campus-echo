@@ -28,6 +28,7 @@ export default function Events() {
 
   const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
