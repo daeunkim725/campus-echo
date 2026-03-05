@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowUp, CornerDownRight, Send, Smile, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { generateAlias } from "@/components/utils/aliases";
+import { getMoodEmoji } from "@/components/utils/moodUtils";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 
@@ -38,8 +39,11 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const handleReply = async () => {
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
-    const seed = userId + Date.now();
-    const { alias, color } = generateAlias(seed);
+    
+    const schoolConfig = getSchoolConfig(currentUser?.school);
+    const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
+    const color = schoolConfig?.primary || "#7C3AED";
+
     await base44.entities.Comment.create({
       post_id: comment.post_id,
       parent_comment_id: comment.id,
@@ -67,14 +71,14 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     <div className={depth > 0 ? "ml-8 border-l-2 border-slate-100 pl-4" : ""}>
       <div className="flex gap-3 py-3">
         <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
+          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
           style={{ backgroundColor: comment.author_color || "#6C63FF" }}
         >
-          {comment.author_alias?.charAt(0) || "A"}
+          {Array.from(comment.author_alias || "A")[0]}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm font-semibold text-slate-800">{comment.author_alias}</span>
+            <span className="text-sm font-semibold text-slate-800 capitalize">{comment.author_alias}</span>
             <span className="text-xs text-slate-400">{timeAgo}</span>
           </div>
           {comment.content && <p className="text-[14px] text-slate-700 leading-relaxed">{comment.content}</p>}

@@ -20,7 +20,7 @@ const categoryColors = {
 };
 import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
-import { generateAlias } from "@/components/utils/aliases";
+import { getMoodEmoji } from "@/components/utils/moodUtils";
 
 export default function PostDetail() {
   const navigate = useNavigate();
@@ -95,8 +95,9 @@ export default function PostDetail() {
   const handleComment = async () => {
     if ((!newComment.trim() && !gifUrl) || !post) return;
     setSubmitting(true);
-    const seed = (currentUser?.id || "anon") + Date.now();
-    const { alias, color } = generateAlias(seed);
+    
+    const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
+    const color = schoolConfig?.primary || "#7C3AED";
 
     await base44.entities.Comment.create({
       post_id: post.id,
@@ -154,6 +155,24 @@ export default function PostDetail() {
     setShowMenu(false);
   };
 
+  const handlePollVote = async (optionIndex) => {
+    if (!post.poll_options) return;
+    const userId = currentUser?.id || "anon";
+    const alreadyVoted = post.poll_options.some(o => o.voted_by?.includes(userId));
+    if (alreadyVoted) return;
+
+    const newOptions = post.poll_options.map((opt, i) => {
+      if (i === optionIndex) return { ...opt, votes: (opt.votes || 0) + 1, voted_by: [...(opt.voted_by || []), userId] };
+      return opt;
+    });
+    const updated = { ...post, poll_options: newOptions };
+    setPost(updated);
+    await base44.entities.Post.update(post.id, { poll_options: newOptions });
+  };
+
+  const totalPollVotes = post?.poll_options?.reduce((s, o) => s + (o.votes || 0), 0) || 0;
+  const hasVotedPoll = post?.poll_options?.some(o => o.voted_by?.includes(currentUser?.id || "anon"));
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -170,12 +189,12 @@ export default function PostDetail() {
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm shadow-sm"
               style={{ backgroundColor: post.author_color || "#6C63FF" }}>
-              {post.author_alias?.charAt(0) || "A"}
+              {Array.from(post.author_alias || "A")[0]}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{post.author_alias || "Anonymous"}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
@@ -213,6 +232,35 @@ export default function PostDetail() {
             <p className="text-slate-400 italic text-[15px] mb-4">[deleted]</p>
           ) : (
             <p className="text-slate-800 text-[15px] leading-relaxed mb-4">{post.content}</p>
+          )}
+
+          {/* Poll Options */}
+          {post.post_type === "poll" && post.poll_options && (
+            <div className="space-y-2 mb-4">
+              {post.poll_options.map((opt, i) => {
+                const pct = totalPollVotes > 0 ? Math.round((opt.votes || 0) / totalPollVotes * 100) : 0;
+                const myVote = opt.voted_by?.includes(userId);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handlePollVote(i)}
+                    disabled={hasVotedPoll}
+                    className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
+                      myVote ? "border-violet-400 text-violet-700" : hasVotedPoll ? "border-slate-200 text-slate-600" : "border-slate-200 text-slate-700 hover:border-violet-300"
+                    }`}
+                  >
+                    {hasVotedPoll && (
+                      <div className={`absolute inset-0 rounded-xl ${myVote ? "bg-violet-50" : "bg-slate-50"}`} style={{ width: `${pct}%` }} />
+                    )}
+                    <span className="relative flex items-center justify-between">
+                      <span>{opt.text}</span>
+                      {hasVotedPoll && <span className="text-xs text-slate-400">{pct}%</span>}
+                    </span>
+                  </button>
+                );
+              })}
+              <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
+            </div>
           )}
 
           {post.gif_url ? (
