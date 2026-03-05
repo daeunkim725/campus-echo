@@ -93,15 +93,15 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     <div className={depth > 0 ? "ml-6 border-l-2 border-slate-100 pl-3" : ""}>
       <div className="flex gap-2.5 py-2.5">
         <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[15px]"
+          className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[13px]"
           style={{ backgroundColor: primaryLight }}
         >
           {getAliasEmoji(comment.author_alias)}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
-            <span className="text-xs text-slate-400">{timeAgo}</span>
+          <div className="flex items-baseline gap-1.5 mb-0.5">
+            <span className="text-[13px] font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
+            <span className="text-[11px] text-slate-400">{timeAgo}</span>
             {isOwner && !comment.deleted && (
               <div className="relative ml-auto">
                 <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600">
@@ -121,7 +121,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             )}
           </div>
           {comment.deleted ? (
-            <p className="text-[14px] text-slate-400 italic leading-relaxed">[deleted]</p>
+            <p className="text-[13px] text-slate-400 italic leading-relaxed">[deleted]</p>
           ) : isEditing ? (
             <div className="mt-2 flex flex-col gap-2">
               <input
@@ -138,7 +138,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             </div>
           ) : (
             <>
-              {comment.content && <p className="text-[14px] text-slate-700 leading-relaxed">{comment.content} {comment.edited && <span className="text-[11px] text-slate-400 italic ml-1">(edited)</span>}</p>}
+              {comment.content && <p className="text-[13px] text-slate-700 leading-relaxed">{comment.content} {comment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
               {comment.gif_url && (
                 <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
                   <PlayableGif gifUrl={comment.gif_url} stillUrl={comment.still_url} className="w-full" />
@@ -146,23 +146,23 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               )}
             </>
           )}
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-3 mt-1.5">
             <button
               onClick={handleUpvote}
-              className={`flex items-center gap-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
                 votedUp ? "" : "text-slate-400 hover:text-slate-600"
               }`}
               style={votedUp ? { color: primary } : {}}
             >
-              <ArrowUp className="w-3.5 h-3.5" />
+              <ArrowUp className="w-3 h-3" />
               {localUpvotes}
             </button>
             {depth < 2 && (
               <button
                 onClick={() => setShowReply(!showReply)}
-                className="flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors"
+                className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600 transition-colors"
               >
-                <CornerDownRight className="w-3.5 h-3.5" />
+                <CornerDownRight className="w-3 h-3" />
                 Reply
               </button>
             )}
@@ -201,7 +201,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                   onChange={e => setReplyText(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && handleReply()}
                   placeholder="Write a reply..."
-                  className="flex-1 text-sm rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
+                  className="flex-1 text-[13px] rounded-xl border border-slate-200 px-3 py-1.5 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
                 />
                 <button
                   onClick={handleReply}

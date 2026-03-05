@@ -356,7 +356,7 @@ export default function PostDetail() {
 
         {/* Comments Header + Sort */}
         <div className="flex items-center justify-between mb-2 px-1">
-          <p className="text-sm font-bold text-slate-700">{comments.length} Comments</p>
+          <p className="text-[13px] font-bold text-slate-700">{comments.length} Comments</p>
           <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
             {["best", "new"].map(s => (
               <button
@@ -435,7 +435,7 @@ export default function PostDetail() {
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
               placeholder="Add a comment anonymously..."
-              className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:bg-white transition-colors"
+              className="flex-1 bg-slate-100 text-[13px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-2.5 rounded-full border border-slate-200 focus:bg-white transition-colors"
               onKeyDown={e => e.key === 'Enter' && handleComment()}
               onFocus={(e) => e.target.style.borderColor = primary}
               onBlur={(e) => e.target.style.borderColor = ""}
