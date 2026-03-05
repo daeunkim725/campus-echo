@@ -154,14 +154,47 @@ export default function PostDetail() {
               <p className="text-sm font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
               <p className="text-xs text-slate-400">{timeAgo}</p>
             </div>
-            {post.category && (
-              <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium capitalize">
-                {post.category}
-              </span>
-            )}
+            <div className="ml-auto flex items-center gap-2">
+              {post.category && (
+                <span className="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium capitalize">
+                  {post.category}
+                </span>
+              )}
+              {isOwner && !post.deleted && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowMenu(v => !v)}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </button>
+                  {showMenu && (
+                    <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                      <button
+                        onClick={() => { setShowMenu(false); setShowEdit(true); }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <Pencil className="w-3.5 h-3.5" /> Edit
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          <p className="text-slate-800 text-[16px] leading-relaxed mb-4">{post.content}</p>
+          {post.title && <p className="font-semibold text-slate-900 text-[17px] mb-2">{post.title}</p>}
+          {post.deleted ? (
+            <p className="text-slate-400 italic text-[15px] mb-4">[deleted]</p>
+          ) : (
+            <p className="text-slate-800 text-[15px] leading-relaxed mb-4">{post.content}</p>
+          )}
 
           {post.image_url && (
             <div className="mb-4 rounded-xl overflow-hidden">
