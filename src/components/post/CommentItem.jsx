@@ -99,14 +99,51 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm font-semibold text-slate-800 capitalize">{comment.author_alias}</span>
+            <span className="text-sm font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
             <span className="text-xs text-slate-400">{timeAgo}</span>
+            {isOwner && !comment.deleted && (
+              <div className="relative ml-auto">
+                <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600">
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+                {showMenu && (
+                  <div className="absolute right-0 top-6 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    <button onClick={() => { setShowMenu(false); setIsEditing(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                      <Pencil className="w-3.5 h-3.5" /> Edit
+                    </button>
+                    <button onClick={handleDelete} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          {comment.content && <p className="text-[14px] text-slate-700 leading-relaxed">{comment.content}</p>}
-          {comment.gif_url && (
-            <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
-              <PlayableGif gifUrl={comment.gif_url} stillUrl={comment.still_url} className="w-full" />
+          {comment.deleted ? (
+            <p className="text-[14px] text-slate-400 italic leading-relaxed">[deleted]</p>
+          ) : isEditing ? (
+            <div className="mt-2 flex flex-col gap-2">
+              <input
+                autoFocus
+                value={editText}
+                onChange={e => setEditText(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleEdit()}
+                className="w-full text-sm rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:border-slate-400"
+              />
+              <div className="flex justify-end gap-2">
+                <button onClick={() => setIsEditing(false)} className="text-xs text-slate-500 px-2 py-1">Cancel</button>
+                <button onClick={handleEdit} disabled={loading} className="text-xs text-white px-3 py-1 rounded-lg hover:opacity-90" style={{ backgroundColor: primary }}>Save</button>
+              </div>
             </div>
+          ) : (
+            <>
+              {comment.content && <p className="text-[14px] text-slate-700 leading-relaxed">{comment.content} {comment.edited && <span className="text-[11px] text-slate-400 italic ml-1">(edited)</span>}</p>}
+              {comment.gif_url && (
+                <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
+                  <PlayableGif gifUrl={comment.gif_url} stillUrl={comment.still_url} className="w-full" />
+                </div>
+              )}
+            </>
           )}
           <div className="flex items-center gap-3 mt-2">
             <button
