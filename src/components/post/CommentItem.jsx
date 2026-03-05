@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
+import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 
 export default function CommentItem({ comment, currentUser, onReply, depth = 0 }) {
@@ -19,6 +20,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const userId = currentUser?.id || "anon";
   const isOwner = currentUser && comment.created_by === currentUser.email;
   const [showMenu, setShowMenu] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content || "");
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
@@ -114,19 +116,27 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           <div className="flex items-baseline gap-1.5 mb-0.5">
             <span className="text-[13px] font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
             <span className="text-[11px] text-slate-400">{timeAgo}</span>
-            {isOwner && !comment.deleted && (
+            {!comment.deleted && (
               <div className="relative ml-auto">
                 <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600">
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showMenu && (
                   <div className="absolute right-0 top-6 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
-                    <button onClick={() => { setShowMenu(false); setIsEditing(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                      <Pencil className="w-3.5 h-3.5" /> Edit
-                    </button>
-                    <button onClick={handleDelete} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
-                    </button>
+                    {isOwner ? (
+                      <>
+                        <button onClick={() => { setShowMenu(false); setIsEditing(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        <button onClick={handleDelete} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => { setShowMenu(false); setShowReport(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                        <Flag className="w-3.5 h-3.5" /> Report
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -228,6 +238,14 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           )}
         </div>
       </div>
+      {showReport && (
+        <ReportModal
+          targetType="comment"
+          targetId={comment.id}
+          currentUser={currentUser}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </div>
   );
 }

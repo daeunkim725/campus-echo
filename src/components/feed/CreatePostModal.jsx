@@ -164,8 +164,8 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 flex-shrink-0">
           <h2 className="text-lg font-bold text-slate-900">{isEvent ? "New Event" : "New Post"}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
-            <X className="w-4 h-4" />
+          <button onClick={onClose} className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
@@ -176,13 +176,13 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
           <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
               <button
               onClick={() => setPostType("text")}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-all ${postType === "text" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${postType === "text" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
 
                 💬 Text Post
               </button>
               <button
               onClick={() => setPostType("poll")}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-all ${postType === "poll" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${postType === "poll" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
 
                 <BarChart2 className="w-3.5 h-3.5" /> Poll
               </button>
@@ -206,8 +206,8 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               </div>
               <div className="col-span-2">
                 <div className="flex gap-2">
-                  <button onClick={() => setEventType("on-campus")} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${eventType === "on-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "on-campus" ? primary : undefined }}>On Campus</button>
-                  <button onClick={() => setEventType("off-campus")} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${eventType === "off-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "off-campus" ? primary : undefined }}>Off Campus</button>
+                  <button onClick={() => setEventType("on-campus")} className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${eventType === "on-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "on-campus" ? primary : undefined }}>On Campus</button>
+                  <button onClick={() => setEventType("off-campus")} className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${eventType === "off-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "off-campus" ? primary : undefined }}>Off Campus</button>
                 </div>
               </div>
               <div className="col-span-2">

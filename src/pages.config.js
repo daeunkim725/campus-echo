@@ -54,6 +54,7 @@ import Onboarding from './pages/Onboarding';
 import PostDetail from './pages/PostDetail';
 import SchoolFeed from './pages/SchoolFeed';
 import Notifications from './pages/Notifications';
+import Moderation from './pages/Moderation';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "PostDetail": PostDetail,
     "SchoolFeed": SchoolFeed,
     "Notifications": Notifications,
+    "Moderation": Moderation,
 }
 
 export const pagesConfig = {

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
+import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
@@ -26,6 +27,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const [localPost, setLocalPost] = useState(post);
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [showInterestMenu, setShowInterestMenu] = useState(false);
   const navigate = useNavigate();
 
@@ -165,8 +167,8 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               )}
             </div>
 
-            {/* Owner menu */}
-            {isOwner && !localPost.deleted && (
+            {/* Post menu */}
+            {!localPost.deleted && (
               <div className="relative ml-1" onClick={e => e.stopPropagation()}>
                 <button
                   onClick={() => setShowMenu(v => !v)}
@@ -176,18 +178,29 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
                 </button>
                 {showMenu && (
                   <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                    >
-                      <Pencil className="w-3.5 h-3.5" /> Edit
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
-                    </button>
+                    {isOwner ? (
+                      <>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        <button
+                          onClick={handleDelete}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowReport(true); }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <Flag className="w-3.5 h-3.5" /> Report
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -324,6 +337,14 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           onClose={() => setShowEdit(false)}
           onSaved={handleEditSaved}
           primaryColor={primary}
+        />
+      )}
+      {showReport && (
+        <ReportModal
+          targetType="post"
+          targetId={localPost.id}
+          currentUser={currentUser}
+          onClose={() => setShowReport(false)}
         />
       )}
     </>

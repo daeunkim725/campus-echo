@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
@@ -158,6 +158,15 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
         {/* Settings */}
         <div className="p-4 border-b border-slate-100 space-y-1">
+          {currentUser?.role === 'admin' && (
+            <button
+              onClick={() => window.location.href = createPageUrl("Moderation")}
+              className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-indigo-50 text-indigo-600 text-sm font-medium transition-all"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Moderation Queue
+            </button>
+          )}
           <button
             onClick={handleToggleDark}
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-all"
