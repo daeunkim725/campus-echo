@@ -91,7 +91,7 @@ export default function EditPostModal({ post, onClose, onSaved, primaryColor = "
               <div className="col-span-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Location <span className="text-red-400">*</span></p>
                 <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none transition-all" style={{ outline: eventLocation ? "none" : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = ""} />
-              </div>
+                </div>
               <div className="col-span-2">
                 <div className="flex gap-2">
                   <button onClick={() => setEventType("on-campus")} className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${eventType === "on-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "on-campus" ? primaryColor : undefined }}>On Campus</button>
