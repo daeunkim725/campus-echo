@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
@@ -30,6 +31,10 @@ export default function PostCard({ post, currentUser, onUpdate }) {
   const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
+  
+  const schoolConfig = getSchoolConfig(currentUser?.school);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
 
   const handleVote = async (e, type) => {
     e.stopPropagation();
@@ -101,19 +106,20 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-sm"
-              style={{ backgroundColor: localPost.author_color || "#6C63FF" }}>
-              {localPost.author_alias?.charAt(0) || "A"}
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"
+              style={{ backgroundColor: primary }}>
+              {Array.from(localPost.author_alias || "A")[0]}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{localPost.author_alias || "Anonymous"}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="flex items-center gap-1.5 flex-wrap justify-end">
               {localPost.department && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-medium border"
+                  style={{ backgroundColor: primaryLight, color: primary, borderColor: primaryLight }}>
                   {localPost.department}
                 </span>
               )}
@@ -191,11 +197,12 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
                   className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
-                    myVote ? "border-violet-400 text-violet-700" : hasVotedPoll ? "border-slate-200 text-slate-600" : "border-slate-200 text-slate-700 hover:border-violet-300"
+                    hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
                   }`}
+                  style={myVote ? { borderColor: primary, color: primary } : {}}
                 >
                   {hasVotedPoll && (
-                    <div className={`absolute inset-0 rounded-xl ${myVote ? "bg-violet-50" : "bg-slate-50"}`} style={{ width: `${pct}%` }} />
+                    <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: primaryLight } : {}) }} />
                   )}
                   <span className="relative flex items-center justify-between">
                     <span>{opt.text}</span>
