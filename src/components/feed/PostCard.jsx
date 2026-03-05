@@ -112,7 +112,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               {Array.from(localPost.author_alias || "A")[0]}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>

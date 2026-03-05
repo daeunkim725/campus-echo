@@ -20,7 +20,7 @@ const categoryColors = {
 };
 import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
-import { getMoodEmoji } from "@/components/utils/moodUtils";
+import { getMoodEmoji, getCleanAlias } from "@/components/utils/moodUtils";
 
 export default function PostDetail() {
   const navigate = useNavigate();
@@ -196,7 +196,7 @@ export default function PostDetail() {
               {Array.from(post.author_alias || "A")[0]}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{post.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(post.author_alias)}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">

@@ -6,6 +6,7 @@ import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
+import { getCleanAlias } from "@/components/utils/moodUtils";
 
 function CreateListingModal({ onClose, onCreated, currentUser }) {
   const [title, setTitle] = useState("");
@@ -133,7 +134,7 @@ function ListingCard({ listing }) {
             {Array.from(listing.author_alias || "A")[0]}
           </div>
           <div>
-            <div className="text-sm font-semibold text-slate-900 capitalize">{listing.author_alias}</div>
+            <div className="text-sm font-semibold text-slate-900 capitalize">{getCleanAlias(listing.author_alias)}</div>
             <div className="text-xs text-slate-500">{new Date(listing.created_date).toLocaleDateString()}</div>
           </div>
         </div>
