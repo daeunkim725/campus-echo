@@ -61,8 +61,9 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
-  const primary = schoolConfig?.primary || "#7C3AED";
-  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
+  const tokens = useThemeTokens(schoolConfig);
+  const primary = tokens.primary;
+  const primaryLight = tokens.primaryLight;
 
   const handleVote = async (e, type) => {
     e.stopPropagation();
