@@ -17,6 +17,10 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [localUpvotes, setLocalUpvotes] = useState(comment.upvotes || 0);
 
   const userId = currentUser?.id || "anon";
+  const isOwner = currentUser && comment.created_by === currentUser.email;
+  const [showMenu, setShowMenu] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(comment.content || "");
   const schoolConfig = getSchoolConfig(currentUser?.school);
   const primary = schoolConfig?.primary || "#7C3AED";
   const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
