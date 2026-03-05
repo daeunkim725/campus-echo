@@ -22,7 +22,10 @@ export default function CategoryFilter({ selected, onSelect }) {
       {categories.map(cat => (
         <button
           key={cat}
-          onClick={() => onSelect(cat)}
+          onClick={(e) => {
+            onSelect(cat);
+            e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          }}
           className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
             selected === cat
               ? "bg-violet-600 text-white shadow-sm"

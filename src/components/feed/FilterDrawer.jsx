@@ -84,19 +84,28 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
         {/* Scrollable Category quick pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide flex-1 py-0.5">
           <button
-            onClick={() => set("category", "all")}
+            onClick={(e) => {
+              onChange({ ...filters, category: "all", level: "all", department: "all" });
+              e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            }}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-              filters.category === "all"
+              filters.category === "all" && filters.level === "all" && filters.department === "all"
                 ? "bg-slate-800 text-white shadow-sm"
                 : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
             }`}
           >
             ✨ All
           </button>
+          
+          <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
+          
           {CATEGORIES.map(cat => (
             <button
               key={cat}
-              onClick={() => set("category", filters.category === cat ? "all" : cat)}
+              onClick={(e) => {
+                set("category", filters.category === cat ? "all" : cat);
+                e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+              }}
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all capitalize ${
                 filters.category === cat
                   ? "bg-slate-800 text-white shadow-sm"
@@ -106,6 +115,47 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
               {categoryEmojis[cat]} {cat}
             </button>
           ))}
+
+          <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
+
+          {LEVELS.map(l => (
+            <button
+              key={l}
+              onClick={(e) => {
+                set("level", filters.level === l ? "all" : l);
+                e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+              }}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                filters.level === l
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              🎓 {l}
+            </button>
+          ))}
+
+          {userSchool === "ETH" && (
+            <>
+              <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
+              {ETH_DEPTS.map(d => (
+                <button
+                  key={d.code}
+                  onClick={(e) => {
+                    set("department", filters.department === d.code ? "all" : d.code);
+                    e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                  }}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    filters.department === d.code
+                      ? "bg-slate-800 text-white shadow-sm"
+                      : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  🏛️ {d.code}
+                </button>
+              ))}
+            </>
+          )}
         </div>
 
         <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
