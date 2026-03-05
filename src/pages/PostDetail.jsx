@@ -288,17 +288,17 @@ export default function PostDetail() {
 
           {/* Event Details */}
           {post.category === "events" && post.event_date && !post.deleted && (
-            <div className="bg-slate-50 rounded-xl p-3 mb-4 space-y-1.5 border border-slate-100">
-              <div className="flex items-center gap-2 text-sm text-slate-700">
-                <Calendar className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-4 text-xs text-slate-500 mb-4 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
                 <span className="font-medium">{post.event_date}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-700">
-                <Clock className="w-4 h-4 text-slate-400" />
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
                 <span>{post.event_time}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-700">
-                <MapPin className="w-4 h-4 text-slate-400" />
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5" />
                 <span>{post.event_location}</span>
               </div>
             </div>
@@ -331,24 +331,28 @@ export default function PostDetail() {
 
           {/* Vote Bar */}
           <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
-            <button
-              onClick={() => handleVote("up")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
-                votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
-              }`}
-            >
-              <ArrowUp className="w-4 h-4" />
-              {post.upvotes || 0}
-            </button>
-            <button
-              onClick={() => handleVote("down")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
-                votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
-              }`}
-            >
-              <ArrowDown className="w-4 h-4" />
-              {post.downvotes || 0}
-            </button>
+            {post.category !== "events" && (
+              <>
+                <button
+                  onClick={() => handleVote("up")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
+                  }`}
+                >
+                  <ArrowUp className="w-4 h-4" />
+                  {post.upvotes || 0}
+                </button>
+                <button
+                  onClick={() => handleVote("down")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
+                  }`}
+                >
+                  <ArrowDown className="w-4 h-4" />
+                  {post.downvotes || 0}
+                </button>
+              </>
+            )}
             <span className="ml-auto flex items-center gap-1.5 text-sm text-slate-400">
               <MessageCircle className="w-4 h-4" />
               {comments.length} comments

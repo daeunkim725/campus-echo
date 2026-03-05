@@ -219,17 +219,17 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="bg-slate-50 rounded-xl p-3 mb-3 space-y-1.5 border border-slate-100">
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Calendar className="w-4 h-4 text-slate-400" />
+          <div className="flex items-center gap-4 text-xs text-slate-500 mb-3 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
               <span className="font-medium">{localPost.event_date}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
               <span>{localPost.event_time}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <MapPin className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5" />
               <span>{localPost.event_location}</span>
             </div>
           </div>
@@ -252,14 +252,18 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Actions */}
         <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
-          <button onClick={(e) => handleVote(e, "up")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-            <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
-          </button>
-          <button onClick={(e) => handleVote(e, "down")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-            <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
-          </button>
+          {localPost.category !== "events" && (
+            <>
+              <button onClick={(e) => handleVote(e, "up")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
+              </button>
+              <button onClick={(e) => handleVote(e, "down")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
+              </button>
+            </>
+          )}
           <button onClick={e => e.stopPropagation()}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
             <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
