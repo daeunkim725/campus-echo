@@ -229,28 +229,6 @@ export default function PostDetail() {
           </div>
         </div>
 
-        {/* Comment Input */}
-        <div className="bg-white rounded-2xl p-4 mb-4 border border-slate-100 flex gap-3 items-end">
-          <textarea
-            value={newComment}
-            onChange={e => setNewComment(e.target.value)}
-            placeholder="Add a comment anonymously..."
-            rows={2}
-            className="flex-1 resize-none text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none"
-          />
-          <button
-            onClick={handleComment}
-            disabled={!newComment.trim() || submitting}
-            className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-all flex-shrink-0"
-          >
-            {submitting ? (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-
         {/* Comments Header + Sort */}
         <div className="flex items-center justify-between mb-2 px-1">
           <p className="text-sm font-bold text-slate-700">{comments.length} Comments</p>
@@ -270,7 +248,7 @@ export default function PostDetail() {
         </div>
 
         {/* Comments */}
-        <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden mb-24">
           {topComments.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-slate-400 text-sm">No comments yet. Be first!</p>
@@ -295,6 +273,31 @@ export default function PostDetail() {
           onSaved={() => { setShowEdit(false); fetchData(); }}
         />
       )}
+
+      {/* Comment Input (Fixed to bottom) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
+        <div className="max-w-xl mx-auto flex gap-3 items-center">
+          <input
+            type="text"
+            value={newComment}
+            onChange={e => setNewComment(e.target.value)}
+            placeholder="Add a comment anonymously..."
+            className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:border-violet-300 focus:bg-white transition-colors"
+            onKeyDown={e => e.key === 'Enter' && handleComment()}
+          />
+          <button
+            onClick={handleComment}
+            disabled={!newComment.trim() || submitting}
+            className="w-11 h-11 rounded-full bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-all flex-shrink-0 shadow-sm"
+          >
+            {submitting ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Send className="w-4 h-4 ml-0.5" />
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
