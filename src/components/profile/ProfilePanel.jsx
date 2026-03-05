@@ -35,7 +35,13 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const primary = schoolConfig?.primary || "#7C3AED";
+  const schoolName = currentUser?.school || "ETH";
+  const theme = getSchoolTheme(schoolName, darkMode);
+  const primary = theme.primary;
+  const surface = theme.surface;
+  const text = theme.text;
+  const textMuted = theme.textMuted;
+  const border = theme.border;
 
   useEffect(() => {
     fetchMyPosts();
