@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
+import { PlayableGif } from "@/components/ui/PlayableGif";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -225,11 +226,19 @@ export default function PostCard({ post, currentUser, onUpdate }) {
           </div>
         )}
 
-        {/* Image */}
-        {localPost.image_url && !localPost.deleted && (
-          <div className="mb-3 rounded-xl overflow-hidden">
-            <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
-          </div>
+        {/* Image / GIF */}
+        {!localPost.deleted && (
+          <>
+            {localPost.gif_url ? (
+              <div className="mb-3 rounded-xl overflow-hidden bg-slate-100">
+                <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-96" />
+              </div>
+            ) : localPost.image_url ? (
+              <div className="mb-3 rounded-xl overflow-hidden">
+                <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
+              </div>
+            ) : null}
+          </>
         )}
 
         {/* Actions */}
