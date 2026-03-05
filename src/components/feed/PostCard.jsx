@@ -7,7 +7,7 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
-import { getCleanAlias, getMoodEmoji } from "@/components/utils/moodUtils";
+import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -107,9 +107,9 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] shadow-sm"
-              style={{ backgroundColor: primary + "33" }}>
-              {getMoodEmoji(getCleanAlias(localPost.author_alias)?.trim().toLowerCase()) }
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] shadow-sm"
+              style={{ backgroundColor: primaryLight }}>
+              {getAliasEmoji(localPost.author_alias)}
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
