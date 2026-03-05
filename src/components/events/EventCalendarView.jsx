@@ -69,29 +69,32 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
       {/* Calendar Days */}
       <div className="grid grid-cols-7 gap-1">
         {calendarGrid.map((day, idx) => {
-          const dateKey = day ? format(day, "yyyy-MM-dd") : null;
-          const dayEvents = dateKey ? eventsByDate[dateKey] || [] : [];
-          const isToday = day && isSameDay(day, new Date());
-          const isCurrentMonth = day && day.getMonth() === currentDate.getMonth();
+          if (!day) {
+            return <div key={idx} className="aspect-square" />;
+          }
+
+          const dateKey = format(day, "yyyy-MM-dd");
+          const dayEvents = eventsByDate[dateKey] || [];
+          const isToday = isSameDay(day, new Date());
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
 
           return (
             <button
               key={idx}
-              onClick={() => day && onSelectDate(day)}
+              onClick={() => onSelectDate(day)}
+              disabled={!isCurrentMonth}
               className={`aspect-square p-1 rounded-lg text-xs transition-all ${
-                !day
-                  ? ""
+                !isCurrentMonth
+                  ? "opacity-40 cursor-default"
                   : isToday
-                  ? "ring-2 ring-offset-1"
-                  : isCurrentMonth
-                  ? "hover:bg-slate-50"
-                  : "text-slate-300"
+                  ? "ring-2 ring-offset-1 hover:opacity-90"
+                  : "hover:bg-slate-50 cursor-pointer"
               }`}
               style={isToday ? { "--tw-ring-color": schoolConfig?.primary } : {}}
             >
               <div className="h-full flex flex-col items-center justify-start">
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
-                  {day ? day.getDate() : ""}
+                  {day.getDate()}
                 </span>
                 {dayEvents.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center w-full">
