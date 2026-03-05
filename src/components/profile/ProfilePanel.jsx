@@ -113,13 +113,13 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
           {/* Avatar + mood */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
-              style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-colors duration-200"
+              style={{ backgroundColor: `${primary}25` }}>
               {getMoodEmoji(currentUser?.mood)}
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-base">{getMoodLabel(currentUser?.mood)}</p>
-              <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+              <p className="font-bold text-base" style={{ color: text }}>{getMoodLabel(currentUser?.mood)}</p>
+              <p className="text-xs transition-colors duration-200" style={{ color: textMuted }}>{currentUser?.school || "fizz community"}</p>
             </div>
           </div>
 
