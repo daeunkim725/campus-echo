@@ -47,7 +47,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                 )}
 
                 {/* Nav tabs */}
-                <div className="flex bg-slate-100 p-1 rounded-lg">
+                <div className="flex bg-slate-100 p-1 rounded-lg ml-2">
                   <button
                     onClick={() => window.location.href = createPageUrl("SchoolFeed") + `?school=${schoolCode}`}
                     className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
