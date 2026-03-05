@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import EditPostModal from "@/components/feed/EditPostModal";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -20,9 +21,12 @@ const categoryColors = {
 export default function PostCard({ post, currentUser, onUpdate }) {
   const [loading, setLoading] = useState(false);
   const [localPost, setLocalPost] = useState(post);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const navigate = useNavigate();
 
   const userId = currentUser?.id || "anon";
+  const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
 
@@ -66,6 +70,20 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     await base44.entities.Post.update(localPost.id, { poll_options: newOptions });
   };
 
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    await base44.entities.Post.update(localPost.id, { deleted: true });
+    setLocalPost({ ...localPost, deleted: true });
+    onUpdate?.();
+  };
+
+  const handleEditSaved = () => {
+    // Re-fetch from parent
+    onUpdate?.();
+    setShowEdit(false);
+  };
+
   const totalPollVotes = localPost.poll_options?.reduce((s, o) => s + (o.votes || 0), 0) || 0;
   const hasVotedPoll = localPost.poll_options?.some(o => o.voted_by?.includes(userId));
 
@@ -74,112 +92,152 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     : "";
 
   return (
-    <div
-      onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
-      className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
-            style={{ backgroundColor: localPost.author_color || "#6C63FF" }}>
-            {localPost.author_alias?.charAt(0) || "A"}
+    <>
+      <div
+        onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
+        className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
+              style={{ backgroundColor: localPost.author_color || "#6C63FF" }}>
+              {localPost.author_alias?.charAt(0) || "A"}
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-xs text-slate-400">{timeAgo}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
-            <p className="text-xs text-slate-400">{timeAgo}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 flex-wrap justify-end">
-          {localPost.department && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
-              {localPost.department}
-            </span>
-          )}
-          {localPost.academic_level && localPost.academic_level !== "all" && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
-              {localPost.academic_level}
-            </span>
-          )}
-          {localPost.category && (
-            <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${categoryColors[localPost.category] || categoryColors.general}`}>
-              {localPost.category}
-            </span>
-          )}
-          {localPost.post_type === "poll" && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
-              <BarChart2 className="w-3 h-3" /> Poll
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Title */}
-      {localPost.title && (
-        <p className="font-semibold text-slate-900 text-[15px] mb-1 line-clamp-2">{localPost.title}</p>
-      )}
-
-      {/* Content */}
-      {localPost.deleted ? (
-        <p className="text-slate-400 italic text-sm leading-relaxed mb-3">[deleted]</p>
-      ) : (
-        <div className="mb-3">
-          {localPost.content && <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{localPost.content}</p>}
-          {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
-        </div>
-      )}
-
-      {/* Poll Options */}
-      {localPost.post_type === "poll" && localPost.poll_options && (
-        <div className="space-y-2 mb-3" onClick={e => e.stopPropagation()}>
-          {localPost.poll_options.map((opt, i) => {
-            const pct = totalPollVotes > 0 ? Math.round((opt.votes || 0) / totalPollVotes * 100) : 0;
-            const myVote = opt.voted_by?.includes(userId);
-            return (
-              <button
-                key={i}
-                onClick={(e) => handlePollVote(e, i)}
-                disabled={hasVotedPoll}
-                className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
-                  myVote ? "border-violet-400 text-violet-700" : hasVotedPoll ? "border-slate-200 text-slate-600" : "border-slate-200 text-slate-700 hover:border-violet-300"
-                }`}
-              >
-                {hasVotedPoll && (
-                  <div className={`absolute inset-0 rounded-xl ${myVote ? "bg-violet-50" : "bg-slate-50"}`} style={{ width: `${pct}%` }} />
-                )}
-                <span className="relative flex items-center justify-between">
-                  <span>{opt.text}</span>
-                  {hasVotedPoll && <span className="text-xs text-slate-400">{pct}%</span>}
+          <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+              {localPost.department && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
+                  {localPost.department}
                 </span>
-              </button>
-            );
-          })}
-          <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
-        </div>
-      )}
+              )}
+              {localPost.academic_level && localPost.academic_level !== "all" && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
+                  {localPost.academic_level}
+                </span>
+              )}
+              {localPost.category && (
+                <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${categoryColors[localPost.category] || categoryColors.general}`}>
+                  {localPost.category}
+                </span>
+              )}
+              {localPost.post_type === "poll" && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
+                  <BarChart2 className="w-3 h-3" /> Poll
+                </span>
+              )}
+            </div>
 
-      {/* Image */}
-      {localPost.image_url && (
-        <div className="mb-3 rounded-xl overflow-hidden">
-          <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
+            {/* Owner menu */}
+            {isOwner && !localPost.deleted && (
+              <div className="relative ml-1" onClick={e => e.stopPropagation()}>
+                <button
+                  onClick={() => setShowMenu(v => !v)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+                {showMenu && (
+                  <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <Pencil className="w-3.5 h-3.5" /> Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
-        <button onClick={(e) => handleVote(e, "up")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-violet-100 text-violet-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-          <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
-        </button>
-        <button onClick={(e) => handleVote(e, "down")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-          <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
-        </button>
-        <button onClick={e => e.stopPropagation()}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
-          <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
-        </button>
+        {/* Title */}
+        {localPost.title && (
+          <p className="font-semibold text-slate-900 text-[15px] mb-1 line-clamp-2">{localPost.title}</p>
+        )}
+
+        {/* Content */}
+        {localPost.deleted ? (
+          <p className="text-slate-400 italic text-sm leading-relaxed mb-3">[deleted]</p>
+        ) : (
+          <div className="mb-3">
+            {localPost.content && <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{localPost.content}</p>}
+            {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
+          </div>
+        )}
+
+        {/* Poll Options */}
+        {localPost.post_type === "poll" && localPost.poll_options && (
+          <div className="space-y-2 mb-3" onClick={e => e.stopPropagation()}>
+            {localPost.poll_options.map((opt, i) => {
+              const pct = totalPollVotes > 0 ? Math.round((opt.votes || 0) / totalPollVotes * 100) : 0;
+              const myVote = opt.voted_by?.includes(userId);
+              return (
+                <button
+                  key={i}
+                  onClick={(e) => handlePollVote(e, i)}
+                  disabled={hasVotedPoll}
+                  className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
+                    myVote ? "border-violet-400 text-violet-700" : hasVotedPoll ? "border-slate-200 text-slate-600" : "border-slate-200 text-slate-700 hover:border-violet-300"
+                  }`}
+                >
+                  {hasVotedPoll && (
+                    <div className={`absolute inset-0 rounded-xl ${myVote ? "bg-violet-50" : "bg-slate-50"}`} style={{ width: `${pct}%` }} />
+                  )}
+                  <span className="relative flex items-center justify-between">
+                    <span>{opt.text}</span>
+                    {hasVotedPoll && <span className="text-xs text-slate-400">{pct}%</span>}
+                  </span>
+                </button>
+              );
+            })}
+            <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
+          </div>
+        )}
+
+        {/* Image */}
+        {localPost.image_url && !localPost.deleted && (
+          <div className="mb-3 rounded-xl overflow-hidden">
+            <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
+          <button onClick={(e) => handleVote(e, "up")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-violet-100 text-violet-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
+          </button>
+          <button onClick={(e) => handleVote(e, "down")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
+          </button>
+          <button onClick={e => e.stopPropagation()}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
+            <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
+          </button>
+        </div>
       </div>
-    </div>
+
+      {showEdit && (
+        <EditPostModal
+          post={localPost}
+          onClose={() => setShowEdit(false)}
+          onSaved={handleEditSaved}
+        />
+      )}
+    </>
   );
 }
