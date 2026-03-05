@@ -66,6 +66,8 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const handleToggleDark = () => {
     document.documentElement.classList.toggle("dark");
     setDarkMode(prev => !prev);
+    const newTheme = getSchoolTheme(schoolName, !darkMode);
+    window.dispatchEvent(new CustomEvent("themeChange", { detail: { isDark: !darkMode, theme: newTheme } }));
   };
 
   const handleEditPost = async (post) => {
