@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import EditPostModal from "@/components/feed/EditPostModal";
 import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
 import { generateAlias } from "@/components/utils/aliases";
