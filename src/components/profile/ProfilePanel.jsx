@@ -235,10 +235,18 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                       <textarea
                         value={editContent}
                         onChange={e => setEditContent(e.target.value)}
-                        className="w-full text-sm text-slate-700 bg-white border border-slate-200 rounded-xl p-3 resize-none min-h-[80px] focus:outline-none"
+                        className="w-full text-sm rounded-xl p-3 resize-none min-h-[80px] focus:outline-none transition-colors duration-300"
+                        style={{
+                          color: darkMode ? schoolConfig?.darkText : "rgb(51, 65, 85)",
+                          backgroundColor: darkMode ? schoolConfig?.darkCard : "white",
+                          borderColor: darkMode ? "#2A3139" : "rgb(226, 232, 240)"
+                        }}
                       />
                       <div className="flex gap-2 mt-2">
-                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border border-slate-200 text-slate-500">Cancel</button>
+                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border transition-colors duration-300" style={{ 
+                          borderColor: darkMode ? "#2A3139" : "rgb(226, 232, 240)",
+                          color: darkMode ? "#8B91A1" : "rgb(107, 114, 128)"
+                        }}>Cancel</button>
                         <button
                           onClick={() => handleEditPost(post)}
                           disabled={saving}
@@ -251,14 +259,17 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     </div>
                   ) : (
                     <>
-                      <p className={`text-sm mb-2 ${post.deleted ? "text-slate-400 italic" : "text-slate-700"}`}>
+                      <p className="text-sm mb-2 transition-colors duration-300" style={{ 
+                        color: post.deleted ? (darkMode ? "#8B91A1" : "rgb(148, 163, 184)") : (darkMode ? schoolConfig?.darkText : "rgb(51, 65, 85)"),
+                        fontStyle: post.deleted ? "italic" : "normal"
+                      }}>
                         {post.content}
                       </p>
                       {post.edited && !post.deleted && (
-                        <span className="text-xs text-slate-400 italic">edited</span>
+                        <span className="text-xs italic transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>edited</span>
                       )}
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>
                           {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
                         </span>
                         {!post.deleted && (
