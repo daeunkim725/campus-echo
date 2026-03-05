@@ -251,7 +251,7 @@ export default function Market() {
       </div>
 
       {showCreate && (
-        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} />
+        <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} />
       )}
     </div>
   );
