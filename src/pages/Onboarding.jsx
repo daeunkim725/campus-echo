@@ -120,6 +120,15 @@ export default function Onboarding() {
     setStep("mood");
   };
 
+  const handleMoodSelect = async () => {
+    if (!selectedMood) return;
+    setLoading(true);
+    await base44.auth.updateMe({ mood: selectedMood });
+    setLoading(false);
+    setStep("done");
+    setTimeout(() => { window.location.href = createPageUrl("Home"); }, 1500);
+  };
+
   if (step === "done") {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -127,7 +136,7 @@ export default function Onboarding() {
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-1">Verified!</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-1">All set!</h2>
           <p className="text-slate-500">Welcome to the {selectedSchool?.name} community 🎉</p>
         </div>
       </div>
