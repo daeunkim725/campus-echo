@@ -77,10 +77,10 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
       {/* Floating Post Button */}
       <button
         onClick={onPost}
-        className="fixed top-24 left-4 z-50 flex items-center justify-center w-[60px] h-[60px] rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 opacity-70 hover:opacity-100"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 opacity-70 hover:opacity-100"
         style={{ backgroundColor: primary }}
       >
-        <Plus className="w-8 h-8" />
+        <Plus className="w-5 h-5" />
       </button>
 
       {/* Admin school picker */}
