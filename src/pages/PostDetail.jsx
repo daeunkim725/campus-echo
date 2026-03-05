@@ -22,6 +22,13 @@ import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
 import { getMoodEmoji, getCleanAlias } from "@/components/utils/moodUtils";
 
+// Extract mood key from alias like "😴 sleepy" → "sleepy"
+function getMoodFromAlias(alias) {
+  if (!alias) return null;
+  const clean = getCleanAlias(alias).trim().toLowerCase();
+  return clean || null;
+}
+
 export default function PostDetail() {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
