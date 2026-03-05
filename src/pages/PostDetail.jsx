@@ -198,9 +198,9 @@ export default function PostDetail() {
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {Array.from(post.author_alias || "A")[0]}
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[15px] shadow-sm"
+              style={{ backgroundColor: primaryLight }}>
+              {getAliasEmoji(post.author_alias)}
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(post.author_alias)}</p>

@@ -6,7 +6,7 @@ import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
-import { getCleanAlias } from "@/components/utils/moodUtils";
+import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
 function CreateListingModal({ onClose, onCreated, currentUser }) {
   const [title, setTitle] = useState("");

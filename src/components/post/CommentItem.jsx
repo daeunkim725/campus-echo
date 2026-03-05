@@ -92,10 +92,10 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     <div className={depth > 0 ? "ml-8 border-l-2 border-slate-100 pl-4" : ""}>
       <div className="flex gap-3 py-3">
         <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
-          style={{ backgroundColor: primary }}
+          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[15px]"
+          style={{ backgroundColor: primaryLight }}
         >
-          {Array.from(comment.author_alias || "A")[0]}
+          {getAliasEmoji(comment.author_alias)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
