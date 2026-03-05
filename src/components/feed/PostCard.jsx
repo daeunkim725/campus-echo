@@ -102,7 +102,8 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     <>
       <div
         onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
-        className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
+        className="bg-white p-5 cursor-pointer hover:shadow-md transition-all duration-200 pixel-card"
+        style={{ borderColor: primary }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
@@ -146,12 +147,13 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               <div className="relative ml-1" onClick={e => e.stopPropagation()}>
                 <button
                   onClick={() => setShowMenu(v => !v)}
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
+                  className="w-7 h-7 flex items-center justify-center text-slate-400 transition-colors"
+                  style={{ backgroundColor: primaryLight, border: `2px solid ${primary}` }}
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                   <div className="absolute right-0 top-8 bg-white z-20 py-1 w-32 pixel-border" style={{ borderColor: primary }}>
                     <button
                       onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
@@ -252,11 +254,13 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Actions */}
         <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
           <button onClick={(e) => handleVote(e, "up")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-all pixel-button ${votedUp ? "text-green-600" : "text-slate-600"}`}
+            style={{ borderColor: votedUp ? "#16a34a" : primary, backgroundColor: votedUp ? "#dcfce7" : primaryLight }}>
             <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
           </button>
           <button onClick={(e) => handleVote(e, "down")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-all pixel-button ${votedDown ? "text-red-500" : "text-slate-600"}`}
+            style={{ borderColor: votedDown ? "#ef4444" : primary, backgroundColor: votedDown ? "#fee2e2" : primaryLight }}>
             <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
           </button>
           <button onClick={e => e.stopPropagation()}
