@@ -2,35 +2,23 @@ import React from "react";
 
 const categories = ["all", "general", "academics", "social", "housing", "food", "sports", "rants", "confessions", "advice", "events"];
 
-const categoryEmojis = {
-  all: "✨",
-  general: "💬",
-  academics: "📚",
-  social: "🎉",
-  housing: "🏠",
-  food: "🍕",
-  sports: "⚽",
-  rants: "😤",
-  confessions: "🤫",
-  advice: "💡",
-  events: "📅"
-};
-
 export default function CategoryFilter({ selected, onSelect }) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <div className="flex gap-0 overflow-x-auto scrollbar-hide border-b border-gray-100">
       {categories.map(cat => (
         <button
           key={cat}
           onClick={() => onSelect(cat)}
-          className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+          className={`flex-shrink-0 px-4 py-2.5 text-[13px] font-medium transition-all whitespace-nowrap relative ${
             selected === cat
-              ? "bg-violet-600 text-white shadow-sm"
-              : "bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-700"
+              ? "text-[#E8344E]"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          <span>{categoryEmojis[cat]}</span>
-          <span className="capitalize">{cat}</span>
+          {cat === "all" ? "All" : `#${cat}`}
+          {selected === cat && (
+            <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E8344E]" />
+          )}
         </button>
       ))}
     </div>
