@@ -218,19 +218,23 @@ export default function PostCard({ post, currentUser, onUpdate }) {
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="bg-slate-50 rounded-xl p-3 mb-3 space-y-1.5 border border-slate-100">
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <span className="font-medium">{localPost.event_date}</span>
+          <div className="flex items-center gap-3 text-xs text-slate-600 mb-2 flex-wrap">
+            <div className="flex items-center gap-1">
+              <Calendar className="w-3 h-3 text-slate-400" />
+              <span>{localPost.event_date}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4 text-slate-400" />
-              <span>{localPost.event_time}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <MapPin className="w-4 h-4 text-slate-400" />
-              <span>{localPost.event_location}</span>
-            </div>
+            {localPost.event_time && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-slate-400" />
+                <span>{localPost.event_time}</span>
+              </div>
+            )}
+            {localPost.event_location && (
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-slate-400" />
+                <span>{localPost.event_location}</span>
+              </div>
+            )}
           </div>
         )}
 
