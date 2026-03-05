@@ -49,8 +49,7 @@ export default function SchoolFeed() {
         });
       }
 
-      // Hide deleted posts
-      data = data.filter(p => !p.deleted);
+      // Keep deleted posts visible (they show [deleted] label)
 
       if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
       if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
