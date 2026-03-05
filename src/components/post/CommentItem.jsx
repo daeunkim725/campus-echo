@@ -17,6 +17,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [localUpvotes, setLocalUpvotes] = useState(comment.upvotes || 0);
 
   const userId = currentUser?.id || "anon";
+  const schoolConfig = getSchoolConfig(currentUser?.school);
   const votedUp = comment.voted_up_by?.includes(userId);
 
   const handleUpvote = async () => {
@@ -72,7 +73,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       <div className="flex gap-3 py-3">
         <div
           className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
-          style={{ backgroundColor: comment.author_color || "#6C63FF" }}
+          style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
         >
           {Array.from(comment.author_alias || "A")[0]}
         </div>
@@ -91,8 +92,9 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             <button
               onClick={handleUpvote}
               className={`flex items-center gap-1 text-xs font-medium transition-colors ${
-                votedUp ? "text-violet-600" : "text-slate-400 hover:text-slate-600"
+                votedUp ? "" : "text-slate-400 hover:text-slate-600"
               }`}
+              style={votedUp ? { color: schoolConfig?.primary || "#7C3AED" } : {}}
             >
               <ArrowUp className="w-3.5 h-3.5" />
               {localUpvotes}
@@ -141,12 +143,13 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                   onChange={e => setReplyText(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && handleReply()}
                   placeholder="Write a reply..."
-                  className="flex-1 text-sm rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-100"
+                  className="flex-1 text-sm rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
                 />
                 <button
                   onClick={handleReply}
                   disabled={(!replyText.trim() && !gifUrl) || loading}
-                  className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 transition-all hover:bg-violet-700 self-center flex-shrink-0"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white disabled:opacity-40 transition-all hover:opacity-90 self-center flex-shrink-0"
+                  style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

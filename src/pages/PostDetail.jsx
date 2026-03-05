@@ -190,7 +190,7 @@ export default function PostDetail() {
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm shadow-sm"
-              style={{ backgroundColor: post.author_color || "#6C63FF" }}>
+              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}>
               {Array.from(post.author_alias || "A")[0]}
             </div>
             <div>
@@ -246,11 +246,12 @@ export default function PostDetail() {
                     onClick={() => handlePollVote(i)}
                     disabled={hasVotedPoll}
                     className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
-                      myVote ? "border-violet-400 text-violet-700" : hasVotedPoll ? "border-slate-200 text-slate-600" : "border-slate-200 text-slate-700 hover:border-violet-300"
+                      hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
                     }`}
+                    style={myVote ? { borderColor: schoolConfig?.primary || "#7C3AED", color: schoolConfig?.primary || "#7C3AED" } : {}}
                   >
                     {hasVotedPoll && (
-                      <div className={`absolute inset-0 rounded-xl ${myVote ? "bg-violet-50" : "bg-slate-50"}`} style={{ width: `${pct}%` }} />
+                      <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" } : {}) }} />
                     )}
                     <span className="relative flex items-center justify-between">
                       <span>{opt.text}</span>
@@ -294,7 +295,8 @@ export default function PostDetail() {
           {/* Tags */}
           <div className="flex items-center gap-1.5 flex-wrap mb-4">
             {post.department && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
+              <span className="text-[11px] px-2 py-0.5 rounded-full font-medium border"
+                style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE", color: schoolConfig?.primary || "#7C3AED", borderColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
                 {post.department}
               </span>
             )}

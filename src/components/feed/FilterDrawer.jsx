@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
@@ -44,6 +45,8 @@ const categoryEmojis = {
 
 export default function FilterDrawer({ filters, onChange, userSchool }) {
   const [open, setOpen] = useState(false);
+  const schoolConfig = getSchoolConfig(userSchool);
+  const primary = schoolConfig?.primary || "#7C3AED";
 
   const set = (key, val) => onChange({ ...filters, [key]: val });
 
@@ -108,9 +111,10 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           onClick={() => setOpen(true)}
           className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
             activeCount > 0
-              ? "bg-violet-600 text-white border-violet-600"
+              ? "text-white"
               : "bg-white border-slate-200 text-slate-500 hover:text-slate-700"
           }`}
+          style={activeCount > 0 ? { backgroundColor: primary, borderColor: primary } : {}}
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           Filters {activeCount > 0 && <span className="bg-white/30 text-white text-xs px-1.5 py-0.5 rounded-full">{activeCount}</span>}
@@ -141,9 +145,10 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
                     onClick={() => set("level", l)}
                     className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
                       filters.level === l
-                        ? "bg-violet-600 text-white border-violet-600"
+                        ? "text-white"
                         : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
                     }`}
+                    style={filters.level === l ? { backgroundColor: primary, borderColor: primary } : {}}
                   >
                     {l === "all" ? "All Levels" : l}
                   </button>
@@ -160,9 +165,10 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
                     onClick={() => set("department", "all")}
                     className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${
                       filters.department === "all"
-                        ? "bg-violet-600 text-white border-violet-600"
+                        ? "text-white"
                         : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
                     }`}
+                    style={filters.department === "all" ? { backgroundColor: primary, borderColor: primary } : {}}
                   >
                     All
                   </button>
@@ -172,9 +178,10 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
                       onClick={() => set("department", filters.department === d.code ? "all" : d.code)}
                       className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${
                         filters.department === d.code
-                          ? "bg-violet-600 text-white border-violet-600"
+                          ? "text-white"
                           : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
                       }`}
+                      style={filters.department === d.code ? { backgroundColor: primary, borderColor: primary } : {}}
                     >
                       {d.code}
                     </button>
@@ -192,7 +199,8 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex-1 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-all"
+                className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-all"
+                style={{ backgroundColor: primary }}
               >
                 Apply
               </button>

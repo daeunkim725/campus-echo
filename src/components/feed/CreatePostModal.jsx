@@ -163,15 +163,15 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
           <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Date <span className="text-red-400">*</span></p>
-                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventDate ? primary : undefined }} />
+                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventDate ? primary : undefined }} onFocus={(e) => e.target.style.borderColor = primary} onBlur={(e) => e.target.style.borderColor = eventDate ? primary : ""} />
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Time <span className="text-red-400">*</span></p>
-                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventTime ? primary : undefined }} />
+                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventTime ? primary : undefined }} onFocus={(e) => e.target.style.borderColor = primary} onBlur={(e) => e.target.style.borderColor = eventTime ? primary : ""} />
               </div>
               <div className="col-span-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Location <span className="text-red-400">*</span></p>
-                <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventLocation ? primary : undefined }} />
+                <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventLocation ? primary : undefined }} onFocus={(e) => e.target.style.borderColor = primary} onBlur={(e) => e.target.style.borderColor = eventLocation ? primary : ""} />
               </div>
             </div>
           }
