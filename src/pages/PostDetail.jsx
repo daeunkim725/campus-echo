@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock } from "lucide-react";
 import EditPostModal from "@/components/feed/EditPostModal";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -33,6 +34,8 @@ export default function PostDetail() {
   const [commentSort, setCommentSort] = useState("new");
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+
+  const schoolConfig = getSchoolConfig(currentUser?.school);
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -337,7 +340,8 @@ export default function PostDetail() {
           <button
             onClick={handleComment}
             disabled={!newComment.trim() || submitting}
-            className="w-11 h-11 rounded-full bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-all flex-shrink-0 shadow-sm"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
+            style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
           >
             {submitting ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

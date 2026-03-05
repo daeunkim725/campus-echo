@@ -111,7 +111,8 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
             <button
               onClick={handleSubmit}
               disabled={!title.trim() || !description.trim() || !price || loading}
-              className="px-6 py-2.5 rounded-full bg-violet-600 text-white font-semibold text-sm hover:bg-violet-700 disabled:opacity-40 flex items-center gap-2">
+              className="px-6 py-2.5 rounded-full text-white font-semibold text-sm disabled:opacity-40 flex items-center gap-2 hover:opacity-90"
+              style={{ backgroundColor: getSchoolConfig(currentUser?.school)?.primary || "#7C3AED" }}>
 
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               List Item
@@ -243,7 +244,8 @@ export default function Market() {
             <p className="text-slate-500 font-medium">No items for sale yet</p>
             <p className="text-slate-400 text-sm mt-1">Be the first to list something!</p>
             <button
-            onClick={() => setShowCreate(true)} className="bg-blue-900 text-white mt-4 px-6 py-2.5 text-sm font-semibold rounded-full hover:bg-violet-700 transition-all">
+            onClick={() => setShowCreate(true)} className="text-white mt-4 px-6 py-2.5 text-sm font-semibold rounded-full transition-all hover:opacity-90"
+            style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}>
 
 
               Sell an item
