@@ -209,6 +209,24 @@ export default function PostDetail() {
           </button>
         </div>
 
+        {/* Comments Header + Sort */}
+        <div className="flex items-center justify-between mb-2 px-1">
+          <p className="text-sm font-bold text-slate-700">{comments.length} Comments</p>
+          <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
+            {["best", "new"].map(s => (
+              <button
+                key={s}
+                onClick={() => setCommentSort(s)}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all capitalize ${
+                  commentSort === s ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                }`}
+              >
+                {s === "best" ? "⭐ Best" : "🕐 New"}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Comments */}
         <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
           {topComments.length === 0 ? (
