@@ -90,8 +90,6 @@ export default function PostDetail() {
     fetchData();
   };
 
-  const [commentSort, setCommentSort] = useState("best");
-
   const topComments = comments
     .filter(c => !c.parent_comment_id)
     .sort((a, b) => commentSort === "best"
