@@ -59,13 +59,13 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
   return (
     <>
       {/* Trigger Row */}
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-0.5">
-        {/* Sort dropdown */}
+      <div className="flex items-center w-full gap-2">
+        {/* Sort dropdown - Static */}
         <div className="relative flex-shrink-0">
           <select
             value={filters.sort}
             onChange={e => set("sort", e.target.value)}
-            className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-2.5 py-1 pr-6 focus:outline-none cursor-pointer focus:bg-white active:bg-white transition-colors"
+            className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-2.5 py-1.5 pr-6 focus:outline-none cursor-pointer focus:bg-white active:bg-white transition-colors"
             style={{ backgroundColor: 'white' }}
             onFocus={(e) => e.target.style.borderColor = primary}
             onBlur={(e) => e.target.style.borderColor = ""}
@@ -79,39 +79,41 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           </div>
         </div>
 
-        <div className="w-px h-5 bg-slate-200 flex-shrink-0 mx-1" />
+        <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
 
-        {/* Category quick pills */}
-        <button
-          onClick={() => set("category", "all")}
-          className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-            filters.category === "all"
-              ? "bg-slate-800 text-white shadow-sm"
-              : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
-          }`}
-        >
-          ✨ All
-        </button>
-        {CATEGORIES.map(cat => (
+        {/* Scrollable Category quick pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide flex-1 py-0.5">
           <button
-            key={cat}
-            onClick={() => set("category", filters.category === cat ? "all" : cat)}
-            className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all capitalize ${
-              filters.category === cat
+            onClick={() => set("category", "all")}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              filters.category === "all"
                 ? "bg-slate-800 text-white shadow-sm"
                 : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
             }`}
           >
-            {categoryEmojis[cat]} {cat}
+            ✨ All
           </button>
-        ))}
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => set("category", filters.category === cat ? "all" : cat)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all capitalize ${
+                filters.category === cat
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {categoryEmojis[cat]} {cat}
+            </button>
+          ))}
+        </div>
 
-        <div className="w-px h-5 bg-slate-200 flex-shrink-0 mx-1" />
+        <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
 
-        {/* Filter button */}
+        {/* Filter button - Static */}
         <button
           onClick={() => setOpen(true)}
-          className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+          className={`flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all border ${
             activeCount > 0
               ? "text-white"
               : "bg-white border-slate-200 text-slate-500 hover:text-slate-700"
@@ -119,7 +121,8 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           style={activeCount > 0 ? { backgroundColor: primary, borderColor: primary } : {}}
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
-          Filters {activeCount > 0 && <span className="bg-white/30 text-white text-xs px-1.5 py-0.5 rounded-full">{activeCount}</span>}
+          <span className="hidden sm:inline">Filters</span>
+          {activeCount > 0 && <span className="bg-white/30 text-white text-[10px] px-1.5 py-0.5 rounded-full">{activeCount}</span>}
         </button>
       </div>
 

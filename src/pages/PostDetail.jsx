@@ -364,7 +364,7 @@ export default function PostDetail() {
           </div>
 
           {/* Vote Bar */}
-          <div className="flex items-center gap-2 pt-3 border-t border-slate-100 relative">
+          <div className={`flex items-center gap-2 border-t border-slate-100 relative ${post.category === "events" ? "pt-2" : "pt-3"}`}>
             {post.category !== "events" && (
               <>
                 <button
@@ -394,23 +394,23 @@ export default function PostDetail() {
                     if (hasVotedBell) handleRemoveInterest();
                     else setShowInterestMenu(!showInterestMenu);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${hasVotedBell ? "bg-indigo-100 text-indigo-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
+                  className={`flex items-center gap-1.5 px-1.5 py-1 rounded text-xs font-medium transition-all ${hasVotedBell ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
                 >
                   <Bell className={`w-4 h-4 ${hasVotedBell ? "fill-current" : ""}`} />
                   <span>{post.interested_users?.length || 0}</span>
                 </button>
 
                 {showInterestMenu && (
-                  <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-40">
-                    <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Remind me</p>
-                    <button onClick={() => handleAddInterest(15)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">15 mins before</button>
-                    <button onClick={() => handleAddInterest(60)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 hour before</button>
-                    <button onClick={() => handleAddInterest(1440)} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 day before</button>
+                  <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    <p className="text-[9px] font-bold text-slate-400 px-2.5 py-1 uppercase tracking-wider">Remind me</p>
+                    <button onClick={() => handleAddInterest(15)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">15 mins before</button>
+                    <button onClick={() => handleAddInterest(60)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">1 hour before</button>
+                    <button onClick={() => handleAddInterest(1440)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">1 day before</button>
                   </div>
                 )}
               </div>
             )}
-            <span className="ml-auto flex items-center gap-1.5 text-sm text-slate-400">
+            <span className={`ml-auto flex items-center gap-1.5 text-slate-400 ${post.category === "events" ? "text-[11px] px-1.5 py-1" : "text-sm"}`}>
               <MessageCircle className="w-4 h-4" />
               {comments.length} comments
             </span>

@@ -28,11 +28,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              {/* Profile avatar & Notifications */}
-              <button onClick={() => window.location.href = createPageUrl("Notifications")} className="relative w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{unreadCount}</span>}
-              </button>
+              {/* Profile avatar */}
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform active:scale-95"
@@ -72,13 +68,22 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
         </div>
       </div>
 
+      {/* Floating Notification Button */}
+      <button
+        onClick={() => window.location.href = createPageUrl("Notifications")}
+        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+      >
+        <Bell className="w-5 h-5" />
+        {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
+      </button>
+
       {/* Floating Post Button */}
       <button
         onClick={onPost}
-        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-[60px] h-[60px] rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95"
         style={{ backgroundColor: primary }}
       >
-        <Plus className="w-8 h-8" />
+        <Plus className="w-6 h-6" />
       </button>
 
       {showProfile && (
