@@ -77,7 +77,7 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                 <button
                   key={range}
                   onClick={() => setDateRange(range)}
-                  className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${dateRange === range
+                  className={`px-2.5 py-1.5 rounded-md font-medium text-xs transition-all ${dateRange === range
                       ? "text-white shadow-sm"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
@@ -102,7 +102,7 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                 <button
                   key={type}
                   onClick={() => setLocationType(type)}
-                  className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${locationType === type
+                  className={`px-2.5 py-1.5 rounded-md font-medium text-xs transition-all ${locationType === type
                       ? "text-white shadow-sm"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
@@ -127,7 +127,7 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                 <button
                   key={cat.id}
                   onClick={() => toggleCategory(cat.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${selectedCategories.includes(cat.id)
+                  className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${selectedCategories.includes(cat.id)
                       ? "text-white shadow-sm"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
@@ -146,13 +146,13 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
         <div className="flex gap-3 pt-4 border-t border-slate-200">
           <button
             onClick={handleClearFilters}
-            className="flex-1 px-4 py-2.5 rounded-full bg-slate-100 text-slate-900 font-semibold hover:bg-slate-200 transition-all"
+            className="flex-1 px-4 py-2 rounded-full bg-slate-100 text-slate-900 text-sm font-semibold hover:bg-slate-200 transition-all"
           >
             Clear
           </button>
           <button
             onClick={handleApply}
-            className="flex-1 px-4 py-2.5 rounded-full text-white font-semibold hover:opacity-90 transition-all"
+            className="flex-1 px-4 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
             style={{ backgroundColor: tokens.primary }}
           >
             Apply Filters

@@ -123,24 +123,24 @@ export default function Events() {
           <div className="flex gap-1">
             <button
               onClick={() => { setViewMode("list"); setSelectedDate(null); }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${viewMode === "list" ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:bg-slate-50"}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "list" ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:bg-slate-50"}`}
             >
-              <List className="w-4 h-4" /> List
+              <List className="w-3.5 h-3.5" /> List
             </button>
             <button
               onClick={() => setViewMode("calendar")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${viewMode === "calendar" ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:bg-slate-50"}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "calendar" ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:bg-slate-50"}`}
             >
-              <CalendarIcon className="w-4 h-4" /> Calendar
+              <CalendarIcon className="w-3.5 h-3.5" /> Calendar
             </button>
           </div>
           <button
             onClick={() => setShowFilters(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all border border-slate-200"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 transition-all border border-slate-200"
           >
-            <Filter className="w-4 h-4" /> Filters
+            <Filter className="w-3.5 h-3.5" /> Filters
             {(filters.locationType !== "all" || filters.interests.length > 0 || filters.dateRange !== "all") && (
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }} />
             )}
           </button>
         </div>
