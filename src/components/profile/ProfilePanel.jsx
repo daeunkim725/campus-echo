@@ -239,13 +239,15 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                           <div className="flex gap-1">
                             <button
                               onClick={() => { setEditingPost(post.id); setEditContent(post.content); }}
-                              className="p-1.5 rounded-lg hover:bg-white text-slate-400 hover:text-slate-600 transition-all"
+                              className="p-1.5 rounded-lg transition-all hover:opacity-80"
+                              style={{ color: textMuted }}
                             >
                               <Pencil className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDeletePost(post)}
-                              className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all"
+                              className="p-1.5 rounded-lg transition-all hover:opacity-80"
+                              style={{ color: primary }}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
