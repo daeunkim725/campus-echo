@@ -4,15 +4,17 @@ import { createPageUrl } from "@/utils";
 import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
   const [showProfile, setShowProfile] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
+  const scrollDirection = useScrollDirection();
 
   return (
     <>
-      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
+      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">

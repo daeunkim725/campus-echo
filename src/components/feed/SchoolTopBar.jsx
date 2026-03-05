@@ -5,6 +5,7 @@ import ProfilePanel from "@/components/profile/ProfilePanel";
 import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -12,6 +13,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
   const isAdmin = currentUser?.role === "admin";
+  const scrollDirection = useScrollDirection();
 
   const navigateToSchool = (code) => {
     setShowSchoolPicker(false);
@@ -20,7 +22,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
 
   return (
     <>
-      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
+      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

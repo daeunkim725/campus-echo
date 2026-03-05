@@ -6,6 +6,7 @@ import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -15,6 +16,7 @@ export default function Home() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const scrollDirection = useScrollDirection();
 
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
@@ -74,7 +76,7 @@ export default function Home() {
         activePage="feed"
         schoolConfig={schoolConfig}
       />
-      <div className="sticky top-[65px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100">
+      <div className={`sticky z-30 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? 'top-0' : 'top-[65px]'}`}>
         <div className="max-w-xl mx-auto px-4 py-2.5">
           <FilterDrawer filters={filters} onChange={setFilters} userSchool={currentUser?.school} />
         </div>

@@ -85,7 +85,7 @@ export default function SchoolFeed() {
         schoolCode={schoolCode}
       />
 
-      <div className="sticky top-[65px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100">
+      <div className={`sticky z-30 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? 'top-0' : 'top-[65px]'}`}>
         <div className="max-w-xl mx-auto px-4 py-2.5">
           <FilterDrawer filters={filters} onChange={setFilters} userSchool={schoolCode} />
         </div>
