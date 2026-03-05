@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import PostCard from "@/components/feed/PostCard";
 import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
+import TopBar from "@/components/feed/TopBar";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -14,6 +15,8 @@ export default function Home() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+
+  const schoolConfig = getSchoolConfig(currentUser?.school);
 
   useEffect(() => {
     base44.auth.me().then(u => {
