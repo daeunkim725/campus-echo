@@ -115,7 +115,14 @@ export default function PostCard({ post, currentUser, onUpdate }) {
       </div>
 
       {/* Content */}
-      <p className="text-slate-700 text-[15px] leading-relaxed mb-3 line-clamp-4">{localPost.content}</p>
+      {localPost.deleted ? (
+        <p className="text-slate-400 italic text-[15px] leading-relaxed mb-3">[deleted]</p>
+      ) : (
+        <div className="mb-3">
+          <p className="text-slate-700 text-[15px] leading-relaxed line-clamp-4">{localPost.content}</p>
+          {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
+        </div>
+      )}
 
       {/* Poll Options */}
       {localPost.post_type === "poll" && localPost.poll_options && (
