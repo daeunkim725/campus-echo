@@ -49,12 +49,14 @@
  */
 import PostDetail from './pages/PostDetail';
 import Home from './pages/Home';
+import Onboarding from './pages/Onboarding';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "PostDetail": PostDetail,
     "Home": Home,
+    "Onboarding": Onboarding,
 }
 
 export const pagesConfig = {

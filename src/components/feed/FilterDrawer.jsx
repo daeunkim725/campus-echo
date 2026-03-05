@@ -58,20 +58,21 @@ export default function FilterDrawer({ filters, onChange }) {
     <>
       {/* Trigger Row */}
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-0.5">
-        {/* Sort pills */}
-        {["hot", "new", "top"].map(s => (
-          <button
-            key={s}
-            onClick={() => set("sort", s)}
-            className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all capitalize ${
-              filters.sort === s
-                ? "bg-violet-600 text-white shadow-sm"
-                : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
-            }`}
+        {/* Sort dropdown */}
+        <div className="relative flex-shrink-0">
+          <select
+            value={filters.sort}
+            onChange={e => set("sort", e.target.value)}
+            className="appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-full px-3.5 py-1.5 pr-7 focus:outline-none focus:border-violet-400 cursor-pointer"
           >
-            {s === "hot" ? "🔥 Hot" : s === "new" ? "🕐 New" : "📈 Top"}
-          </button>
-        ))}
+            <option value="new">🕐 New</option>
+            <option value="hot">🔥 Hot</option>
+            <option value="top">📈 Top</option>
+          </select>
+          <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          </div>
+        </div>
 
         <div className="w-px h-5 bg-slate-200 flex-shrink-0 mx-1" />
 
