@@ -69,6 +69,21 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     onReply?.();
   };
 
+  const handleDelete = async () => {
+    setShowMenu(false);
+    await base44.entities.Comment.update(comment.id, { deleted: true });
+    onReply?.();
+  };
+
+  const handleEdit = async () => {
+    if (!editText.trim()) return;
+    setLoading(true);
+    await base44.entities.Comment.update(comment.id, { content: editText.trim(), edited: true });
+    setIsEditing(false);
+    setLoading(false);
+    onReply?.();
+  };
+
   const timeAgo = comment.created_date
     ? formatDistanceToNow(new Date(comment.created_date), { addSuffix: true })
     : "";
