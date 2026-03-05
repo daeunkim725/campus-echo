@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
 
         const response = await fetch(url);
         const data = await response.json();
+        console.log("Giphy data:", data);
 
         return Response.json({ data: data.data });
     } catch (error) {
