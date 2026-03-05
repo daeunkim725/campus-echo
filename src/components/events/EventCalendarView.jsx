@@ -4,6 +4,7 @@ import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, format, parseISO, 
 
 export default function EventCalendarView({ events, onSelectDate, schoolConfig }) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
