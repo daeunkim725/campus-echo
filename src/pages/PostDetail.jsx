@@ -7,6 +7,7 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
