@@ -111,7 +111,7 @@ export default function Home() {
             <button
               onClick={() => setShowCreate(true)}
               className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-all hover:opacity-90"
-              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+              style={{ backgroundColor: tokens.primary }}
             >
               Create a post
             </button>
