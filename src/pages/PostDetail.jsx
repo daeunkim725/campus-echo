@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock } from "lucide-react";
 import EditPostModal from "@/components/feed/EditPostModal";
+
+const categoryColors = {
+  general: "bg-slate-100 text-slate-600",
+  academics: "bg-blue-50 text-blue-600",
+  social: "bg-pink-50 text-pink-600",
+  housing: "bg-amber-50 text-amber-600",
+  food: "bg-orange-50 text-orange-600",
+  rants: "bg-red-50 text-red-600",
+  confessions: "bg-purple-50 text-purple-600",
+  advice: "bg-teal-50 text-teal-600",
+  events: "bg-indigo-50 text-indigo-600",
+};
 import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
 import { generateAlias } from "@/components/utils/aliases";
@@ -155,11 +167,6 @@ export default function PostDetail() {
               <p className="text-xs text-slate-400">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
-              {post.category && (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium capitalize">
-                  {post.category}
-                </span>
-              )}
               {isOwner && !post.deleted && (
                 <div className="relative">
                   <button
@@ -201,6 +208,48 @@ export default function PostDetail() {
               <img src={post.image_url} alt="" className="w-full object-cover" />
             </div>
           )}
+
+          {/* Event Details */}
+          {post.category === "events" && post.event_date && !post.deleted && (
+            <div className="bg-slate-50 rounded-xl p-3 mb-4 space-y-1.5 border border-slate-100">
+              <div className="flex items-center gap-2 text-sm text-slate-700">
+                <Calendar className="w-4 h-4 text-slate-400" />
+                <span className="font-medium">{post.event_date}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-slate-700">
+                <Clock className="w-4 h-4 text-slate-400" />
+                <span>{post.event_time}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-slate-700">
+                <MapPin className="w-4 h-4 text-slate-400" />
+                <span>{post.event_location}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Tags */}
+          <div className="flex items-center gap-1.5 flex-wrap mb-4">
+            {post.department && (
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
+                {post.department}
+              </span>
+            )}
+            {post.academic_level && post.academic_level !== "all" && (
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
+                {post.academic_level}
+              </span>
+            )}
+            {post.category && (
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium capitalize ${categoryColors[post.category] || categoryColors.general}`}>
+                {post.category}
+              </span>
+            )}
+            {post.post_type === "poll" && (
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
+                <BarChart2 className="w-[10px] h-[10px]" /> Poll
+              </span>
+            )}
+          </div>
 
           {/* Vote Bar */}
           <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
