@@ -23,6 +23,12 @@ export default function Home() {
       setCurrentUser(u);
       if (!u?.school_verified && u?.role !== 'admin') {
         window.location.href = createPageUrl("Onboarding");
+        return;
+      }
+      // Redirect to school-specific page
+      const school = u?.school || (u?.role === 'admin' ? 'ETH' : null);
+      if (school) {
+        window.location.href = createPageUrl("SchoolFeed") + `?school=${school}`;
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Home")));
   }, []);
