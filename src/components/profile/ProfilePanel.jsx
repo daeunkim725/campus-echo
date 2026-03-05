@@ -105,8 +105,8 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
         {/* Header */}
         <div className="p-5 transition-colors duration-200" style={{ borderTopColor: primary, borderTopWidth: 4, borderBottomColor: border, borderBottomWidth: 1 }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900">Your Profile</h2>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+            <h2 className="text-lg font-bold" style={{ color: text }}>Your Profile</h2>
+            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200" style={{ backgroundColor: `${text}15`, color: textMuted }}>
               <X className="w-4 h-4" />
             </button>
           </div>
