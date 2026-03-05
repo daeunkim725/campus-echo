@@ -89,7 +89,14 @@ export default function PostDetail() {
     fetchData();
   };
 
-  const topComments = comments.filter(c => !c.parent_comment_id);
+  const [commentSort, setCommentSort] = useState("best");
+
+  const topComments = comments
+    .filter(c => !c.parent_comment_id)
+    .sort((a, b) => commentSort === "best"
+      ? (b.upvotes || 0) - (a.upvotes || 0)
+      : new Date(b.created_date) - new Date(a.created_date)
+    );
   const getReplies = (commentId) => comments.filter(c => c.parent_comment_id === commentId);
 
   if (loading) {
