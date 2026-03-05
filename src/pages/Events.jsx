@@ -6,6 +6,7 @@ import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import EventCalendarView from "@/components/events/EventCalendarView";
 import EventFilterPanel from "@/components/events/EventFilterPanel";
 import { Filter, Calendar as CalendarIcon, List } from "lucide-react";
