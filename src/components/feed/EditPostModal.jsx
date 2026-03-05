@@ -155,17 +155,17 @@ export default function EditPostModal({ post, onClose, onSaved, primaryColor = "
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 px-6 pb-6">
-          <button onClick={onClose} className="px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-all">
+        <div className="flex items-center justify-end gap-2 px-6 pb-5 pt-3 border-t border-slate-100 flex-shrink-0">
+          <button onClick={onClose} className="px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50 transition-all shadow-sm">
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={!isValid || loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-40 transition-all hover:opacity-90"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm hover:opacity-90"
             style={{ backgroundColor: primaryColor }}
           >
-            {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
+            {loading ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             Save
           </button>
         </div>
