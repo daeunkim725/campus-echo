@@ -114,12 +114,17 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         </div>
       </div>
 
+      {/* Title */}
+      {localPost.title && (
+        <p className="font-semibold text-slate-900 text-[15px] mb-1 line-clamp-2">{localPost.title}</p>
+      )}
+
       {/* Content */}
       {localPost.deleted ? (
-        <p className="text-slate-400 italic text-[15px] leading-relaxed mb-3">[deleted]</p>
+        <p className="text-slate-400 italic text-sm leading-relaxed mb-3">[deleted]</p>
       ) : (
         <div className="mb-3">
-          <p className="text-slate-700 text-[15px] leading-relaxed line-clamp-4">{localPost.content}</p>
+          {localPost.content && <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{localPost.content}</p>}
           {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
         </div>
       )}
