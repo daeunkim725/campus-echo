@@ -196,7 +196,7 @@ export default function PostDetail() {
 
       <div className="max-w-xl mx-auto px-4 py-4">
         {/* Post */}
-         <div className="bg-white p-5 mb-4 pixel-card" style={{ borderColor: primary }}>
+        <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-[15px] shadow-sm"
               style={{ backgroundColor: primaryLight }}>
@@ -211,13 +211,12 @@ export default function PostDetail() {
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(v => !v)}
-                    className="w-7 h-7 flex items-center justify-center text-slate-400 transition-colors"
-                    style={{ backgroundColor: primaryLight, border: `2px solid ${primary}` }}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
                   >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                   {showMenu && (
-                    <div className="absolute right-0 top-8 bg-white z-20 py-1 w-32 pixel-border" style={{ borderColor: primary }}>
+                    <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
                       <button
                         onClick={() => { setShowMenu(false); setShowEdit(true); }}
                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
@@ -330,21 +329,19 @@ export default function PostDetail() {
           {/* Vote Bar */}
           <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
             <button
-               onClick={() => handleVote("up")}
-               className={`flex items-center gap-1.5 text-sm font-medium transition-all pixel-button ${
-                 votedUp ? "text-green-600" : "text-slate-600"
-               }`}
-               style={{ borderColor: votedUp ? "#16a34a" : primary, backgroundColor: votedUp ? "#dcfce7" : primaryLight }}
+              onClick={() => handleVote("up")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
+              }`}
             >
               <ArrowUp className="w-4 h-4" />
               {post.upvotes || 0}
             </button>
             <button
-               onClick={() => handleVote("down")}
-               className={`flex items-center gap-1.5 text-sm font-medium transition-all pixel-button ${
-                 votedDown ? "text-red-500" : "text-slate-600"
-               }`}
-               style={{ borderColor: votedDown ? "#ef4444" : primary, backgroundColor: votedDown ? "#fee2e2" : primaryLight }}
+              onClick={() => handleVote("down")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
+              }`}
             >
               <ArrowDown className="w-4 h-4" />
               {post.downvotes || 0}
@@ -375,7 +372,7 @@ export default function PostDetail() {
         </div>
 
         {/* Comments */}
-        <div className="bg-white pixel-card divide-y divide-slate-50 overflow-hidden mb-24" style={{ borderColor: primary }}>
+        <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden mb-24">
           {topComments.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-slate-400 text-sm">No comments yet. Be first!</p>
