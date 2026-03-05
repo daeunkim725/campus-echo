@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
+import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
 
