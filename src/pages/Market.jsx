@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Plus, Image as ImageIcon, X, Loader2, DollarSign } from "lucide-react";
 import { createPageUrl } from "@/utils";
-import { generateAlias } from "@/components/utils/aliases";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { getMoodLabel } from "@/components/profile/ProfilePanel";
 
 function CreateListingModal({ onClose, onCreated, currentUser }) {
   const [title, setTitle] = useState("");
