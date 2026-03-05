@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, Image, Send, BarChart2, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { generateAlias } from "@/components/utils/aliases";
+import { getMoodLabel } from "@/components/profile/ProfilePanel";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice", "events"];
 
