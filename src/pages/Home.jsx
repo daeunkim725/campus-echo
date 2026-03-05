@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Plus } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import PostCard from "@/components/feed/PostCard";
 import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
@@ -15,7 +16,12 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
+    base44.auth.me().then(u => {
+      setCurrentUser(u);
+      if (!u?.school_verified) {
+        window.location.href = createPageUrl("Onboarding");
+      }
+    }).catch(() => base44.auth.redirectToLogin(createPageUrl("Home")));
   }, []);
 
   const fetchPosts = async () => {
