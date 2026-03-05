@@ -119,9 +119,16 @@ export default function PostDetail() {
   }
 
   const userId = currentUser?.id || "anon";
+  const isOwner = post.created_by === currentUser?.email;
   const votedUp = post.voted_up_by?.includes(userId);
   const votedDown = post.voted_down_by?.includes(userId);
   const timeAgo = post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : "";
+
+  const handleDelete = async () => {
+    await base44.entities.Post.update(post.id, { deleted: true });
+    setPost({ ...post, deleted: true });
+    setShowMenu(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
