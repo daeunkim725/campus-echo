@@ -4,7 +4,6 @@ import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, T
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
@@ -22,7 +21,7 @@ const categoryColors = {
   events: "bg-indigo-50 text-indigo-600",
 };
 
-export default function PostCard({ post, currentUser, onUpdate }) {
+export default function PostCard({ post, currentUser, onUpdate, schoolConfig: propSchoolConfig }) {
   const [loading, setLoading] = useState(false);
   const [localPost, setLocalPost] = useState(post);
   const [showMenu, setShowMenu] = useState(false);
@@ -33,11 +32,11 @@ export default function PostCard({ post, currentUser, onUpdate }) {
   const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
-
-  const schoolConfig = getSchoolConfig(currentUser?.school);
-  const tokens = useThemeTokens(schoolConfig);
-  const primary = tokens.primary;
-  const primaryLight = tokens.primaryLight;
+  
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
 
   const handleVote = async (e, type) => {
     e.stopPropagation();
@@ -109,12 +108,12 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {Array.from(localPost.author_alias || "A")[0]}
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] shadow-sm"
+              style={{ backgroundColor: primaryLight }}>
+              {getAliasEmoji(localPost.author_alias)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>
@@ -199,8 +198,9 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                   key={i}
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
-                  className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
-                    }`}
+                  className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
+                    hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
+                  }`}
                   style={myVote ? { borderColor: primary, color: primary } : {}}
                 >
                   {hasVotedPoll && (
@@ -219,23 +219,19 @@ export default function PostCard({ post, currentUser, onUpdate }) {
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="flex items-center gap-3 text-xs text-slate-600 mb-2 flex-wrap">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-slate-400" />
-              <span>{localPost.event_date}</span>
+          <div className="bg-slate-50 rounded-xl p-3 mb-3 space-y-1.5 border border-slate-100">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <Calendar className="w-4 h-4 text-slate-400" />
+              <span className="font-medium">{localPost.event_date}</span>
             </div>
-            {localPost.event_time && (
-              <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-slate-400" />
-                <span>{localPost.event_time}</span>
-              </div>
-            )}
-            {localPost.event_location && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-slate-400" />
-                <span>{localPost.event_location}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <Clock className="w-4 h-4 text-slate-400" />
+              <span>{localPost.event_time}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <MapPin className="w-4 h-4 text-slate-400" />
+              <span>{localPost.event_location}</span>
+            </div>
           </div>
         )}
 

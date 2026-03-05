@@ -4,7 +4,6 @@ import { Plus, Image as ImageIcon, X, Loader2, DollarSign } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
@@ -94,11 +93,11 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
           </div>
 
           {image &&
-            <div className="relative inline-block mt-2">
+          <div className="relative inline-block mt-2">
               <img src={URL.createObjectURL(image)} alt="Preview" className="h-32 rounded-xl object-cover" />
               <button
-                onClick={() => setImage(null)}
-                className="absolute -top-2 -right-2 bg-slate-800 text-white p-1 rounded-full shadow-md">
+              onClick={() => setImage(null)}
+              className="absolute -top-2 -right-2 bg-slate-800 text-white p-1 rounded-full shadow-md">
 
                 <X className="w-3 h-3" />
               </button>
@@ -114,7 +113,7 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
               onClick={handleSubmit}
               disabled={!title.trim() || !description.trim() || !price || loading}
               className="px-6 py-2.5 rounded-full text-white font-semibold text-sm disabled:opacity-40 flex items-center gap-2 hover:opacity-90"
-              style={{ backgroundColor: getSchoolConfig(currentUser?.school)?.light?.primary || "#7C3AED" }}>
+              style={{ backgroundColor: getSchoolConfig(currentUser?.school)?.primary || "#7C3AED" }}>
 
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               List Item
@@ -131,7 +130,7 @@ function ListingCard({ listing }) {
     <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]" style={{ backgroundColor: getSchoolConfig(listing.school)?.light?.primaryLight || "#EDE9FE" }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]" style={{ backgroundColor: getSchoolConfig(listing.school)?.primaryLight || "#EDE9FE" }}>
             {getAliasEmoji(listing.author_alias)}
           </div>
           <div>
@@ -148,7 +147,7 @@ function ListingCard({ listing }) {
       <p className="text-slate-600 text-sm whitespace-pre-wrap mb-4">{listing.description}</p>
 
       {listing.image_url &&
-        <div className="mb-4">
+      <div className="mb-4">
           <img src={listing.image_url} alt="Listing" className="w-full max-h-80 object-cover rounded-xl border border-slate-100" />
         </div>
       }
@@ -165,9 +164,8 @@ export default function Market() {
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const configSchoolCode = schoolCode || currentUser?.school;
+  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
-  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then((u) => {
@@ -198,35 +196,35 @@ export default function Market() {
     }
   };
 
-  useEffect(() => { fetchListings(); }, [configSchoolCode]);
+  useEffect(() => {fetchListings();}, [configSchoolCode]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
       {schoolCode ?
-        <SchoolTopBar
-          currentUser={currentUser}
-          onUserUpdate={(u) => setCurrentUser(u)}
-          onPost={() => setShowCreate(true)}
-          activePage="market"
-          schoolConfig={schoolConfig}
-          schoolCode={schoolCode} /> :
+      <SchoolTopBar
+        currentUser={currentUser}
+        onUserUpdate={(u) => setCurrentUser(u)}
+        onPost={() => setShowCreate(true)}
+        activePage="market"
+        schoolConfig={schoolConfig}
+        schoolCode={schoolCode} /> :
 
 
-        <TopBar
-          currentUser={currentUser}
-          onUserUpdate={(u) => setCurrentUser(u)}
-          onPost={() => setShowCreate(true)}
-          postLabel="Sell"
-          activePage="market"
-          schoolConfig={schoolConfig} />
+      <TopBar
+        currentUser={currentUser}
+        onUserUpdate={(u) => setCurrentUser(u)}
+        onPost={() => setShowCreate(true)}
+        postLabel="Sell"
+        activePage="market"
+        schoolConfig={schoolConfig} />
 
       }
 
       {/* Feed */}
       <div className="max-w-xl mx-auto px-4 py-6 space-y-4">
         {loading ?
-          Array(3).fill(0).map((_, i) =>
-            <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
+        Array(3).fill(0).map((_, i) =>
+        <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-slate-200" />
@@ -240,31 +238,31 @@ export default function Market() {
               </div>
               <div className="h-40 bg-slate-200 rounded-xl w-full" />
             </div>
-          ) :
-          listings.length === 0 ?
-            <div className="text-center py-20">
-              <div className="text-5xl mb-4">🛍️</div>
-              <p className="text-slate-500 font-medium">No items for sale yet</p>
-              <p className="text-slate-400 text-sm mt-1">Be the first to list something!</p>
-              <button
-                onClick={() => setShowCreate(true)} className="text-white mt-4 px-6 py-2.5 text-sm font-semibold rounded-full transition-all hover:opacity-90"
-                style={{ backgroundColor: tokens.primary }}>
+        ) :
+        listings.length === 0 ?
+        <div className="text-center py-20">
+            <div className="text-5xl mb-4">🛍️</div>
+            <p className="text-slate-500 font-medium">No items for sale yet</p>
+            <p className="text-slate-400 text-sm mt-1">Be the first to list something!</p>
+            <button
+            onClick={() => setShowCreate(true)} className="text-white mt-4 px-6 py-2.5 text-sm font-semibold rounded-full transition-all hover:opacity-90"
+            style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}>
 
 
-                Sell an item
-              </button>
-            </div> :
+              Sell an item
+            </button>
+          </div> :
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {listings.map((listing) =>
-                <ListingCard key={listing.id} listing={listing} />
-              )}
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {listings.map((listing) =>
+          <ListingCard key={listing.id} listing={listing} />
+          )}
+          </div>
         }
       </div>
 
       {showCreate &&
-        <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} />
+      <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} />
       }
     </div>);
 

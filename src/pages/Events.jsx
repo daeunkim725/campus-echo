@@ -6,11 +6,6 @@ import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import EventFilterPanel from "@/components/events/EventFilterPanel";
-import EventCalendarView from "@/components/events/EventCalendarView";
-import { Filter, Calendar as CalendarIcon } from "lucide-react";
-import { format, parseISO, isAfter, isBefore } from "date-fns";
 
 export default function Events() {
   const params = new URLSearchParams(window.location.search);
@@ -20,19 +15,9 @@ export default function Events() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
-  const [showCalendarView, setShowCalendarView] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [filters, setFilters] = useState({
-    startDate: "",
-    endDate: "",
-    locationType: "all",
-    interests: []
-  });
 
-  const configSchoolCode = schoolCode || currentUser?.school;
+  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
-  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -71,37 +56,8 @@ export default function Events() {
     fetchPosts();
   }, [configSchoolCode]);
 
-  // Apply filters
-  const filteredPosts = posts.filter(post => {
-    // Location type filter
-    if (filters.locationType !== "all" && post.event_location_type !== filters.locationType) {
-      return false;
-    }
-
-    // Interest categories filter
-    if (filters.interests.length > 0) {
-      const postCategories = post.event_interest_categories || [];
-      if (!filters.interests.some(cat => postCategories.includes(cat))) {
-        return false;
-      }
-    }
-
-    // Calendar date filter
-    if (selectedDate && post.event_date) {
-      const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-      const postDateStr = format(parseISO(post.event_date), "yyyy-MM-dd");
-      if (selectedDateStr !== postDateStr) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-
-  const hasActiveFilters = filters.locationType !== "all" || filters.interests.length > 0;
-
   return (
-    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
       {schoolCode ? (
         <SchoolTopBar
           currentUser={currentUser}
@@ -122,48 +78,7 @@ export default function Events() {
         />
       )}
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-        {/* Filter and View Toggle Buttons */}
-        <div className="flex gap-2 sticky top-20 z-40">
-          <button
-            onClick={() => setShowFilterPanel(true)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${hasActiveFilters
-                ? "text-white shadow-md"
-                : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
-              }`}
-            style={hasActiveFilters ? { backgroundColor: tokens.primary } : {}}
-          >
-            <Filter className="w-4 h-4" />
-            Filters {hasActiveFilters && <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">Active</span>}
-          </button>
-
-          <button
-            onClick={() => setShowCalendarView(!showCalendarView)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${showCalendarView
-                ? "text-white shadow-md"
-                : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
-              }`}
-            style={showCalendarView ? { backgroundColor: tokens.primary } : {}}
-          >
-            <CalendarIcon className="w-4 h-4" />
-            Calendar
-          </button>
-        </div>
-
-        {/* Calendar View */}
-        {showCalendarView && (
-          <div className="sticky top-36 z-30">
-            <EventCalendarView
-              events={posts}
-              onSelectDate={(date) => {
-                setSelectedDate(selectedDate && format(selectedDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd") ? null : date);
-              }}
-              schoolConfig={schoolConfig}
-            />
-          </div>
-        )}
-
-        {/* Events List */}
+      <div className="max-w-xl mx-auto px-4 py-6 space-y-3">
         {loading ? (
           Array(5).fill(0).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
@@ -180,40 +95,25 @@ export default function Events() {
               </div>
             </div>
           ))
-        ) : filteredPosts.length === 0 ? (
+        ) : posts.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-4">📅</div>
-            <p className="text-slate-500 font-medium">{hasActiveFilters ? "No events match your filters" : "No events yet"}</p>
-            <p className="text-slate-400 text-sm mt-1">
-              {hasActiveFilters ? "Try adjusting your filters" : "Be the first to post an event!"}
-            </p>
-            {!hasActiveFilters && (
-              <button
-                onClick={() => setShowCreate(true)}
-                className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
-                style={{ backgroundColor: tokens.primary }}
-              >
-                Create an event
-              </button>
-            )}
+            <p className="text-slate-500 font-medium">No events yet</p>
+            <p className="text-slate-400 text-sm mt-1">Be the first to post an event!</p>
+            <button
+              onClick={() => setShowCreate(true)}
+              className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
+              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+            >
+              Create an event
+            </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {filteredPosts.map(post => (
-              <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} />
-            ))}
-          </div>
+          posts.map(post => (
+            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} schoolConfig={schoolConfig} />
+          ))
         )}
       </div>
-
-      {showFilterPanel && (
-        <EventFilterPanel
-          filters={filters}
-          onFilterChange={setFilters}
-          schoolConfig={schoolConfig}
-          onClose={() => setShowFilterPanel(false)}
-        />
-      )}
 
       {showCreate && (
         <CreatePostModal

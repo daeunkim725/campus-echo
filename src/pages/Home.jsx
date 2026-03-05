@@ -6,7 +6,6 @@ import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -17,8 +16,8 @@ export default function Home() {
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const schoolConfig = getSchoolConfig(currentUser?.school);
-  const tokens = useThemeTokens(schoolConfig);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = getSchoolConfig(effectiveSchool);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -66,7 +65,7 @@ export default function Home() {
   useEffect(() => { fetchPosts(); }, [filters]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
       <TopBar
         currentUser={currentUser}
         onUserUpdate={u => setCurrentUser(u)}
@@ -108,20 +107,20 @@ export default function Home() {
             <button
               onClick={() => setShowCreate(true)}
               className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-all hover:opacity-90"
-              style={{ backgroundColor: tokens.primary }}
+              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
             >
               Create a post
             </button>
           </div>
         ) : (
           posts.map(post => (
-            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} />
+            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} schoolConfig={schoolConfig} />
           ))
         )}
       </div>
 
       {showCreate && (
-        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchPosts} currentUser={currentUser} schoolConfig={schoolConfig} />
+        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchPosts} currentUser={currentUser} />
       )}
     </div>
   );

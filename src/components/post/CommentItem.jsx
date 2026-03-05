@@ -4,7 +4,6 @@ import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 
@@ -22,10 +21,10 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content || "");
-  const schoolConfig = getSchoolConfig(currentUser?.school);
-  const tokens = useThemeTokens(schoolConfig);
-  const primary = tokens.primary;
-  const primaryLight = tokens.primaryLight;
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = getSchoolConfig(effectiveSchool);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
   const votedUp = comment.voted_up_by?.includes(userId);
 
   const handleUpvote = async () => {
@@ -48,7 +47,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const handleReply = async () => {
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
-
+    
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
     const color = primary;
 
@@ -94,14 +93,14 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     <div className={depth > 0 ? "ml-8 border-l-2 border-slate-100 pl-4" : ""}>
       <div className="flex gap-3 py-3">
         <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
-          style={{ backgroundColor: primary }}
+          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[15px]"
+          style={{ backgroundColor: primaryLight }}
         >
           {getAliasEmoji(comment.author_alias)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm font-semibold text-slate-800 capitalize">{comment.author_alias}</span>
+            <span className="text-sm font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
             <span className="text-xs text-slate-400">{timeAgo}</span>
             {isOwner && !comment.deleted && (
               <div className="relative ml-auto">
@@ -150,8 +149,9 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           <div className="flex items-center gap-3 mt-2">
             <button
               onClick={handleUpvote}
-              className={`flex items-center gap-1 text-xs font-medium transition-colors ${votedUp ? "" : "text-slate-400 hover:text-slate-600"
-                }`}
+              className={`flex items-center gap-1 text-xs font-medium transition-colors ${
+                votedUp ? "" : "text-slate-400 hover:text-slate-600"
+              }`}
               style={votedUp ? { color: primary } : {}}
             >
               <ArrowUp className="w-3.5 h-3.5" />
@@ -173,19 +173,19 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               {gifUrl && (
                 <div className="relative inline-block bg-slate-100 rounded-xl overflow-hidden border border-slate-200 self-start">
                   <img src={stillUrl} alt="selected gif" className="h-24 object-cover" />
-                  <button onClick={() => { setGifUrl(null); setStillUrl(null); }} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+                  <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {showGiphy && (
-                <GiphyBrowser
+                <GiphyBrowser 
                   onSelect={(gif) => {
                     setGifUrl(gif.gif_url);
                     setStillUrl(gif.still_url);
                     setShowGiphy(false);
-                  }}
-                  onClose={() => setShowGiphy(false)}
+                  }} 
+                  onClose={() => setShowGiphy(false)} 
                 />
               )}
               <div className="flex gap-2">
@@ -207,7 +207,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                   onClick={handleReply}
                   disabled={(!replyText.trim() && !gifUrl) || loading}
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-white disabled:opacity-40 transition-all hover:opacity-90 self-center flex-shrink-0"
-                  style={{ backgroundColor: comment.author_color || primary }}
+                  style={{ backgroundColor: primary }}
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>
