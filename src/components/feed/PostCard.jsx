@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
@@ -204,6 +204,24 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               );
             })}
             <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
+          </div>
+        )}
+
+        {/* Event Details */}
+        {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
+          <div className="bg-slate-50 rounded-xl p-3 mb-3 space-y-1.5 border border-slate-100">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <Calendar className="w-4 h-4 text-slate-400" />
+              <span className="font-medium">{localPost.event_date}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <Clock className="w-4 h-4 text-slate-400" />
+              <span>{localPost.event_time}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <MapPin className="w-4 h-4 text-slate-400" />
+              <span>{localPost.event_location}</span>
+            </div>
           </div>
         )}
 

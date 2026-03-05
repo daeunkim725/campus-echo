@@ -5,6 +5,7 @@ import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
+import SchoolTopBar from "@/components/feed/SchoolTopBar";
 
 function CreateListingModal({ onClose, onCreated, currentUser }) {
   const [title, setTitle] = useState("");
@@ -153,20 +154,29 @@ function ListingCard({ listing }) {
 }
 
 export default function Market() {
+  const params = new URLSearchParams(window.location.search);
+  const schoolCode = params.get("school");
+
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const schoolConfig = getSchoolConfig(currentUser?.school);
+  
+  const configSchoolCode = schoolCode || currentUser?.school;
+  const schoolConfig = getSchoolConfig(configSchoolCode);
 
   useEffect(() => {
     base44.auth.me().then(u => {
       setCurrentUser(u);
       if (!u?.school_verified && u?.role !== 'admin') {
         window.location.href = createPageUrl("Onboarding");
+        return;
       }
-    }).catch(() => base44.auth.redirectToLogin(createPageUrl("Market")));
-  }, []);
+      if (u?.role !== "admin" && u?.school !== schoolCode && schoolCode) {
+        window.location.href = createPageUrl("Market") + `?school=${u.school}`;
+      }
+    }).catch(() => base44.auth.redirectToLogin(createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")));
+  }, [schoolCode]);
 
   const fetchListings = async () => {
     setLoading(true);
@@ -174,8 +184,8 @@ export default function Market() {
       let data = await base44.entities.MarketListing.list("-created_date", 100);
 
       // Only show listings from user's school community
-      if (currentUser?.school && currentUser.role !== 'admin') {
-        data = data.filter(l => !l.school || l.school === "all" || l.school === currentUser.school);
+      if (configSchoolCode) {
+        data = data.filter(l => !l.school || l.school === "all" || l.school === configSchoolCode);
       }
 
       setListings(data);
@@ -184,18 +194,29 @@ export default function Market() {
     }
   };
 
-  useEffect(() => { fetchListings(); }, [currentUser]);
+  useEffect(() => { fetchListings(); }, [configSchoolCode]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
-      <TopBar
-        currentUser={currentUser}
-        onUserUpdate={u => setCurrentUser(u)}
-        onPost={() => setShowCreate(true)}
-        postLabel="Sell"
-        activePage="market"
-        schoolConfig={schoolConfig}
-      />
+      {schoolCode ? (
+        <SchoolTopBar
+          currentUser={currentUser}
+          onUserUpdate={u => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          activePage="market"
+          schoolConfig={schoolConfig}
+          schoolCode={schoolCode}
+        />
+      ) : (
+        <TopBar
+          currentUser={currentUser}
+          onUserUpdate={u => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          postLabel="Sell"
+          activePage="market"
+          schoolConfig={schoolConfig}
+        />
+      )}
 
       {/* Feed */}
       <div className="max-w-xl mx-auto px-4 py-6 space-y-4">

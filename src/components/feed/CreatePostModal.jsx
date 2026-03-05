@@ -23,6 +23,9 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -46,11 +49,14 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
   };
 
   // Title is always required; content optional for text posts
-  const isValid = title.trim().length > 0 && (
+  let isValid = title.trim().length > 0 && (
     postType === "text"
       ? title.trim().length <= 200
       : pollQuestion.trim() && pollOptions.filter(o => o.trim()).length >= 2
   );
+  if (isEvent) {
+    isValid = isValid && eventDate && eventTime && eventLocation.trim();
+  }
 
   const handleSubmit = async () => {
     if (!isValid) return;
@@ -83,6 +89,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
       voted_down_by: [],
     };
 
+    if (isEvent) {
+      postData.event_date = eventDate;
+      postData.event_time = eventTime;
+      postData.event_location = eventLocation.trim();
+    }
+
     if (postType === "poll") {
       postData.poll_question = pollQuestion.trim();
       postData.poll_options = pollOptions
@@ -112,6 +124,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
         <div className="overflow-y-auto flex-1 p-6 space-y-5">
 
           {/* Post Type Toggle */}
+          {!isEvent && (
           <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
             <button
               onClick={() => setPostType("text")}
@@ -126,6 +139,25 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               <BarChart2 className="w-3.5 h-3.5" /> Poll
             </button>
           </div>
+          )}
+
+          {/* Event Details */}
+          {isEvent && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Date <span className="text-red-400">*</span></p>
+                <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventDate ? primary : undefined }} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Time <span className="text-red-400">*</span></p>
+                <input type="time" value={eventTime} onChange={e => setEventTime(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventTime ? primary : undefined }} />
+              </div>
+              <div className="col-span-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Location <span className="text-red-400">*</span></p>
+                <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={e => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-violet-300" style={{ borderColor: eventLocation ? primary : undefined }} />
+              </div>
+            </div>
+          )}
 
           {/* Title (mandatory) */}
           <div>
