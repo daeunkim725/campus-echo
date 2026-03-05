@@ -17,6 +17,7 @@ export default function PostDetail() {
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [commentSort, setCommentSort] = useState("best");
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
