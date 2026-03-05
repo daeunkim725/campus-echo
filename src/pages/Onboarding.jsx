@@ -39,7 +39,7 @@ export default function Onboarding() {
   useEffect(() => {
     base44.auth.me().then(u => {
       setCurrentUser(u);
-      if (u?.school_verified) {
+      if (u?.school_verified || u?.role === 'admin') {
         window.location.href = createPageUrl("Home");
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Onboarding")));

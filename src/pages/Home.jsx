@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     base44.auth.me().then(u => {
       setCurrentUser(u);
-      if (!u?.school_verified) {
+      if (!u?.school_verified && u?.role !== 'admin') {
         window.location.href = createPageUrl("Onboarding");
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Home")));
@@ -59,11 +59,17 @@ export default function Home() {
       <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-violet-600 flex items-center justify-center">
-                <span className="text-white font-black text-sm">F</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-violet-600 flex items-center justify-center">
+                  <span className="text-white font-black text-sm">F</span>
+                </div>
+                <h1 className="text-xl font-black text-slate-900 tracking-tight">fizz</h1>
               </div>
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">fizz</h1>
+              <div className="flex bg-slate-100 p-1 rounded-lg ml-2">
+                <button className="px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-900">Feed</button>
+                <button onClick={() => window.location.href = createPageUrl("Market")} className="px-3 py-1 text-sm font-medium text-slate-500 hover:text-slate-700 rounded-md transition-colors">Market</button>
+              </div>
             </div>
             <button
               onClick={() => setShowCreate(true)}
