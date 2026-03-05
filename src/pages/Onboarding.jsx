@@ -222,6 +222,41 @@ export default function Onboarding() {
             </div>
           )}
 
+          {/* Step: Choose Mood */}
+          {step === "mood" && (
+            <div>
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center mb-4">
+                  <Smile className="w-6 h-6 text-violet-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-1">How are you feeling?</h2>
+                <p className="text-slate-500 text-sm">Pick your current vibe — this will be your anonymous identity. You can change it anytime.</p>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {MOODS.map(m => (
+                  <button
+                    key={m.value}
+                    onClick={() => setSelectedMood(m.value)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                      selectedMood === m.value
+                        ? "bg-violet-600 text-white border-violet-600 shadow-sm"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-violet-300"
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={handleMoodSelect}
+                disabled={!selectedMood || loading}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600 text-white font-semibold text-sm hover:bg-violet-700 disabled:opacity-40 transition-all"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Enter fizz</>}
+              </button>
+            </div>
+          )}
+
           {/* Step: Enter Code */}
           {step === "code" && (
             <div>
