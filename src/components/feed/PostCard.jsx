@@ -99,14 +99,14 @@ export default function PostCard({ post, currentUser, onUpdate }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-sm"
               style={{ backgroundColor: localPost.author_color || "#6C63FF" }}>
               {localPost.author_alias?.charAt(0) || "A"}
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
-              <p className="text-xs text-slate-400">{timeAgo}</p>
+              <p className="text-xs font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-[10px] text-slate-400 leading-tight">{timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">

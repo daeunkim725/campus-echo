@@ -157,14 +157,14 @@ export default function PostDetail() {
       <div className="max-w-xl mx-auto px-4 py-4">
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm"
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
               style={{ backgroundColor: post.author_color || "#6C63FF" }}>
               {post.author_alias?.charAt(0) || "A"}
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
-              <p className="text-xs text-slate-400">{timeAgo}</p>
+              <p className="text-xs font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
+              <p className="text-[10px] text-slate-400 leading-tight">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
               {isOwner && !post.deleted && (
