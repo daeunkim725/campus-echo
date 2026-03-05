@@ -3,10 +3,12 @@ import { Plus } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
   const [showProfile, setShowProfile] = useState(false);
-  const primary = schoolConfig?.primary || "#7C3AED";
+  const tokens = useThemeTokens(schoolConfig);
+  const primary = tokens.primary;
 
   return (
     <>
@@ -18,7 +20,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform active:scale-95"
-                style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}
+                style={{ backgroundColor: tokens.primaryLight }}
                 title="Your profile"
               >
                 {getMoodEmoji(currentUser?.mood)}

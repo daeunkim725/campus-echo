@@ -6,6 +6,7 @@ import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -17,6 +18,7 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const schoolConfig = getSchoolConfig(currentUser?.school);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -64,7 +66,7 @@ export default function Home() {
   useEffect(() => { fetchPosts(); }, [filters]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       <TopBar
         currentUser={currentUser}
         onUserUpdate={u => setCurrentUser(u)}
@@ -106,7 +108,7 @@ export default function Home() {
             <button
               onClick={() => setShowCreate(true)}
               className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-all hover:opacity-90"
-              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+              style={{ backgroundColor: tokens.primary }}
             >
               Create a post
             </button>
@@ -119,7 +121,7 @@ export default function Home() {
       </div>
 
       {showCreate && (
-        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchPosts} currentUser={currentUser} />
+        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchPosts} currentUser={currentUser} schoolConfig={schoolConfig} />
       )}
     </div>
   );

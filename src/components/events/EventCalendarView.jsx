@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, format, parseISO, isSameDay, isBefore, isAfter } from "date-fns";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function EventCalendarView({ events, onSelectDate, schoolConfig }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
+  const tokens = useThemeTokens(schoolConfig);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -89,14 +91,13 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
                 onSelectDate(day);
               }}
               disabled={!isCurrentMonth}
-              className={`aspect-square p-1 rounded-lg text-xs transition-all ${
-                !isCurrentMonth
-                  ? "opacity-40 cursor-default"
-                  : isSelected
+              className={`aspect-square p-1 rounded-lg text-xs transition-all ${!isCurrentMonth
+                ? "opacity-40 cursor-default"
+                : isSelected
                   ? "ring-2 ring-offset-1 hover:opacity-90"
                   : "hover:bg-slate-50 cursor-pointer"
-              }`}
-              style={isSelected ? { "--tw-ring-color": schoolConfig?.primary } : {}}
+                }`}
+              style={isSelected ? { "--tw-ring-color": tokens.primary } : {}}
             >
               <div className="h-full flex flex-col items-center justify-start">
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
@@ -111,7 +112,7 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
                       <div
                         key={i}
                         className="w-1 h-1 rounded-full"
-                        style={{ backgroundColor: schoolConfig?.primary }}
+                        style={{ backgroundColor: tokens.primary }}
                       />
                     ))}
                     {dayEvents.length > 2 && (

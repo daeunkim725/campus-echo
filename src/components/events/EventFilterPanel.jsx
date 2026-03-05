@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MapPin, Tag, X } from "lucide-react";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const INTEREST_CATEGORIES = [
   { id: "social", label: "Social" },
@@ -16,6 +17,7 @@ const INTEREST_CATEGORIES = [
 export default function EventFilterPanel({ filters, onFilterChange, schoolConfig, onClose }) {
   const [locationType, setLocationType] = useState(filters.locationType || "all");
   const [selectedCategories, setSelectedCategories] = useState(filters.interests || []);
+  const tokens = useThemeTokens(schoolConfig);
 
   const handleApply = () => {
     onFilterChange({
@@ -63,7 +65,7 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
           {/* Location Type */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <MapPin className="w-5 h-5" style={{ color: schoolConfig?.primary }} />
+              <MapPin className="w-5 h-5" style={{ color: tokens.primary }} />
               <label className="font-semibold text-slate-900">Location</label>
             </div>
             <div className="flex gap-2">
@@ -71,13 +73,12 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                 <button
                   key={type}
                   onClick={() => setLocationType(type)}
-                  className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${
-                    locationType === type
+                  className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${locationType === type
                       ? "text-white shadow-sm"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
+                    }`}
                   style={{
-                    backgroundColor: locationType === type ? schoolConfig?.primary : undefined
+                    backgroundColor: locationType === type ? tokens.primary : undefined
                   }}
                 >
                   {type === "all" ? "All" : type === "on-campus" ? "On Campus" : "Off Campus"}
@@ -97,13 +98,12 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                 <button
                   key={cat.id}
                   onClick={() => toggleCategory(cat.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    selectedCategories.includes(cat.id)
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${selectedCategories.includes(cat.id)
                       ? "text-white shadow-sm"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
+                    }`}
                   style={{
-                    backgroundColor: selectedCategories.includes(cat.id) ? schoolConfig?.primary : undefined
+                    backgroundColor: selectedCategories.includes(cat.id) ? tokens.primary : undefined
                   }}
                 >
                   {cat.label}
@@ -124,7 +124,7 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
           <button
             onClick={handleApply}
             className="flex-1 px-4 py-2.5 rounded-full text-white font-semibold hover:opacity-90 transition-all"
-            style={{ backgroundColor: schoolConfig?.primary }}
+            style={{ backgroundColor: tokens.primary }}
           >
             Apply Filters
           </button>

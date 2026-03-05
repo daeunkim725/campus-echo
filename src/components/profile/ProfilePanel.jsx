@@ -4,6 +4,7 @@ import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
+import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 
 const MOODS = [
   { value: "happy", label: "Happy 😊" },
@@ -29,12 +30,14 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const [loading, setLoading] = useState(true);
   const [editingMood, setEditingMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState(currentUser?.mood || "");
-  const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains("dark"));
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const primary = schoolConfig?.primary || "#7C3AED";
+  const tokens = useThemeTokens(schoolConfig);
+  const primary = tokens.primary;
+  const { theme, setTheme } = useTheme();
+  const darkMode = theme === "dark";
 
   useEffect(() => {
     fetchMyPosts();
@@ -57,8 +60,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   };
 
   const handleToggleDark = () => {
-    document.documentElement.classList.toggle("dark");
-    setDarkMode(prev => !prev);
+    setTheme(darkMode ? "light" : "dark");
   };
 
   const handleEditPost = async (post) => {
@@ -104,7 +106,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           {/* Avatar + mood */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
-              style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
+              style={{ backgroundColor: tokens.primaryLight }}>
               {getMoodEmoji(currentUser?.mood)}
             </div>
             <div>
@@ -122,11 +124,10 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   <button
                     key={m.value}
                     onClick={() => setSelectedMood(m.value)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                      selectedMood === m.value
-                        ? "text-white border-transparent"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-                    }`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${selectedMood === m.value
+                      ? "text-white border-transparent"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                      }`}
                     style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
                   >
                     {m.label}
@@ -183,7 +184,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Your Posts ({myPosts.length})</p>
           {loading ? (
             <div className="space-y-3">
-              {[1,2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+              {[1, 2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
             </div>
           ) : myPosts.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>

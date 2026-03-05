@@ -4,11 +4,13 @@ import { createPageUrl } from "@/utils";
 import ProfilePanel from "@/components/profile/ProfilePanel";
 import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode }) {
   const [showProfile, setShowProfile] = useState(false);
   const [showSchoolPicker, setShowSchoolPicker] = useState(false);
-  const primary = schoolConfig?.primary || "#7C3AED";
+  const tokens = useThemeTokens(schoolConfig);
+  const primary = tokens.primary;
   const isAdmin = currentUser?.role === "admin";
 
   const navigateToSchool = (code) => {
@@ -26,7 +28,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-sm transition-transform active:scale-95"
-                style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}
+                style={{ backgroundColor: tokens.primaryLight }}
                 title="Your profile"
               >
                 {getMoodEmoji(currentUser?.mood)}

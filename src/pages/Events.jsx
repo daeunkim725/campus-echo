@@ -6,6 +6,7 @@ import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import EventFilterPanel from "@/components/events/EventFilterPanel";
 import EventCalendarView from "@/components/events/EventCalendarView";
 import { Filter, Calendar as CalendarIcon } from "lucide-react";
@@ -31,6 +32,7 @@ export default function Events() {
 
   const configSchoolCode = schoolCode || currentUser?.school;
   const schoolConfig = getSchoolConfig(configSchoolCode);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -99,7 +101,7 @@ export default function Events() {
   const hasActiveFilters = filters.locationType !== "all" || filters.interests.length > 0;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       {schoolCode ? (
         <SchoolTopBar
           currentUser={currentUser}
@@ -125,12 +127,11 @@ export default function Events() {
         <div className="flex gap-2 sticky top-20 z-40">
           <button
             onClick={() => setShowFilterPanel(true)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${
-              hasActiveFilters
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${hasActiveFilters
                 ? "text-white shadow-md"
                 : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
-            }`}
-            style={hasActiveFilters ? { backgroundColor: schoolConfig?.primary } : {}}
+              }`}
+            style={hasActiveFilters ? { backgroundColor: tokens.primary } : {}}
           >
             <Filter className="w-4 h-4" />
             Filters {hasActiveFilters && <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">Active</span>}
@@ -138,12 +139,11 @@ export default function Events() {
 
           <button
             onClick={() => setShowCalendarView(!showCalendarView)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${
-              showCalendarView
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm transition-all whitespace-nowrap ${showCalendarView
                 ? "text-white shadow-md"
                 : "bg-white text-slate-900 shadow-sm border border-slate-200 hover:shadow-md"
-            }`}
-            style={showCalendarView ? { backgroundColor: schoolConfig?.primary } : {}}
+              }`}
+            style={showCalendarView ? { backgroundColor: tokens.primary } : {}}
           >
             <CalendarIcon className="w-4 h-4" />
             Calendar
@@ -191,7 +191,7 @@ export default function Events() {
               <button
                 onClick={() => setShowCreate(true)}
                 className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
-                style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+                style={{ backgroundColor: tokens.primary }}
               >
                 Create an event
               </button>
