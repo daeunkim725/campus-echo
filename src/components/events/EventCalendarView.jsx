@@ -4,7 +4,6 @@ import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, format, parseISO, 
 
 export default function EventCalendarView({ events, onSelectDate, schoolConfig }) {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -33,11 +32,6 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-  };
-
-  const handleSelectDate = (day) => {
-    setSelectedDate(day);
-    onSelectDate(day);
   };
 
   return (
@@ -84,31 +78,24 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
           const isToday = isSameDay(day, new Date());
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
 
-          const isSelected = selectedDate && isSameDay(day, selectedDate);
-
           return (
             <button
               key={idx}
-              onClick={() => handleSelectDate(day)}
+              onClick={() => onSelectDate(day)}
               disabled={!isCurrentMonth}
               className={`aspect-square p-1 rounded-lg text-xs transition-all ${
                 !isCurrentMonth
                   ? "opacity-40 cursor-default"
-                  : isSelected
-                  ? "border-2 hover:opacity-90"
                   : isToday
                   ? "ring-2 ring-offset-1 hover:opacity-90"
                   : "hover:bg-slate-50 cursor-pointer"
               }`}
-              style={isSelected ? { borderColor: schoolConfig?.primary } : isToday ? { "--tw-ring-color": schoolConfig?.primary } : {}}
+              style={isToday ? { "--tw-ring-color": schoolConfig?.primary } : {}}
             >
               <div className="h-full flex flex-col items-center justify-start">
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
                   {day.getDate()}
                 </span>
-                {isToday && (
-                  <span className="text-[9px] text-slate-500">today</span>
-                )}
                 {dayEvents.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center w-full">
                     {dayEvents.slice(0, 2).map((_, i) => (
