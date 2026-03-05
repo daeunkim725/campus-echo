@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 
+
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
   academics: "bg-blue-50 text-blue-600",

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, Image, Send } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { generateAlias } from "@/lib/aliases";
+import { generateAlias } from "@/components/utils/aliases";
 
 const categories = ["general", "academics", "social", "housing", "food", "sports", "rants", "confessions", "advice", "events"];
 
