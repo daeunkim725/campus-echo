@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus, RefreshCw, Flame, Clock, TrendingUp } from "lucide-react";
+import { Plus } from "lucide-react";
 import PostCard from "@/components/feed/PostCard";
-import CategoryFilter from "@/components/feed/CategoryFilter";
+import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 
-const sortOptions = [
-  { key: "hot", label: "Hot", icon: Flame },
-  { key: "new", label: "New", icon: Clock },
-  { key: "top", label: "Top", icon: TrendingUp },
-];
+const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState("all");
-  const [sort, setSort] = useState("new");
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -26,22 +21,26 @@ export default function Home() {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      let data = await base44.entities.Post.list("-created_date", 50);
-      if (category !== "all") {
-        data = data.filter(p => p.category === category);
-      }
-      if (sort === "hot") {
+      let data = await base44.entities.Post.list("-created_date", 100);
+
+      if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
+      if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
+      if (filters.level !== "all") data = data.filter(p => p.academic_level === filters.level);
+
+      if (filters.sort === "hot") {
         data = data.sort((a, b) => ((b.upvotes || 0) + (b.comment_count || 0)) - ((a.upvotes || 0) + (a.comment_count || 0)));
-      } else if (sort === "top") {
+      } else if (filters.sort === "top") {
         data = data.sort((a, b) => ((b.upvotes || 0) - (b.downvotes || 0)) - ((a.upvotes || 0) - (a.downvotes || 0)));
       }
+      // "new" is default (already sorted by -created_date)
+
       setPosts(data);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchPosts(); }, [category, sort]);
+  useEffect(() => { fetchPosts(); }, [filters]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -63,25 +62,7 @@ export default function Home() {
               Post
             </button>
           </div>
-
-          {/* Sort Tabs */}
-          <div className="flex gap-1 mb-3 bg-slate-100 rounded-xl p-1">
-            {sortOptions.map(({ key, label, icon: Icon }) => (
-              <button
-                key={key}
-                onClick={() => setSort(key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  sort === key ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Category Filter */}
-          <CategoryFilter selected={category} onSelect={setCategory} />
+          <FilterDrawer filters={filters} onChange={setFilters} />
         </div>
       </div>
 
@@ -118,23 +99,13 @@ export default function Home() {
           </div>
         ) : (
           posts.map(post => (
-            <PostCard
-              key={post.id}
-              post={post}
-              currentUser={currentUser}
-              onUpdate={fetchPosts}
-            />
+            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} />
           ))
         )}
       </div>
 
-      {/* Create Post Modal */}
       {showCreate && (
-        <CreatePostModal
-          onClose={() => setShowCreate(false)}
-          onCreated={fetchPosts}
-          currentUser={currentUser}
-        />
+        <CreatePostModal onClose={() => setShowCreate(false)} onCreated={fetchPosts} currentUser={currentUser} />
       )}
     </div>
   );
