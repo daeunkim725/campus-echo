@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock, Smile, X } from "lucide-react";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import GiphyBrowser from "@/components/feed/GiphyBrowser";
+import { PlayableGif } from "@/components/ui/PlayableGif";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -29,6 +31,9 @@ export default function PostDetail() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
+  const [gifUrl, setGifUrl] = useState(null);
+  const [stillUrl, setStillUrl] = useState(null);
+  const [showGiphy, setShowGiphy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [commentSort, setCommentSort] = useState("new");
@@ -88,7 +93,7 @@ export default function PostDetail() {
   };
 
   const handleComment = async () => {
-    if (!newComment.trim() || !post) return;
+    if ((!newComment.trim() && !gifUrl) || !post) return;
     setSubmitting(true);
     const seed = (currentUser?.id || "anon") + Date.now();
     const { alias, color } = generateAlias(seed);
@@ -96,6 +101,8 @@ export default function PostDetail() {
     await base44.entities.Comment.create({
       post_id: post.id,
       content: newComment.trim(),
+      gif_url: gifUrl,
+      still_url: stillUrl,
       author_alias: alias,
       author_color: color,
       upvotes: 0,
@@ -104,6 +111,8 @@ export default function PostDetail() {
 
     await base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
     setNewComment("");
+    setGifUrl(null);
+    setStillUrl(null);
     setSubmitting(false);
     fetchData();
   };
@@ -206,11 +215,15 @@ export default function PostDetail() {
             <p className="text-slate-800 text-[15px] leading-relaxed mb-4">{post.content}</p>
           )}
 
-          {post.image_url && (
+          {post.gif_url ? (
+            <div className="mb-4 rounded-xl overflow-hidden bg-slate-100">
+              <PlayableGif gifUrl={post.gif_url} stillUrl={post.still_url} className="w-full max-h-96" />
+            </div>
+          ) : post.image_url ? (
             <div className="mb-4 rounded-xl overflow-hidden">
               <img src={post.image_url} alt="" className="w-full object-cover" />
             </div>
-          )}
+          ) : null}
 
           {/* Event Details */}
           {post.category === "events" && post.event_date && !post.deleted && (
@@ -328,21 +341,48 @@ export default function PostDetail() {
 
       {/* Comment Input (Fixed to bottom) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
-        <div className="max-w-xl mx-auto flex gap-3 items-center">
-          <input
-            type="text"
-            value={newComment}
-            onChange={e => setNewComment(e.target.value)}
-            placeholder="Add a comment anonymously..."
-            className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:border-violet-300 focus:bg-white transition-colors"
-            onKeyDown={e => e.key === 'Enter' && handleComment()}
-          />
-          <button
-            onClick={handleComment}
-            disabled={!newComment.trim() || submitting}
-            className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
-            style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
-          >
+        <div className="max-w-xl mx-auto">
+          {gifUrl && (
+            <div className="relative inline-block mb-3 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+              <img src={stillUrl} alt="selected gif" className="h-32 object-cover" />
+              <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          <div className="flex gap-2 items-center relative">
+            {showGiphy && (
+              <GiphyBrowser 
+                onSelect={(gif) => {
+                  setGifUrl(gif.gif_url);
+                  setStillUrl(gif.still_url);
+                  setShowGiphy(false);
+                }} 
+                onClose={() => setShowGiphy(false)} 
+              />
+            )}
+            
+            <button
+              onClick={() => setShowGiphy(!showGiphy)}
+              className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
+            >
+              <Smile className="w-5 h-5" />
+            </button>
+            
+            <input
+              type="text"
+              value={newComment}
+              onChange={e => setNewComment(e.target.value)}
+              placeholder="Add a comment anonymously..."
+              className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:border-violet-300 focus:bg-white transition-colors"
+              onKeyDown={e => e.key === 'Enter' && handleComment()}
+            />
+            <button
+              onClick={handleComment}
+              disabled={(!newComment.trim() && !gifUrl) || submitting}
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
+              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+            >
             {submitting ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
