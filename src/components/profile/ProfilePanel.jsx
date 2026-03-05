@@ -103,9 +103,9 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
           {/* Avatar + mood */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {getMoodLabel(currentUser?.mood)?.charAt(0) || "?"}
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
+              style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
+              {getMoodEmoji(currentUser?.mood)}
             </div>
             <div>
               <p className="font-bold text-slate-900 text-base">{getMoodLabel(currentUser?.mood)}</p>
