@@ -425,9 +425,9 @@ export default function PostDetail() {
             
             <button
               onClick={() => setShowGiphy(!showGiphy)}
-              className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
             >
-              <Smile className="w-5 h-5" />
+              <Smile className="w-4 h-4" />
             </button>
             
             <input
@@ -435,7 +435,7 @@ export default function PostDetail() {
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
               placeholder="Add a comment anonymously..."
-              className="flex-1 bg-slate-100 text-[13px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-2.5 rounded-full border border-slate-200 focus:bg-white transition-colors"
+              className="flex-1 bg-slate-100 text-[13px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-2 rounded-full border border-slate-200 focus:bg-white transition-colors"
               onKeyDown={e => e.key === 'Enter' && handleComment()}
               onFocus={(e) => e.target.style.borderColor = primary}
               onBlur={(e) => e.target.style.borderColor = ""}
@@ -443,13 +443,13 @@ export default function PostDetail() {
             <button
               onClick={handleComment}
               disabled={(!newComment.trim() && !gifUrl) || submitting}
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
               style={{ backgroundColor: primary }}
             >
               {submitting ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <Send className="w-4 h-4 ml-0.5" />
+                <Send className="w-3.5 h-3.5 ml-0.5" />
               )}
             </button>
           </div>
