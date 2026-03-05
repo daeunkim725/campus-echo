@@ -4,6 +4,7 @@ import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
+import { getSchoolTheme } from "@/components/utils/schoolConfig";
 
 const MOODS = [
   { value: "happy", label: "Happy 😊" },
