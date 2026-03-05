@@ -109,10 +109,17 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
         }}
       >
         {/* Header */}
-        <div className="p-5 border-b border-slate-100" style={{ borderTopColor: primary, borderTopWidth: 4 }}>
+        <div className="p-5 border-b transition-colors duration-300" style={{ 
+          borderTopColor: primary, 
+          borderTopWidth: 4,
+          borderBottomColor: darkMode ? "#2A3139" : "rgb(226, 232, 240)"
+        }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900">Your Profile</h2>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+            <h2 className="text-lg font-bold transition-colors duration-300" style={{ color: darkMode ? schoolConfig?.darkText : "rgb(15, 23, 42)" }}>Your Profile</h2>
+            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300" style={{ 
+              backgroundColor: darkMode ? schoolConfig?.darkBg : "rgb(241, 245, 249)",
+              color: darkMode ? "#8B91A1" : "rgb(100, 116, 139)"
+            }}>
               <X className="w-4 h-4" />
             </button>
           </div>
