@@ -9,6 +9,7 @@ import EditPostModal from "@/components/feed/EditPostModal";
 import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
