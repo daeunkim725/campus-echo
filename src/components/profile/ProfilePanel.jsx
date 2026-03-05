@@ -98,7 +98,8 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-sm bg-white h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left"
+        className="relative w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left transition-colors duration-200"
+        style={{ backgroundColor: surface, color: text }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
