@@ -50,6 +50,7 @@ export default function Onboarding() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedMood, setSelectedMood] = useState("");
 
   useEffect(() => {
     base44.auth.me().then(u => {
