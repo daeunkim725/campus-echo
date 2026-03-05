@@ -296,5 +296,6 @@ export default function PostDetail() {
         onSaved={() => { setShowEdit(false); fetchData(); }}
       />
     )}
+    </>
   );
 }
