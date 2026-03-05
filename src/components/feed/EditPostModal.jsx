@@ -75,7 +75,9 @@ export default function EditPostModal({ post, onClose, onSaved, primaryColor = "
               value={content}
               onChange={e => setContent(e.target.value)}
               rows={4}
-              className="w-full resize-none rounded-2xl border border-slate-200 p-4 text-slate-800 placeholder:text-slate-400 text-[15px] focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all"
+              className="w-full resize-none rounded-2xl border border-slate-200 p-4 text-slate-800 placeholder:text-slate-400 text-[15px] focus:outline-none transition-all"
+              onFocus={(e) => e.target.style.borderColor = primaryColor}
+              onBlur={(e) => e.target.style.borderColor = ""}
             />
           </div>
         </div>
@@ -87,7 +89,8 @@ export default function EditPostModal({ post, onClose, onSaved, primaryColor = "
           <button
             onClick={handleSave}
             disabled={!isValid || loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 disabled:opacity-40 transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold disabled:opacity-40 transition-all hover:opacity-90"
+            style={{ backgroundColor: primaryColor }}
           >
             {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
             Save
