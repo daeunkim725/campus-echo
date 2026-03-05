@@ -131,8 +131,8 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               {getMoodEmoji(currentUser?.mood)}
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-base">{getMoodLabel(currentUser?.mood)}</p>
-              <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+              <p className="font-bold text-base transition-colors duration-300" style={{ color: darkMode ? schoolConfig?.darkText : "rgb(15, 23, 42)" }}>{getMoodLabel(currentUser?.mood)}</p>
+              <p className="text-xs transition-colors duration-300" style={{ color: darkMode ? "#8B91A1" : "rgb(148, 163, 184)" }}>{currentUser?.school || "fizz community"}</p>
             </div>
           </div>
 
