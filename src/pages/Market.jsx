@@ -27,7 +27,9 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
         image_url = file_url;
       }
 
-      const { alias, color } = generateAlias(currentUser.id + Date.now());
+      const alias = getMoodLabel(currentUser?.mood) || "Anonymous";
+      const colors = ["#6C63FF","#FF6584","#43B89C","#F4A261","#E76F51","#2A9D8F","#8338EC","#FF006E","#3A86FF","#06D6A0"];
+      const color = colors[Math.abs((currentUser?.id || "").split("").reduce((h,c) => ((h<<5)-h)+c.charCodeAt(0)|0, 0)) % colors.length] || "#6C63FF";
 
       await base44.entities.MarketListing.create({
         title,
