@@ -278,12 +278,12 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           {localPost.category !== "events" && (
             <>
               <button onClick={(e) => handleVote(e, "up")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-                <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowUp className="w-3.5 h-3.5" /><span>{localPost.upvotes || 0}</span>
               </button>
               <button onClick={(e) => handleVote(e, "down")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-                <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowDown className="w-3.5 h-3.5" /><span>{localPost.downvotes || 0}</span>
               </button>
             </>
           )}
@@ -295,25 +295,25 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
                   if (hasVotedBell) handleRemoveInterest();
                   else setShowInterestMenu(!showInterestMenu);
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${hasVotedBell ? "bg-indigo-100 text-indigo-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${hasVotedBell ? "bg-indigo-100 text-indigo-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
               >
-                <Bell className={`w-4 h-4 ${hasVotedBell ? "fill-current" : ""}`} />
+                <Bell className={`w-3.5 h-3.5 ${hasVotedBell ? "fill-current" : ""}`} />
                 <span>{localPost.interested_users?.length || 0}</span>
               </button>
 
               {showInterestMenu && (
-                <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-40">
-                  <p className="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">Remind me</p>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(15);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">15 mins before</button>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(60);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 hour before</button>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(1440);}} className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">1 day before</button>
+                <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36">
+                  <p className="text-[9px] font-bold text-slate-400 px-2.5 py-1 uppercase tracking-wider">Remind me</p>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(15);}} className="w-full text-left px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-50">15 mins before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(60);}} className="w-full text-left px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-50">1 hour before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(1440);}} className="w-full text-left px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-50">1 day before</button>
                 </div>
               )}
             </div>
           )}
           <button onClick={e => e.stopPropagation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
-            <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
+            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0}</span>
           </button>
         </div>
       </div>
