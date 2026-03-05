@@ -130,8 +130,8 @@ function ListingCard({ listing }) {
     <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ backgroundColor: getSchoolConfig(listing.school)?.primary || "#7C3AED" }}>
-            {Array.from(listing.author_alias || "A")[0]}
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]" style={{ backgroundColor: getSchoolConfig(listing.school)?.primaryLight || "#EDE9FE" }}>
+            {getAliasEmoji(listing.author_alias)}
           </div>
           <div>
             <div className="text-sm font-semibold text-slate-900 capitalize">{getCleanAlias(listing.author_alias)}</div>
