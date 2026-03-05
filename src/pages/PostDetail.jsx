@@ -404,7 +404,7 @@ export default function PostDetail() {
       )}
 
       {/* Comment Input (Fixed to bottom) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-2 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
         <div className="max-w-xl mx-auto">
           {gifUrl && (
             <div className="relative inline-block mb-3 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
