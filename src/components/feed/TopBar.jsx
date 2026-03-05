@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Plus } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
+import { getMoodEmoji } from "@/components/utils/moodUtils";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
   const [showProfile, setShowProfile] = useState(false);
