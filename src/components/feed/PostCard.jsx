@@ -112,23 +112,23 @@ export default function PostCard({ post, currentUser, onUpdate }) {
           <div className="flex items-center gap-1.5">
             <div className="flex items-center gap-1.5 flex-wrap justify-end">
               {localPost.department && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 font-medium border border-violet-100">
                   {localPost.department}
                 </span>
               )}
               {localPost.academic_level && localPost.academic_level !== "all" && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
                   {localPost.academic_level}
                 </span>
               )}
               {localPost.category && (
-                <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${categoryColors[localPost.category] || categoryColors.general}`}>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${categoryColors[localPost.category] || categoryColors.general}`}>
                   {localPost.category}
                 </span>
               )}
               {localPost.post_type === "poll" && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
-                  <BarChart2 className="w-3 h-3" /> Poll
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
+                  <BarChart2 className="w-[10px] h-[10px]" /> Poll
                 </span>
               )}
             </div>
