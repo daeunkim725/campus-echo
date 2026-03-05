@@ -33,6 +33,20 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [eventLocation, setEventLocation] = useState("");
+  const [eventType, setEventType] = useState("on-campus");
+  const [eventInterests, setEventInterests] = useState([]);
+
+  const INTEREST_CATEGORIES = [
+    { id: "social", label: "Social" },
+    { id: "sports", label: "Sports" },
+    { id: "academic", label: "Academic" },
+    { id: "cultural", label: "Cultural" },
+    { id: "professional", label: "Professional" },
+    { id: "wellness", label: "Wellness" },
+    { id: "arts", label: "Arts" },
+    { id: "tech", label: "Tech" },
+    { id: "other", label: "Other" }
+  ];
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -75,6 +89,14 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
     isValid = isValid && !!eventDate && !!eventTime && eventLocation.trim().length > 0;
   }
 
+  const toggleInterest = (catId) => {
+    setEventInterests(prev =>
+      prev.includes(catId)
+        ? prev.filter(id => id !== catId)
+        : [...prev, catId]
+    );
+  };
+
   const handleSubmit = async () => {
     if (!isValid) return;
     setLoading(true);
@@ -111,6 +133,8 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
       postData.event_date = eventDate;
       postData.event_time = eventTime;
       postData.event_location = eventLocation.trim();
+      postData.event_type = eventType;
+      postData.event_interests = eventInterests;
     }
 
     if (postType === "poll") {
@@ -173,6 +197,20 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
               <div className="col-span-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Location <span className="text-red-400">*</span></p>
                 <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventLocation ? primary : undefined }} onFocus={(e) => e.target.style.borderColor = primary} onBlur={(e) => e.target.style.borderColor = eventLocation ? primary : ""} />
+              </div>
+              <div className="col-span-2">
+                <div className="flex gap-2">
+                  <button onClick={() => setEventType("on-campus")} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${eventType === "on-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "on-campus" ? primary : undefined }}>On Campus</button>
+                  <button onClick={() => setEventType("off-campus")} className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${eventType === "off-campus" ? "text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`} style={{ backgroundColor: eventType === "off-campus" ? primary : undefined }}>Off Campus</button>
+                </div>
+              </div>
+              <div className="col-span-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Interests</p>
+                <div className="flex flex-wrap gap-2">
+                  {INTEREST_CATEGORIES.map(cat => (
+                    <button key={cat.id} onClick={() => toggleInterest(cat.id)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${eventInterests.includes(cat.id) ? "text-white border-transparent" : "border-slate-200 text-slate-600 hover:border-slate-300"}`} style={{ backgroundColor: eventInterests.includes(cat.id) ? primary : undefined }}>{cat.label}</button>
+                  ))}
+                </div>
               </div>
             </div>
           }

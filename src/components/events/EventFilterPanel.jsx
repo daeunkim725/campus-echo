@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MapPin, Tag, X } from "lucide-react";
+import { MapPin, Tag, X, Calendar as CalendarIcon } from "lucide-react";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const INTEREST_CATEGORIES = [
@@ -17,12 +17,14 @@ const INTEREST_CATEGORIES = [
 export default function EventFilterPanel({ filters, onFilterChange, schoolConfig, onClose }) {
   const [locationType, setLocationType] = useState(filters.locationType || "all");
   const [selectedCategories, setSelectedCategories] = useState(filters.interests || []);
+  const [dateRange, setDateRange] = useState(filters.dateRange || "all");
   const tokens = useThemeTokens(schoolConfig);
 
   const handleApply = () => {
     onFilterChange({
       locationType,
-      interests: selectedCategories
+      interests: selectedCategories,
+      dateRange
     });
     onClose();
   };
@@ -30,9 +32,11 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
   const handleClearFilters = () => {
     setLocationType("all");
     setSelectedCategories([]);
+    setDateRange("all");
     onFilterChange({
       locationType: "all",
-      interests: []
+      interests: [],
+      dateRange: "all"
     });
     onClose();
   };
@@ -61,7 +65,32 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
           </button>
         </div>
 
-        <div className="space-y-6 max-h-[60vh] overflow-y-auto mb-6">
+        <div className="space-y-6 max-h-[60vh] overflow-y-auto mb-6 px-1">
+          {/* Date Range */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarIcon className="w-5 h-5" style={{ color: tokens.primary }} />
+              <label className="font-semibold text-slate-900">Date Range</label>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["all", "today", "this-week", "this-month"].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setDateRange(range)}
+                  className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${dateRange === range
+                      ? "text-white shadow-sm"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    }`}
+                  style={{
+                    backgroundColor: dateRange === range ? tokens.primary : undefined
+                  }}
+                >
+                  {range === "all" ? "All Time" : range === "today" ? "Today" : range === "this-week" ? "This Week" : "This Month"}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Location Type */}
           <div>
             <div className="flex items-center gap-2 mb-3">
