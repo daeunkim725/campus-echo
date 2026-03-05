@@ -18,6 +18,8 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
 
   const userId = currentUser?.id || "anon";
   const schoolConfig = getSchoolConfig(currentUser?.school);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
   const votedUp = comment.voted_up_by?.includes(userId);
 
   const handleUpvote = async () => {
@@ -41,9 +43,8 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
     
-    const schoolConfig = getSchoolConfig(currentUser?.school);
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
-    const color = schoolConfig?.primary || "#7C3AED";
+    const color = primary;
 
     await base44.entities.Comment.create({
       post_id: comment.post_id,
@@ -73,7 +74,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       <div className="flex gap-3 py-3">
         <div
           className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
-          style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+          style={{ backgroundColor: primary }}
         >
           {Array.from(comment.author_alias || "A")[0]}
         </div>
@@ -94,7 +95,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               className={`flex items-center gap-1 text-xs font-medium transition-colors ${
                 votedUp ? "" : "text-slate-400 hover:text-slate-600"
               }`}
-              style={votedUp ? { color: schoolConfig?.primary || "#7C3AED" } : {}}
+              style={votedUp ? { color: primary } : {}}
             >
               <ArrowUp className="w-3.5 h-3.5" />
               {localUpvotes}
@@ -149,7 +150,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                   onClick={handleReply}
                   disabled={(!replyText.trim() && !gifUrl) || loading}
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-white disabled:opacity-40 transition-all hover:opacity-90 self-center flex-shrink-0"
-                  style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+                  style={{ backgroundColor: primary }}
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

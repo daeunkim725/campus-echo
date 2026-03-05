@@ -41,6 +41,8 @@ export default function PostDetail() {
   const [showEdit, setShowEdit] = useState(false);
 
   const schoolConfig = getSchoolConfig(currentUser?.school);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -97,7 +99,7 @@ export default function PostDetail() {
     setSubmitting(true);
     
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
-    const color = schoolConfig?.primary || "#7C3AED";
+    const color = primary;
 
     await base44.entities.Comment.create({
       post_id: post.id,
@@ -129,7 +131,7 @@ export default function PostDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: schoolConfig?.primary || "#7C3AED", borderTopColor: "transparent" }} />
+        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: primary, borderTopColor: "transparent" }} />
       </div>
     );
   }
@@ -138,7 +140,7 @@ export default function PostDetail() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
         <p className="text-slate-500">Post not found</p>
-        <button onClick={() => navigate(-1)} className="mt-3 text-sm font-medium" style={{ color: schoolConfig?.primary || "#7C3AED" }}>Go back</button>
+        <button onClick={() => navigate(-1)} className="mt-3 text-sm font-medium" style={{ color: primary }}>Go back</button>
       </div>
     );
   }
@@ -190,7 +192,7 @@ export default function PostDetail() {
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm shadow-sm"
-              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}>
+              style={{ backgroundColor: primary }}>
               {Array.from(post.author_alias || "A")[0]}
             </div>
             <div>
@@ -248,10 +250,10 @@ export default function PostDetail() {
                     className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
                       hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
                     }`}
-                    style={myVote ? { borderColor: schoolConfig?.primary || "#7C3AED", color: schoolConfig?.primary || "#7C3AED" } : {}}
+                    style={myVote ? { borderColor: primary, color: primary } : {}}
                   >
                     {hasVotedPoll && (
-                      <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" } : {}) }} />
+                      <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: primaryLight } : {}) }} />
                     )}
                     <span className="relative flex items-center justify-between">
                       <span>{opt.text}</span>
@@ -296,7 +298,7 @@ export default function PostDetail() {
           <div className="flex items-center gap-1.5 flex-wrap mb-4">
             {post.department && (
               <span className="text-[11px] px-2 py-0.5 rounded-full font-medium border"
-                style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE", color: schoolConfig?.primary || "#7C3AED", borderColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
+                style={{ backgroundColor: primaryLight, color: primary, borderColor: primaryLight }}>
                 {post.department}
               </span>
             )}
@@ -386,7 +388,7 @@ export default function PostDetail() {
           post={post}
           onClose={() => setShowEdit(false)}
           onSaved={() => { setShowEdit(false); fetchData(); }}
-          primaryColor={schoolConfig?.primary || "#7C3AED"}
+          primaryColor={primary}
         />
       )}
 
@@ -427,14 +429,14 @@ export default function PostDetail() {
               placeholder="Add a comment anonymously..."
               className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:bg-white transition-colors"
               onKeyDown={e => e.key === 'Enter' && handleComment()}
-              onFocus={(e) => e.target.style.borderColor = schoolConfig?.primary || "#7C3AED"}
+              onFocus={(e) => e.target.style.borderColor = primary}
               onBlur={(e) => e.target.style.borderColor = ""}
             />
             <button
               onClick={handleComment}
               disabled={(!newComment.trim() && !gifUrl) || submitting}
               className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
-              style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
+              style={{ backgroundColor: primary }}
             >
               {submitting ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
