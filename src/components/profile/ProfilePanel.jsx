@@ -38,7 +38,15 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
   useEffect(() => {
     fetchMyPosts();
-  }, []);
+    // Apply saved dark mode preference on load
+    if (currentUser?.dark_mode) {
+      document.documentElement.classList.add("dark");
+      setDarkMode(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDarkMode(false);
+    }
+  }, [currentUser?.dark_mode]);
 
   const fetchMyPosts = async () => {
     setLoading(true);
@@ -56,9 +64,13 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
     setSaving(false);
   };
 
-  const handleToggleDark = () => {
+  const handleToggleDark = async () => {
     document.documentElement.classList.toggle("dark");
     setDarkMode(prev => !prev);
+    const newDarkMode = !darkMode;
+    try {
+      await base44.auth.updateMe({ dark_mode: newDarkMode });
+    } catch (e) {}
   };
 
   const handleEditPost = async (post) => {
