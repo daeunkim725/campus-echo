@@ -140,7 +140,7 @@ export default function Events() {
           >
             <Filter className="w-3.5 h-3.5" /> Filters
             {(filters.locationType !== "all" || filters.interests.length > 0 || filters.dateRange !== "all") && (
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tokens.primary }} />
             )}
           </button>
         </div>
