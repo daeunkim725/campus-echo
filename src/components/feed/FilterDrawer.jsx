@@ -42,7 +42,7 @@ const categoryEmojis = {
   rants: "😤", confessions: "🤫", advice: "💡", events: "📅"
 };
 
-export default function FilterDrawer({ filters, onChange }) {
+export default function FilterDrawer({ filters, onChange, userSchool }) {
   const [open, setOpen] = useState(false);
   const [showOtherUnis, setShowOtherUnis] = useState(false);
 
@@ -151,63 +151,37 @@ export default function FilterDrawer({ filters, onChange }) {
               </div>
             </div>
 
-            {/* ETH Zurich Departments */}
-            <div className="mb-4">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">ETH Zurich Departments</p>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => set("department", "all")}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${
-                    filters.department === "all"
-                      ? "bg-violet-600 text-white border-violet-600"
-                      : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
-                  }`}
-                >
-                  All
-                </button>
-                {ETH_DEPTS.map(d => (
+            {/* Department Filter - only show for ETH users */}
+            {userSchool === "ETH" && (
+              <div className="mb-4">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">ETH Zurich Departments</p>
+                <div className="flex gap-2 flex-wrap">
                   <button
-                    key={d.code}
-                    onClick={() => set("department", filters.department === d.code ? "all" : d.code)}
+                    onClick={() => set("department", "all")}
                     className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${
-                      filters.department === d.code
+                      filters.department === "all"
                         ? "bg-violet-600 text-white border-violet-600"
                         : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
                     }`}
                   >
-                    {d.code}
+                    All
                   </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Other Swiss Universities */}
-            <div className="mb-4">
-              <button
-                onClick={() => setShowOtherUnis(!showOtherUnis)}
-                className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
-              >
-                Other Swiss Universities
-                {showOtherUnis ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              </button>
-              {showOtherUnis && (
-                <div className="flex gap-2 flex-wrap">
-                  {OTHER_UNIS.map(u => (
+                  {ETH_DEPTS.map(d => (
                     <button
-                      key={u.code}
-                      onClick={() => set("department", filters.department === u.code ? "all" : u.code)}
+                      key={d.code}
+                      onClick={() => set("department", filters.department === d.code ? "all" : d.code)}
                       className={`px-3 py-1 rounded-full text-xs font-medium transition-all border ${
-                        filters.department === u.code
+                        filters.department === d.code
                           ? "bg-violet-600 text-white border-violet-600"
                           : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
                       }`}
                     >
-                      {u.name}
+                      {d.code}
                     </button>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="flex gap-3 pt-2 border-t border-slate-100">
               <button
