@@ -7,6 +7,7 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
+import { getCleanAlias } from "@/components/utils/moodUtils";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
