@@ -208,14 +208,15 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                       <textarea
                         value={editContent}
                         onChange={e => setEditContent(e.target.value)}
-                        className="w-full text-sm text-slate-700 bg-white border border-slate-200 rounded-xl p-3 resize-none min-h-[80px] focus:outline-none"
+                        className="w-full text-sm rounded-xl p-3 resize-none min-h-[80px] focus:outline-none border transition-colors duration-200"
+                        style={{ backgroundColor: surface, color: text, borderColor: border }}
                       />
                       <div className="flex gap-2 mt-2">
-                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border border-slate-200 text-slate-500">Cancel</button>
+                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border font-medium transition-colors duration-200" style={{ borderColor: border, color: textMuted }}>Cancel</button>
                         <button
                           onClick={() => handleEditPost(post)}
                           disabled={saving}
-                          className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
+                          className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40 transition-colors duration-200"
                           style={{ backgroundColor: primary }}
                         >
                           <Check className="w-3 h-3 inline mr-1" />Save
@@ -224,14 +225,14 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     </div>
                   ) : (
                     <>
-                      <p className={`text-sm mb-2 ${post.deleted ? "text-slate-400 italic" : "text-slate-700"}`}>
+                      <p className={`text-sm mb-2 transition-colors duration-200 ${post.deleted ? "italic" : ""}`} style={{ color: post.deleted ? textMuted : text }}>
                         {post.content}
                       </p>
                       {post.edited && !post.deleted && (
-                        <span className="text-xs text-slate-400 italic">edited</span>
+                        <span className="text-xs italic transition-colors duration-200" style={{ color: textMuted }}>edited</span>
                       )}
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs transition-colors duration-200" style={{ color: textMuted }}>
                           {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
                         </span>
                         {!post.deleted && (
