@@ -288,5 +288,13 @@ export default function PostDetail() {
         </div>
       </div>
     </div>
+
+    {showEdit && (
+      <EditPostModal
+        post={post}
+        onClose={() => setShowEdit(false)}
+        onSaved={() => { setShowEdit(false); fetchData(); }}
+      />
+    )}
   );
 }
