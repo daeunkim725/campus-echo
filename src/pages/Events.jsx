@@ -71,14 +71,6 @@ export default function Events() {
 
   // Apply filters
   const filteredPosts = posts.filter(post => {
-    // Date range filter
-    if (filters.startDate && post.event_date) {
-      if (isBefore(parseISO(post.event_date), parseISO(filters.startDate))) return false;
-    }
-    if (filters.endDate && post.event_date) {
-      if (isAfter(parseISO(post.event_date), parseISO(filters.endDate))) return false;
-    }
-
     // Location type filter
     if (filters.locationType !== "all" && post.event_location_type !== filters.locationType) {
       return false;
@@ -92,9 +84,11 @@ export default function Events() {
       }
     }
 
-    // Date selection filter
+    // Calendar date filter
     if (selectedDate && post.event_date) {
-      if (!format(parseISO(post.event_date), "yyyy-MM-dd").includes(format(selectedDate, "yyyy-MM-dd"))) {
+      const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
+      const postDateStr = format(parseISO(post.event_date), "yyyy-MM-dd");
+      if (selectedDateStr !== postDateStr) {
         return false;
       }
     }
@@ -102,7 +96,7 @@ export default function Events() {
     return true;
   });
 
-  const hasActiveFilters = filters.startDate || filters.endDate || filters.locationType !== "all" || filters.interests.length > 0 || selectedDate;
+  const hasActiveFilters = filters.locationType !== "all" || filters.interests.length > 0;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Calendar, MapPin, Tag, X } from "lucide-react";
-import { format } from "date-fns";
+import { MapPin, Tag, X } from "lucide-react";
 
 const INTEREST_CATEGORIES = [
   { id: "social", label: "Social" },
@@ -15,15 +14,11 @@ const INTEREST_CATEGORIES = [
 ];
 
 export default function EventFilterPanel({ filters, onFilterChange, schoolConfig, onClose }) {
-  const [startDate, setStartDate] = useState(filters.startDate || "");
-  const [endDate, setEndDate] = useState(filters.endDate || "");
   const [locationType, setLocationType] = useState(filters.locationType || "all");
   const [selectedCategories, setSelectedCategories] = useState(filters.interests || []);
 
   const handleApply = () => {
     onFilterChange({
-      startDate,
-      endDate,
       locationType,
       interests: selectedCategories
     });
@@ -31,13 +26,9 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
   };
 
   const handleClearFilters = () => {
-    setStartDate("");
-    setEndDate("");
     setLocationType("all");
     setSelectedCategories([]);
     onFilterChange({
-      startDate: "",
-      endDate: "",
       locationType: "all",
       interests: []
     });
@@ -69,30 +60,6 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
         </div>
 
         <div className="space-y-6 max-h-[60vh] overflow-y-auto mb-6">
-          {/* Date Range */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-5 h-5" style={{ color: schoolConfig?.primary }} />
-              <label className="font-semibold text-slate-900">Date Range</label>
-            </div>
-            <div className="space-y-2">
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2"
-                style={{ "--tw-ring-color": schoolConfig?.primary + "33" }}
-              />
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2"
-                style={{ "--tw-ring-color": schoolConfig?.primary + "33" }}
-              />
-            </div>
-          </div>
-
           {/* Location Type */}
           <div>
             <div className="flex items-center gap-2 mb-3">
