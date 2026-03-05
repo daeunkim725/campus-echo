@@ -18,10 +18,10 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform active:scale-95"
-                style={{ backgroundColor: primary }}
+                style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}
                 title="Your profile"
               >
-                {getMoodLabel(currentUser?.mood)?.charAt(0) || "?"}
+                {getMoodEmoji(currentUser?.mood)}
               </button>
 
               {/* Logo + nav tabs */}
