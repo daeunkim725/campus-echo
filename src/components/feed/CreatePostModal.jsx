@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { X, Image, Send, BarChart2, Plus, Trash2 } from "lucide-react";
+import { X, Image, Send, BarChart2, Plus, Trash2, Smile } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/schoolDepartments";
+import GiphyBrowser from "@/components/feed/GiphyBrowser";
+import { PlayableGif } from "@/components/ui/PlayableGif";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
@@ -22,6 +24,9 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
   const [pollOptions, setPollOptions] = useState(["", ""]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [gifUrl, setGifUrl] = useState(null);
+  const [stillUrl, setStillUrl] = useState(null);
+  const [showGiphy, setShowGiphy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
@@ -32,6 +37,16 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
     if (!file) return;
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+    setGifUrl(null);
+    setStillUrl(null);
+  };
+
+  const handleGifSelect = (gif) => {
+    setGifUrl(gif.gif_url);
+    setStillUrl(gif.still_url);
+    setImageFile(null);
+    setImagePreview(null);
+    setShowGiphy(false);
   };
 
   const addPollOption = () => {
@@ -80,6 +95,8 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
       academic_level: level || null,
       post_type: postType,
       image_url,
+      gif_url: gifUrl,
+      still_url: stillUrl,
       author_alias: alias,
       author_color: color,
       upvotes: 0,
@@ -262,6 +279,14 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
                   </button>
                 </div>
             }
+            {gifUrl && 
+                <div className="relative rounded-xl overflow-hidden">
+                  <PlayableGif gifUrl={gifUrl} stillUrl={stillUrl} className="w-full max-h-48" />
+                  <button onClick={() => {setGifUrl(null);setStillUrl(null);}} className="absolute top-2 right-2 w-7 h-7 bg-black/50 rounded-full flex items-center justify-center text-white">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+            }
             </> :
 
           <div className="space-y-3">
@@ -301,12 +326,22 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 pb-5 pt-3 border-t border-slate-100 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 pb-5 pt-3 border-t border-slate-100 flex-shrink-0 relative">
           {postType === "text" ?
-          <label className="cursor-pointer w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
-              <Image className="w-4 h-4" />
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-            </label> :
+          <div className="flex items-center gap-2">
+            <label className="cursor-pointer w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <Image className="w-4 h-4" />
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            </label>
+            <button 
+                type="button" 
+                onClick={() => setShowGiphy(!showGiphy)} 
+                className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors"
+            >
+                <Smile className="w-4 h-4" />
+            </button>
+            {showGiphy && <GiphyBrowser onSelect={handleGifSelect} onClose={() => setShowGiphy(false)} />}
+          </div> :
           <div />}
 
           <button
