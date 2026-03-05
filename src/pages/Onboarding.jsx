@@ -126,7 +126,10 @@ export default function Onboarding() {
     await base44.auth.updateMe({ mood: selectedMood });
     setLoading(false);
     setStep("done");
-    setTimeout(() => { window.location.href = createPageUrl("Home"); }, 1500);
+    setTimeout(() => {
+      const school = selectedSchool?.code;
+      window.location.href = createPageUrl("SchoolFeed") + (school ? `?school=${school}` : "");
+    }, 1500);
   };
 
   if (step === "done") {
