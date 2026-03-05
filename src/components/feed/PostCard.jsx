@@ -217,7 +217,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Actions */}
         <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
           <button onClick={(e) => handleVote(e, "up")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-violet-100 text-violet-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
             <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
           </button>
           <button onClick={(e) => handleVote(e, "down")}

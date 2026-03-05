@@ -207,7 +207,7 @@ export default function PostDetail() {
             <button
               onClick={() => handleVote("up")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
-                votedUp ? "bg-violet-100 text-violet-600" : "text-slate-400 hover:bg-slate-50"
+                votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
               }`}
             >
               <ArrowUp className="w-4 h-4" />
