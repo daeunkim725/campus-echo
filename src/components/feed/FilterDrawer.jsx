@@ -62,7 +62,8 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
           <select
             value={filters.sort}
             onChange={e => set("sort", e.target.value)}
-            className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-2.5 py-1 pr-6 focus:outline-none focus:border-violet-400 cursor-pointer"
+            className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-2.5 py-1 pr-6 focus:outline-none focus:border-violet-400 cursor-pointer focus:bg-white active:bg-white"
+            style={{ backgroundColor: 'white' }}
           >
             <option value="new">🕐 New</option>
             <option value="hot">🔥 Hot</option>
