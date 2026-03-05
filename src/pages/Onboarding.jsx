@@ -117,8 +117,7 @@ export default function Onboarding() {
     });
 
     setLoading(false);
-    setStep("done");
-    setTimeout(() => { window.location.href = createPageUrl("Home"); }, 2000);
+    setStep("mood");
   };
 
   if (step === "done") {
