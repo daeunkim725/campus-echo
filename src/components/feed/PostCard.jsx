@@ -106,7 +106,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-800">{localPost.author_alias || "Anonymous"}</p>
-              <p className="text-[10px] text-slate-400 leading-tight">{timeAgo}</p>
+              <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">

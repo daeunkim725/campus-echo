@@ -164,7 +164,7 @@ export default function PostDetail() {
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
-              <p className="text-[10px] text-slate-400 leading-tight">{timeAgo}</p>
+              <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
               {isOwner && !post.deleted && (
