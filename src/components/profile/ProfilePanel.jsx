@@ -4,7 +4,6 @@ import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
-import { getSchoolTheme } from "@/components/utils/schoolConfig";
 
 const MOODS = [
   { value: "happy", label: "Happy 😊" },
@@ -35,13 +34,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const schoolName = currentUser?.school || "ETH";
-  const theme = getSchoolTheme(schoolName, darkMode);
-  const primary = theme.primary;
-  const surface = theme.surface;
-  const text = theme.text;
-  const textMuted = theme.textMuted;
-  const border = theme.border;
+  const primary = schoolConfig?.primary || "#7C3AED";
 
   useEffect(() => {
     fetchMyPosts();
@@ -66,8 +59,6 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const handleToggleDark = () => {
     document.documentElement.classList.toggle("dark");
     setDarkMode(prev => !prev);
-    const newTheme = getSchoolTheme(schoolName, !darkMode);
-    window.dispatchEvent(new CustomEvent("themeChange", { detail: { isDark: !darkMode, theme: newTheme } }));
   };
 
   const handleEditPost = async (post) => {
@@ -98,92 +89,89 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-sm h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left transition-colors duration-200"
-        style={{ backgroundColor: surface, color: text }}
+        className="relative w-full max-w-sm bg-white h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 transition-colors duration-200" style={{ borderTopColor: primary, borderTopWidth: 4, borderBottomColor: border, borderBottomWidth: 1 }}>
+        <div className="p-5 border-b border-slate-100" style={{ borderTopColor: primary, borderTopWidth: 4 }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold" style={{ color: text }}>Your Profile</h2>
-            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200" style={{ backgroundColor: `${text}15`, color: textMuted }}>
+            <h2 className="text-lg font-bold text-slate-900">Your Profile</h2>
+            <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Avatar + mood */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-colors duration-200"
-              style={{ backgroundColor: `${primary}25` }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
+              style={{ backgroundColor: schoolConfig?.primaryLight || "#EDE9FE" }}>
               {getMoodEmoji(currentUser?.mood)}
             </div>
             <div>
-              <p className="font-bold text-base" style={{ color: text }}>{getMoodLabel(currentUser?.mood)}</p>
-              <p className="text-xs transition-colors duration-200" style={{ color: textMuted }}>{currentUser?.school || "fizz community"}</p>
+              <p className="font-bold text-slate-900 text-base">{getMoodLabel(currentUser?.mood)}</p>
+              <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
             </div>
           </div>
 
           {/* Change mood */}
           {editingMood ? (
-           <div className="mt-4">
-             <p className="text-xs font-semibold uppercase tracking-wider mb-2 transition-colors duration-200" style={{ color: textMuted }}>How are you feeling?</p>
-             <div className="flex flex-wrap gap-2 mb-3">
-               {MOODS.map(m => (
-                 <button
-                   key={m.value}
-                   onClick={() => setSelectedMood(m.value)}
-                   className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                     selectedMood === m.value
-                       ? "text-white border-transparent"
-                       : "border-transparent text-white hover:opacity-80"
-                   }`}
-                   style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : { backgroundColor: `${primary}40` }}
-                 >
-                   {m.label}
-                 </button>
-               ))}
-             </div>
-             <div className="flex gap-2">
-               <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border transition-colors duration-200 text-sm font-medium" style={{ borderColor: border, color: textMuted }}>Cancel</button>
-               <button
-                 onClick={handleMoodSave}
-                 disabled={!selectedMood || saving}
-                 className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40 transition-colors duration-200"
-                 style={{ backgroundColor: primary }}
-               >
-                 {saving ? "Saving..." : "Save"}
-               </button>
-             </div>
-           </div>
+            <div className="mt-4">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">How are you feeling?</p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {MOODS.map(m => (
+                  <button
+                    key={m.value}
+                    onClick={() => setSelectedMood(m.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      selectedMood === m.value
+                        ? "text-white border-transparent"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                    }`}
+                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border border-slate-200 text-sm text-slate-500">Cancel</button>
+                <button
+                  onClick={handleMoodSave}
+                  disabled={!selectedMood || saving}
+                  className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
+                  style={{ backgroundColor: primary }}
+                >
+                  {saving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
           ) : (
-           <button
-             onClick={() => setEditingMood(true)}
-             className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors duration-200"
-             style={{ borderColor: border, color: textMuted }}
-           >
-             <Pencil className="w-3 h-3" /> Change mood
-           </button>
+            <button
+              onClick={() => setEditingMood(true)}
+              className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:border-slate-300 transition-all"
+            >
+              <Pencil className="w-3 h-3" /> Change mood
+            </button>
           )}
         </div>
 
         {/* Settings */}
-        <div className="p-4 space-y-1 transition-colors duration-200" style={{ borderBottomColor: border, borderBottomWidth: 1 }}>
+        <div className="p-4 border-b border-slate-100 space-y-1">
           <button
             onClick={handleToggleDark}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all hover:opacity-80"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-all"
           >
-            <div className="flex items-center gap-2 text-sm font-medium" style={{ color: text }}>
+            <div className="flex items-center gap-2 text-sm text-slate-700 font-medium">
               {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               {darkMode ? "Dark Mode" : "Light Mode"}
             </div>
-            <div className="w-10 h-5 rounded-full transition-all" style={{ backgroundColor: primary }}>
-              <div className="w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all" style={{ marginLeft: darkMode ? "22px" : "2px" }} />
+            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "bg-slate-800" : "bg-slate-200"}`}>
+              <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-5.5" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "22px" : "2px" }} />
             </div>
           </button>
           <button
             onClick={() => base44.auth.logout(createPageUrl("Home"))}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
-            style={{ color: primary }}
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-50 text-red-500 text-sm font-medium transition-all"
           >
             <LogOut className="w-4 h-4" />
             Sign out
@@ -192,31 +180,30 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
         {/* My Posts */}
         <div className="p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider mb-3 transition-colors duration-200" style={{ color: textMuted }}>Your Posts ({myPosts.length})</p>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Your Posts ({myPosts.length})</p>
           {loading ? (
             <div className="space-y-3">
-              {[1,2].map(i => <div key={i} className="h-16 rounded-xl animate-pulse transition-colors duration-200" style={{ backgroundColor: `${text}15` }} />)}
+              {[1,2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
             </div>
           ) : myPosts.length === 0 ? (
-            <p className="text-sm text-center py-8 transition-colors duration-200" style={{ color: textMuted }}>You haven't posted anything yet.</p>
+            <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
           ) : (
             <div className="space-y-3">
               {myPosts.map(post => (
-                <div key={post.id} className="rounded-2xl p-4 transition-colors duration-200" style={{ backgroundColor: `${text}08`, borderColor: border, borderWidth: 1 }}>
+                <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                   {editingPost === post.id ? (
                     <div>
                       <textarea
                         value={editContent}
                         onChange={e => setEditContent(e.target.value)}
-                        className="w-full text-sm rounded-xl p-3 resize-none min-h-[80px] focus:outline-none border transition-colors duration-200"
-                        style={{ backgroundColor: surface, color: text, borderColor: border }}
+                        className="w-full text-sm text-slate-700 bg-white border border-slate-200 rounded-xl p-3 resize-none min-h-[80px] focus:outline-none"
                       />
                       <div className="flex gap-2 mt-2">
-                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border font-medium transition-colors duration-200" style={{ borderColor: border, color: textMuted }}>Cancel</button>
+                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border border-slate-200 text-slate-500">Cancel</button>
                         <button
                           onClick={() => handleEditPost(post)}
                           disabled={saving}
-                          className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40 transition-colors duration-200"
+                          className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
                           style={{ backgroundColor: primary }}
                         >
                           <Check className="w-3 h-3 inline mr-1" />Save
@@ -225,29 +212,27 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     </div>
                   ) : (
                     <>
-                      <p className={`text-sm mb-2 transition-colors duration-200 ${post.deleted ? "italic" : ""}`} style={{ color: post.deleted ? textMuted : text }}>
+                      <p className={`text-sm mb-2 ${post.deleted ? "text-slate-400 italic" : "text-slate-700"}`}>
                         {post.content}
                       </p>
                       {post.edited && !post.deleted && (
-                        <span className="text-xs italic transition-colors duration-200" style={{ color: textMuted }}>edited</span>
+                        <span className="text-xs text-slate-400 italic">edited</span>
                       )}
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs transition-colors duration-200" style={{ color: textMuted }}>
+                        <span className="text-xs text-slate-400">
                           {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
                         </span>
                         {!post.deleted && (
                           <div className="flex gap-1">
                             <button
                               onClick={() => { setEditingPost(post.id); setEditContent(post.content); }}
-                              className="p-1.5 rounded-lg transition-all hover:opacity-80"
-                              style={{ color: textMuted }}
+                              className="p-1.5 rounded-lg hover:bg-white text-slate-400 hover:text-slate-600 transition-all"
                             >
                               <Pencil className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDeletePost(post)}
-                              className="p-1.5 rounded-lg transition-all hover:opacity-80"
-                              style={{ color: primary }}
+                              className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
