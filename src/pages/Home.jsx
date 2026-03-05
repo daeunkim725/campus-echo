@@ -73,7 +73,7 @@ export default function Home() {
               Post
             </button>
           </div>
-          <FilterDrawer filters={filters} onChange={setFilters} />
+          <FilterDrawer filters={filters} onChange={setFilters} userSchool={currentUser?.school} />
         </div>
       </div>
 
