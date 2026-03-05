@@ -383,12 +383,13 @@ export default function PostDetail() {
               className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
               style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
             >
-            {submitting ? (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Send className="w-4 h-4 ml-0.5" />
-            )}
-          </button>
+              {submitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4 ml-0.5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
