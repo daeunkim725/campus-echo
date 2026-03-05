@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ThumbsUp, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import CommentItem from "@/components/post/CommentItem";
 import { generateAlias } from "@/components/utils/aliases";
@@ -39,16 +39,33 @@ export default function PostDetail() {
 
   useEffect(() => { fetchData(); }, [postId]);
 
-  const handleVote = async () => {
+  const handleVote = async (type) => {
     if (!post) return;
     const userId = currentUser?.id || "anon";
     const votedUp = post.voted_up_by?.includes(userId);
+    const votedDown = post.voted_down_by?.includes(userId);
     let newVotedUp = [...(post.voted_up_by || [])];
+    let newVotedDown = [...(post.voted_down_by || [])];
     let newUpvotes = post.upvotes || 0;
-    if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; }
-    else { newVotedUp.push(userId); newUpvotes++; }
-    setPost({ ...post, upvotes: newUpvotes, voted_up_by: newVotedUp });
-    await base44.entities.Post.update(post.id, { upvotes: newUpvotes, voted_up_by: newVotedUp });
+    let newDownvotes = post.downvotes || 0;
+
+    if (type === "up") {
+      if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; }
+      else {
+        newVotedUp.push(userId); newUpvotes++;
+        if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; }
+      }
+    } else {
+      if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; }
+      else {
+        newVotedDown.push(userId); newDownvotes++;
+        if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; }
+      }
+    }
+
+    const updated = { ...post, upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown };
+    setPost(updated);
+    await base44.entities.Post.update(post.id, { upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown });
   };
 
   const handleComment = async () => {
@@ -56,6 +73,7 @@ export default function PostDetail() {
     setSubmitting(true);
     const seed = (currentUser?.id || "anon") + Date.now();
     const { alias, color } = generateAlias(seed);
+
     await base44.entities.Comment.create({
       post_id: post.id,
       content: newComment.trim(),
@@ -64,6 +82,7 @@ export default function PostDetail() {
       upvotes: 0,
       voted_up_by: []
     });
+
     await base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
     setNewComment("");
     setSubmitting(false);
@@ -75,154 +94,129 @@ export default function PostDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8]">
-        <div className="sticky top-0 z-40 bg-white border-b border-gray-200 h-12 flex items-center px-4">
-          <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-700 flex items-center gap-1.5 text-[13px]">
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-        </div>
-        <div className="max-w-2xl mx-auto mt-2">
-          <div className="bg-white rounded-sm shadow-sm animate-pulse p-6 space-y-3">
-            <div className="h-4 bg-gray-100 rounded w-1/4" />
-            <div className="h-4 bg-gray-100 rounded w-full" />
-            <div className="h-4 bg-gray-100 rounded w-3/4" />
-          </div>
-        </div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex flex-col items-center justify-center">
-        <p className="text-gray-500 text-sm">Post not found</p>
-        <button onClick={() => navigate(-1)} className="mt-2 text-[#E8344E] text-sm hover:underline">Go back</button>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <p className="text-slate-500">Post not found</p>
+        <button onClick={() => navigate(-1)} className="mt-3 text-violet-600 text-sm font-medium">Go back</button>
       </div>
     );
   }
 
   const userId = currentUser?.id || "anon";
   const votedUp = post.voted_up_by?.includes(userId);
+  const votedDown = post.voted_down_by?.includes(userId);
   const timeAgo = post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : "";
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8]">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-white border-b border-gray-200">
-        <div className="max-w-2xl mx-auto px-4 h-12 flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1 text-gray-500 hover:text-gray-800 transition-colors text-[13px]"
-          >
+      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-xl mx-auto px-4 py-3.5 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
           </button>
-          {post.category && (
-            <>
-              <span className="text-gray-300">·</span>
-              <span className="text-[13px] text-[#E8344E] font-medium">#{post.category}</span>
-            </>
-          )}
+          <h1 className="text-base font-bold text-slate-900">Post</h1>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto mt-2 space-y-2 pb-8">
-        {/* Post body */}
-        <div className="bg-white rounded-sm shadow-sm px-6 py-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-semibold"
-              style={{ backgroundColor: post.author_color || "#E8344E" }}
-            >
+      <div className="max-w-xl mx-auto px-4 py-4">
+        {/* Post */}
+        <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm"
+              style={{ backgroundColor: post.author_color || "#6C63FF" }}>
               {post.author_alias?.charAt(0) || "A"}
             </div>
-            <span className="text-[13px] font-medium text-gray-800">{post.author_alias}</span>
-            <span className="text-[12px] text-gray-400 ml-auto">{timeAgo}</span>
+            <div>
+              <p className="text-sm font-semibold text-slate-800">{post.author_alias || "Anonymous"}</p>
+              <p className="text-xs text-slate-400">{timeAgo}</p>
+            </div>
+            {post.category && (
+              <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium capitalize">
+                {post.category}
+              </span>
+            )}
           </div>
 
-          <p className="text-[15px] text-gray-800 leading-relaxed mb-4">{post.content}</p>
+          <p className="text-slate-800 text-[16px] leading-relaxed mb-4">{post.content}</p>
 
           {post.image_url && (
-            <div className="mb-4 rounded overflow-hidden">
+            <div className="mb-4 rounded-xl overflow-hidden">
               <img src={post.image_url} alt="" className="w-full object-cover" />
             </div>
           )}
 
-          <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
+          {/* Vote Bar */}
+          <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
             <button
-              onClick={handleVote}
-              className={`flex items-center gap-1.5 text-[13px] font-medium transition-colors ${
-                votedUp ? "text-[#E8344E]" : "text-gray-400 hover:text-gray-600"
+              onClick={() => handleVote("up")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                votedUp ? "bg-violet-100 text-violet-600" : "text-slate-400 hover:bg-slate-50"
               }`}
             >
-              <ThumbsUp className="w-4 h-4" />
-              <span>{post.upvotes || 0}</span>
+              <ArrowUp className="w-4 h-4" />
+              {post.upvotes || 0}
             </button>
-            <span className="flex items-center gap-1.5 text-[13px] text-gray-400">
-              <MessageSquare className="w-4 h-4" />
-              <span>{comments.length}</span>
+            <button
+              onClick={() => handleVote("down")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
+              }`}
+            >
+              <ArrowDown className="w-4 h-4" />
+              {post.downvotes || 0}
+            </button>
+            <span className="ml-auto flex items-center gap-1.5 text-sm text-slate-400">
+              <MessageCircle className="w-4 h-4" />
+              {comments.length} comments
             </span>
           </div>
         </div>
 
-        {/* Comments section */}
-        <div className="bg-white rounded-sm shadow-sm overflow-hidden">
-          <div className="px-6 py-3 border-b border-gray-100">
-            <span className="text-[13px] font-semibold text-gray-700">Comments · {comments.length}</span>
-          </div>
+        {/* Comment Input */}
+        <div className="bg-white rounded-2xl p-4 mb-4 border border-slate-100 flex gap-3 items-end">
+          <textarea
+            value={newComment}
+            onChange={e => setNewComment(e.target.value)}
+            placeholder="Add a comment anonymously..."
+            rows={2}
+            className="flex-1 resize-none text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none"
+          />
+          <button
+            onClick={handleComment}
+            disabled={!newComment.trim() || submitting}
+            className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-all flex-shrink-0"
+          >
+            {submitting ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+          </button>
+        </div>
 
-          {/* Comment input */}
-          <div className="px-6 py-4 border-b border-gray-100 flex gap-3 items-start">
-            <div
-              className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-[11px] font-semibold mt-0.5"
-              style={{ backgroundColor: "#aaa" }}
-            >
-              A
-            </div>
-            <div className="flex-1">
-              <textarea
-                value={newComment}
-                onChange={e => setNewComment(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleComment())}
-                placeholder="Write a comment anonymously..."
-                rows={2}
-                className="w-full resize-none text-[14px] text-gray-800 placeholder:text-gray-400 focus:outline-none leading-relaxed"
-              />
-              <div className="flex justify-end mt-2">
-                <button
-                  onClick={handleComment}
-                  disabled={!newComment.trim() || submitting}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-[#E8344E] text-white text-[12px] font-medium hover:bg-[#d02d43] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  {submitting ? (
-                    <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <Send className="w-3 h-3" />
-                  )}
-                  Comment
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Comment list */}
+        {/* Comments */}
+        <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
           {topComments.length === 0 ? (
             <div className="text-center py-10">
-              <p className="text-gray-400 text-[13px]">No comments yet.</p>
+              <p className="text-slate-400 text-sm">No comments yet. Be first!</p>
             </div>
           ) : (
-            <div>
-              {topComments.map(comment => (
-                <div key={comment.id} className="border-b border-gray-50 last:border-0">
-                  <div className="px-6">
-                    <CommentItem comment={comment} currentUser={currentUser} onReply={fetchData} depth={0} />
-                    {getReplies(comment.id).map(reply => (
-                      <CommentItem key={reply.id} comment={reply} currentUser={currentUser} onReply={fetchData} depth={1} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            topComments.map(comment => (
+              <div key={comment.id} className="px-4">
+                <CommentItem comment={comment} currentUser={currentUser} onReply={fetchData} depth={0} />
+                {getReplies(comment.id).map(reply => (
+                  <CommentItem key={reply.id} comment={reply} currentUser={currentUser} onReply={fetchData} depth={1} />
+                ))}
+              </div>
+            ))
           )}
         </div>
       </div>

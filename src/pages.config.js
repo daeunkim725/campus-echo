@@ -47,14 +47,14 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import PostDetail from './pages/PostDetail';
 import Home from './pages/Home';
+import PostDetail from './pages/PostDetail';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "PostDetail": PostDetail,
     "Home": Home,
+    "PostDetail": PostDetail,
 }
 
 export const pagesConfig = {
