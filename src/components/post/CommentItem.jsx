@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { getMoodEmoji, getCleanAlias } from "@/components/utils/moodUtils";
+import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
