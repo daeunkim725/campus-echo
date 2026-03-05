@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2, Smile } from "lucide-react";
+
+const MOODS = [
+  { value: "happy", label: "Happy 😊" },
+  { value: "sleepy", label: "Sleepy 😴" },
+  { value: "anxious", label: "Anxious 😰" },
+  { value: "focused", label: "Focused 🎯" },
+  { value: "bored", label: "Bored 😐" },
+  { value: "excited", label: "Excited 🤩" },
+  { value: "stressed", label: "Stressed 😤" },
+  { value: "chill", label: "Chill 😎" },
+  { value: "hungry", label: "Hungry 🍕" },
+  { value: "caffeinated", label: "Caffeinated ☕" },
+  { value: "lost", label: "Lost 🗺️" },
+  { value: "vibing", label: "Vibing 🎵" },
+];
 
 const SCHOOLS = [
   { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#1A5276" },
@@ -26,7 +41,7 @@ function isValidSchoolEmail(email, school) {
 }
 
 export default function Onboarding() {
-  const [step, setStep] = useState("school"); // school | email | code | done
+  const [step, setStep] = useState("school"); // school | email | code | mood | done
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [schoolEmail, setSchoolEmail] = useState("");
   const [code, setCode] = useState("");
