@@ -125,43 +125,44 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
           {/* Change mood */}
           {editingMood ? (
-            <div className="mt-4">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">How are you feeling?</p>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {MOODS.map(m => (
-                  <button
-                    key={m.value}
-                    onClick={() => setSelectedMood(m.value)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                      selectedMood === m.value
-                        ? "text-white border-transparent"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-                    }`}
-                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border border-slate-200 text-sm text-slate-500">Cancel</button>
-                <button
-                  onClick={handleMoodSave}
-                  disabled={!selectedMood || saving}
-                  className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
-                  style={{ backgroundColor: primary }}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </button>
-              </div>
-            </div>
+           <div className="mt-4">
+             <p className="text-xs font-semibold uppercase tracking-wider mb-2 transition-colors duration-200" style={{ color: textMuted }}>How are you feeling?</p>
+             <div className="flex flex-wrap gap-2 mb-3">
+               {MOODS.map(m => (
+                 <button
+                   key={m.value}
+                   onClick={() => setSelectedMood(m.value)}
+                   className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                     selectedMood === m.value
+                       ? "text-white border-transparent"
+                       : "border-transparent text-white hover:opacity-80"
+                   }`}
+                   style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : { backgroundColor: `${primary}40` }}
+                 >
+                   {m.label}
+                 </button>
+               ))}
+             </div>
+             <div className="flex gap-2">
+               <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border transition-colors duration-200 text-sm font-medium" style={{ borderColor: border, color: textMuted }}>Cancel</button>
+               <button
+                 onClick={handleMoodSave}
+                 disabled={!selectedMood || saving}
+                 className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40 transition-colors duration-200"
+                 style={{ backgroundColor: primary }}
+               >
+                 {saving ? "Saving..." : "Save"}
+               </button>
+             </div>
+           </div>
           ) : (
-            <button
-              onClick={() => setEditingMood(true)}
-              className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:border-slate-300 transition-all"
-            >
-              <Pencil className="w-3 h-3" /> Change mood
-            </button>
+           <button
+             onClick={() => setEditingMood(true)}
+             className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors duration-200"
+             style={{ borderColor: border, color: textMuted }}
+           >
+             <Pencil className="w-3 h-3" /> Change mood
+           </button>
           )}
         </div>
 
