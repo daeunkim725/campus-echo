@@ -285,19 +285,23 @@ export default function PostDetail() {
 
           {/* Event Details */}
           {post.category === "events" && post.event_date && !post.deleted && (
-            <div className="bg-slate-50 rounded-lg p-2 mb-3 space-y-1 border border-slate-100">
-              <div className="flex items-center gap-2 text-xs text-slate-700">
+            <div className="flex items-center gap-3 text-xs text-slate-600 mb-2 flex-wrap">
+              <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-slate-400" />
-                <span className="font-medium">{post.event_date}</span>
+                <span>{post.event_date}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-700">
-                <Clock className="w-3 h-3 text-slate-400" />
-                <span>{post.event_time}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-700">
-                <MapPin className="w-3 h-3 text-slate-400" />
-                <span>{post.event_location}</span>
-              </div>
+              {post.event_time && (
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-slate-400" />
+                  <span>{post.event_time}</span>
+                </div>
+              )}
+              {post.event_location && (
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-slate-400" />
+                  <span>{post.event_location}</span>
+                </div>
+              )}
             </div>
           )}
 
