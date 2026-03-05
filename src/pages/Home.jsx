@@ -29,6 +29,11 @@ export default function Home() {
     try {
       let data = await base44.entities.Post.list("-created_date", 100);
 
+      // Only show posts from the user's school community or untagged posts
+      if (currentUser?.school) {
+        data = data.filter(p => !p.department || p.department === "all" || p.department.startsWith("D-") && currentUser.school === "ETH" || p.department === currentUser.school);
+      }
+
       if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
       if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
       if (filters.level !== "all") data = data.filter(p => p.academic_level === filters.level);
