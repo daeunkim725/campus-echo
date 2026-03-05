@@ -57,8 +57,9 @@ export default function CreatePostModal({ onClose, onCreated, currentUser }) {
     if (!isValid) return;
     setLoading(true);
 
-    const seed = currentUser?.id || Math.random().toString();
-    const { alias, color } = generateAlias(seed);
+    const alias = getMoodLabel(currentUser?.mood) || "Anonymous";
+    const colors = ["#6C63FF","#FF6584","#43B89C","#F4A261","#E76F51","#2A9D8F","#8338EC","#FF006E","#3A86FF","#06D6A0"];
+    const color = colors[Math.abs((currentUser?.id || "").split("").reduce((h,c) => ((h<<5)-h)+c.charCodeAt(0)|0, 0)) % colors.length] || "#6C63FF";
 
     let image_url = null;
     if (imageFile) {
