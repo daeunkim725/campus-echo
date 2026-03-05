@@ -9,9 +9,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#215CAF] text-white",
     button: "bg-[#215CAF] hover:opacity-90",
     tab: "bg-[#215CAF]",
-    darkBg: "#0F1419",
-    darkCard: "#1A1F2E",
-    darkText: "#E8EAED",
   },
   EPFL: {
     name: "EPFL",
@@ -23,9 +20,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#FF0000] text-white",
     button: "bg-[#FF0000] hover:opacity-90",
     tab: "bg-[#FF0000]",
-    darkBg: "#1A0F0F",
-    darkCard: "#2D1515",
-    darkText: "#F0E8E8",
   },
   UNIZH: {
     name: "Uni Zürich",
@@ -37,9 +31,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#0028A5] text-white",
     button: "bg-[#0028A5] hover:opacity-90",
     tab: "bg-[#0028A5]",
-    darkBg: "#0A0F20",
-    darkCard: "#151C3A",
-    darkText: "#E8EBF5",
   },
   UNIBASEL: {
     name: "Uni Basel",
@@ -51,9 +42,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#D20537] text-white",
     button: "bg-[#D20537] hover:opacity-90",
     tab: "bg-[#D20537]",
-    darkBg: "#1A0F12",
-    darkCard: "#2D1719",
-    darkText: "#F0E8EB",
   },
   UNIBE: {
     name: "Uni Bern",
@@ -65,9 +53,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#E4003C] text-white",
     button: "bg-[#E4003C] hover:opacity-90",
     tab: "bg-[#E4003C]",
-    darkBg: "#1A0E11",
-    darkCard: "#2D1619",
-    darkText: "#F0E8EB",
   },
   UNIL: {
     name: "Uni Lausanne",
@@ -79,9 +64,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#FF0000] text-white",
     button: "bg-[#FF0000] hover:opacity-90",
     tab: "bg-[#FF0000]",
-    darkBg: "#1A0F0F",
-    darkCard: "#2D1515",
-    darkText: "#F0E8E8",
   },
   UNIFR: {
     name: "Uni Fribourg",
@@ -93,9 +75,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#0A3859] text-white",
     button: "bg-[#0A3859] hover:opacity-90",
     tab: "bg-[#0A3859]",
-    darkBg: "#0C1419",
-    darkCard: "#151E2A",
-    darkText: "#E8EAED",
   },
   UNIGE: {
     name: "Uni Genève",
@@ -107,9 +86,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#CF0063] text-white",
     button: "bg-[#CF0063] hover:opacity-90",
     tab: "bg-[#CF0063]",
-    darkBg: "#19091A",
-    darkCard: "#2A1227",
-    darkText: "#F0E8F0",
   },
   UNISG: {
     name: "Uni St. Gallen",
@@ -121,9 +97,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#00802F] text-white",
     button: "bg-[#00802F] hover:opacity-90",
     tab: "bg-[#00802F]",
-    darkBg: "#0F1A12",
-    darkCard: "#1A2A1F",
-    darkText: "#E8F0EB",
   },
   USI: {
     name: "USI Lugano",
@@ -135,9 +108,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#FD7969] text-white",
     button: "bg-[#FD7969] hover:opacity-90",
     tab: "bg-[#FD7969]",
-    darkBg: "#1A0F0A",
-    darkCard: "#2D1815",
-    darkText: "#F0E8E0",
   },
   UNILU: {
     name: "Uni Lucerne",
@@ -149,9 +119,6 @@ export const SCHOOL_CONFIG = {
     badge: "bg-[#003A63] text-white",
     button: "bg-[#003A63] hover:opacity-90",
     tab: "bg-[#003A63]",
-    darkBg: "#0A0F19",
-    darkCard: "#141E2E",
-    darkText: "#E8EBF0",
   },
 };
 
