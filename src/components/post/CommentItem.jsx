@@ -90,8 +90,8 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     : "";
 
   return (
-    <div className={depth > 0 ? "ml-8 border-l-2 border-slate-100 pl-4" : ""}>
-      <div className="flex gap-3 py-3">
+    <div className={depth > 0 ? "ml-6 border-l-2 border-slate-100 pl-3" : ""}>
+      <div className="flex gap-2.5 py-2.5">
         <div
           className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[15px]"
           style={{ backgroundColor: primaryLight }}
