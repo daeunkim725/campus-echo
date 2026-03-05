@@ -82,15 +82,15 @@ export default function EditPostModal({ post, onClose, onSaved, primaryColor = "
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Date <span className="text-red-400">*</span></p>
-                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventDate ? primaryColor : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = eventDate ? primaryColor : ""} />
+                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none transition-all" style={{ outline: eventDate ? "none" : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = ""} />
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Time <span className="text-red-400">*</span></p>
-                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventTime ? primaryColor : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = eventTime ? primaryColor : ""} />
+                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none transition-all" style={{ outline: eventTime ? "none" : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = ""} />
               </div>
               <div className="col-span-2">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Location <span className="text-red-400">*</span></p>
-                <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-2.5 text-slate-800 text-[14px] focus:outline-none focus:border-slate-400" style={{ borderColor: eventLocation ? primaryColor : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = eventLocation ? primaryColor : ""} />
+                <input type="text" placeholder="Where is it happening?" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 text-[15px] focus:outline-none transition-all" style={{ outline: eventLocation ? "none" : undefined }} onFocus={(e) => e.target.style.borderColor = primaryColor} onBlur={(e) => e.target.style.borderColor = ""} />
               </div>
               <div className="col-span-2">
                 <div className="flex gap-2">
