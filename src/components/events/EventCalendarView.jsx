@@ -79,24 +79,32 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
           const isToday = isSameDay(day, new Date());
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
 
+          const isSelected = selectedDate && isSameDay(day, selectedDate);
+
           return (
             <button
               key={idx}
-              onClick={() => onSelectDate(day)}
+              onClick={() => {
+                setSelectedDate(day);
+                onSelectDate(day);
+              }}
               disabled={!isCurrentMonth}
               className={`aspect-square p-1 rounded-lg text-xs transition-all ${
                 !isCurrentMonth
                   ? "opacity-40 cursor-default"
-                  : isToday
+                  : isSelected
                   ? "ring-2 ring-offset-1 hover:opacity-90"
                   : "hover:bg-slate-50 cursor-pointer"
               }`}
-              style={isToday ? { "--tw-ring-color": schoolConfig?.primary } : {}}
+              style={isSelected ? { "--tw-ring-color": schoolConfig?.primary } : {}}
             >
               <div className="h-full flex flex-col items-center justify-start">
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
                   {day.getDate()}
                 </span>
+                {isToday && !isSelected && (
+                  <span className="text-[9px] text-slate-500 mt-0.5">today</span>
+                )}
                 {dayEvents.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center w-full">
                     {dayEvents.slice(0, 2).map((_, i) => (
