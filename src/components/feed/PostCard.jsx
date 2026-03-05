@@ -107,9 +107,9 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {Array.from(localPost.author_alias || "A")[0]}
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] shadow-sm"
+              style={{ backgroundColor: primary + "33" }}>
+              {getMoodEmoji(getCleanAlias(localPost.author_alias)?.trim().toLowerCase()) }
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
