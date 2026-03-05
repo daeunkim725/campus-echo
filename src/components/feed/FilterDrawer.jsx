@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SlidersHorizontal, X, ChevronDown, ChevronUp } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice", "events"];
 
@@ -44,7 +44,6 @@ const categoryEmojis = {
 
 export default function FilterDrawer({ filters, onChange, userSchool }) {
   const [open, setOpen] = useState(false);
-  const [showOtherUnis, setShowOtherUnis] = useState(false);
 
   const set = (key, val) => onChange({ ...filters, [key]: val });
 
