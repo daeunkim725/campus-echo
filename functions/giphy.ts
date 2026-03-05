@@ -28,9 +28,8 @@ Deno.serve(async (req) => {
 
         const response = await fetch(url);
         const data = await response.json();
-        console.log("Giphy data:", data);
 
-        return Response.json({ data: data.data });
+        return Response.json({ raw_data: data, url: url.replace(apiKey, 'HIDDEN') });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
