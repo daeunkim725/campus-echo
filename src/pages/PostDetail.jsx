@@ -52,8 +52,9 @@ export default function PostDetail() {
 
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
-  const primary = schoolConfig?.primary || "#7C3AED";
-  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
+  const tokens = useThemeTokens(schoolConfig);
+  const primary = tokens.primary;
+  const primaryLight = tokens.primaryLight;
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
