@@ -7,6 +7,7 @@ import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getSchoolConfig, SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -19,6 +20,7 @@ export default function SchoolFeed() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const scrollDirection = useScrollDirection();
 
   const schoolConfig = getSchoolConfig(schoolCode);
   const tokens = useThemeTokens(schoolConfig);

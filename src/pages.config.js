@@ -47,20 +47,20 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Onboarding from './pages/Onboarding';
 import Events from './pages/Events';
 import Home from './pages/Home';
 import Market from './pages/Market';
+import Onboarding from './pages/Onboarding';
 import PostDetail from './pages/PostDetail';
 import SchoolFeed from './pages/SchoolFeed';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Onboarding": Onboarding,
     "Events": Events,
     "Home": Home,
     "Market": Market,
+    "Onboarding": Onboarding,
     "PostDetail": PostDetail,
     "SchoolFeed": SchoolFeed,
 }
