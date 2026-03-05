@@ -177,7 +177,7 @@ export default function Events() {
               <p className="text-slate-400 text-sm mt-1">Try changing your filters or post a new event!</p>
               <button
                 onClick={() => setShowCreate(true)}
-                className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
+                className="mt-4 px-5 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
                 style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}
               >
                 Create an event
