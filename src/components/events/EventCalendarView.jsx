@@ -102,7 +102,7 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
                   {day.getDate()}
                 </span>
-                {isToday && !isSelected && (
+                {isToday && (
                   <span className="text-[9px] text-slate-500 mt-0.5">today</span>
                 )}
                 {dayEvents.length > 0 && (
