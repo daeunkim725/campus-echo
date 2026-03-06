@@ -39,7 +39,13 @@ export const SCHOOL_CONFIG = {
       border: "#E5E7EB",
       primaryLight: "#FADBD8",
     },
-    dark: { ...NEUTRAL_DARK, primary: "#FF5C5C", primaryLight: "rgba(255,92,92,0.14)" },
+    dark: { 
+      primary: "#FF5C5C", primaryLight: "rgba(255,92,92,0.14)",
+      bg: "#0F0F12", surface: "#17171C", elevated: "#1F1F26",
+      border: "#2A2A33", divider: "#23232B", text: "#F3F4F6",
+      textMuted: "#B0B4BD", textFaint: "#7C808A",
+      secondary: "#413D3A"
+    },
   },
   UNIZH: {
     name: "Uni Zürich",
