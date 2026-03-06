@@ -86,7 +86,6 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     const updated = { ...localPost, upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown };
     setLocalPost(updated);
     await base44.entities.Post.update(localPost.id, { upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown });
-    onUpdate?.();
     setLoading(false);
   };
 
