@@ -303,17 +303,9 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-[#0B1220] relative">
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none opacity-60"
-        style={{
-          backgroundImage: "url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a9392c865db15df3b30230/c0bdbd7b6_makeitlighter.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center"
-        }}
-      />
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-[#0B1220]">
       {/* Header */}
-      <div className="bg-transparent border-b border-[#E5E7EB]/50 px-4 py-3 sticky top-0 z-30 relative">
+      <div className="bg-[#FFFFFF] border-b border-[#E5E7EB] px-4 py-3 sticky top-0 z-30">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-[10px] bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shadow-sm">
@@ -341,7 +333,7 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-start justify-center px-4 py-6 relative z-10">
+      <div className="flex-1 flex items-start justify-center px-4 py-6 relative">
         <div className="w-full max-w-sm">
 
           {/* Step: Choose School */}
