@@ -60,8 +60,8 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
         }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Profile avatar with mood emoji */}
+            {/* Left: profile + school name */}
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setShowProfile(true)}
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-sm transition-transform active:scale-95"
@@ -71,44 +71,40 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                 {getMoodEmoji(currentUser?.mood)}
               </button>
 
-              <div className="flex items-center gap-2">
-                {/* School name / switcher for admins */}
-                {isAdmin ? (
-                  <button
-                    onClick={() => setShowSchoolPicker(true)}
-                    className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
-                  >
-                    {schoolConfig?.name || "🦇 Echo"}
-                    <ChevronDown className="w-4 h-4 text-slate-400" />
-                  </button>
-                ) : (
-                  <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
-                )}
-
-                {/* Nav tabs */}
-                <div className="flex bg-slate-100 p-1 rounded-lg ml-2">
-                  <button
-                    onClick={() => window.location.href = createPageUrl("SchoolFeed") + `?school=${schoolCode}`}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-                  >
-                    Feed
-                  </button>
-                  <button
-                    onClick={() => window.location.href = createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-                  >
-                    Market
-                  </button>
-                  <button
-                    onClick={() => window.location.href = createPageUrl("Events") + `?school=${schoolCode}`}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-                  >
-                    Events
-                  </button>
-                </div>
-              </div>
+              {isAdmin ? (
+                <button
+                  onClick={() => setShowSchoolPicker(true)}
+                  className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
+                >
+                  {schoolConfig?.name || "🦇 Echo"}
+                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                </button>
+              ) : (
+                <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
+              )}
             </div>
 
+            {/* Right: Nav tabs */}
+            <div className="flex bg-slate-100 p-1 rounded-lg">
+              <button
+                onClick={() => window.location.href = createPageUrl("SchoolFeed") + `?school=${schoolCode}`}
+                className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Feed
+              </button>
+              <button
+                onClick={() => window.location.href = createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")}
+                className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Market
+              </button>
+              <button
+                onClick={() => window.location.href = createPageUrl("Events") + `?school=${schoolCode}`}
+                className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Events
+              </button>
+            </div>
           </div>
         </div>
       </div>
