@@ -88,12 +88,12 @@ export default function SchoolFeed() {
       />
 
       <div className={`sticky z-30 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? 'top-0' : 'top-[65px]'}`}>
-        <div className="max-w-3xl mx-auto px-4 py-2.5">
+        <div className="max-w-4xl mx-auto px-4 py-2.5">
           <FilterDrawer filters={filters} onChange={setFilters} userSchool={schoolCode} />
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-4 space-y-3">
+      <div className="max-w-4xl mx-auto px-4 py-4 space-y-3">
         {loading ? (
           Array(5).fill(0).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
@@ -125,7 +125,7 @@ export default function SchoolFeed() {
           </div>
         ) : (
           posts.map(post => (
-            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} />
+            <PostCard key={post.id} post={post} currentUser={currentUser} onUpdate={fetchPosts} schoolConfig={schoolConfig} />
           ))
         )}
       </div>

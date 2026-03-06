@@ -58,7 +58,7 @@ export default function PostDetail() {
   const primaryLight = tokens.primaryLight;
 
   useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
+    base44.auth.me().then(setCurrentUser).catch(() => { });
   }, []);
 
   const fetchData = async () => {
@@ -110,7 +110,7 @@ export default function PostDetail() {
   const handleComment = async () => {
     if ((!newComment.trim() && !gifUrl) || !post) return;
     setSubmitting(true);
-    
+
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
     const color = primary;
 
@@ -122,11 +122,13 @@ export default function PostDetail() {
       author_alias: alias,
       author_color: color,
       upvotes: 0,
-      voted_up_by: []
+      downvotes: 0,
+      voted_up_by: [],
+      voted_down_by: []
     });
 
     await base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
-    
+
     // Notify post author
     if (post.created_by && post.created_by !== currentUser.email) {
       await base44.entities.Notification.create({
@@ -225,7 +227,7 @@ export default function PostDetail() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
-        <div className="max-w-3xl mx-auto px-4 py-3.5 flex items-center gap-3">
+        <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -233,7 +235,7 @@ export default function PostDetail() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-4">
+      <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
@@ -279,7 +281,7 @@ export default function PostDetail() {
           {post.deleted ? (
             <p className="text-slate-400 italic text-[15px] mb-4">[deleted]</p>
           ) : (
-            <p className="text-slate-800 text-[15px] leading-relaxed mb-4">{post.content}</p>
+            <p className="text-slate-800 text-[14px] leading-[21px] mb-4">{post.content}</p>
           )}
 
           {/* Poll Options */}
@@ -293,9 +295,8 @@ export default function PostDetail() {
                     key={i}
                     onClick={() => handlePollVote(i)}
                     disabled={hasVotedPoll}
-                    className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
-                      hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
-                    }`}
+                    className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
+                      }`}
                     style={myVote ? { borderColor: primary, color: primary } : {}}
                   >
                     {hasVotedPoll && (
@@ -366,32 +367,30 @@ export default function PostDetail() {
           </div>
 
           {/* Vote Bar */}
-          <div className={`flex items-center gap-2 border-t border-slate-100 relative ${post.category === "events" ? "pt-2" : "pt-3"}`}>
+          <div className={`flex items-center gap-1 border-t border-slate-100 relative ${post.category === "events" ? "pt-2" : "pt-2"}`}>
             {post.category !== "events" && (
               <>
                 <button
                   onClick={() => handleVote("up")}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
-                    votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
-                  }`}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
+                    }`}
                 >
-                  <ArrowUp className="w-4 h-4" />
+                  <ArrowUp className="w-3.5 h-3.5" />
                   {post.upvotes || 0}
                 </button>
                 <button
                   onClick={() => handleVote("down")}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
-                    votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
-                  }`}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
+                    }`}
                 >
-                  <ArrowDown className="w-4 h-4" />
+                  <ArrowDown className="w-3.5 h-3.5" />
                   {post.downvotes || 0}
                 </button>
               </>
             )}
             {post.category === "events" && (
               <div className="relative">
-                <button 
+                <button
                   onClick={() => {
                     if (hasVotedBell) handleRemoveInterest();
                     else setShowInterestMenu(!showInterestMenu);
@@ -412,8 +411,8 @@ export default function PostDetail() {
                 )}
               </div>
             )}
-            <span className={`ml-auto flex items-center gap-1.5 text-slate-400 ${post.category === "events" ? "text-[11px] px-1.5 py-1" : "text-sm"}`}>
-              <MessageCircle className="w-4 h-4" />
+            <span className={`ml-auto flex items-center gap-1 text-slate-400 ${post.category === "events" ? "text-[11px] px-1.5 py-1" : "text-xs px-2 py-1"}`}>
+              <MessageCircle className="w-3.5 h-3.5" />
               {comments.length} comments
             </span>
           </div>
@@ -427,9 +426,8 @@ export default function PostDetail() {
               <button
                 key={s}
                 onClick={() => setCommentSort(s)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all capitalize ${
-                  commentSort === s ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
-                }`}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all capitalize ${commentSort === s ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                  }`}
               >
                 {s === "best" ? "⭐ Best" : "🕐 New"}
               </button>
@@ -467,34 +465,34 @@ export default function PostDetail() {
 
       {/* Comment Input (Fixed to bottom) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-2 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
-        <div className="max-w-3xl mx-auto px-1">
+        <div className="max-w-4xl mx-auto px-1">
           {gifUrl && (
             <div className="relative inline-block mb-3 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
               <img src={stillUrl} alt="selected gif" className="h-32 object-cover" />
-              <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+              <button onClick={() => { setGifUrl(null); setStillUrl(null); }} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
                 <X className="w-3 h-3" />
               </button>
             </div>
           )}
           <div className="flex gap-2 items-center relative">
             {showGiphy && (
-              <GiphyBrowser 
+              <GiphyBrowser
                 onSelect={(gif) => {
                   setGifUrl(gif.gif_url);
                   setStillUrl(gif.still_url);
                   setShowGiphy(false);
-                }} 
-                onClose={() => setShowGiphy(false)} 
+                }}
+                onClose={() => setShowGiphy(false)}
               />
             )}
-            
+
             <button
               onClick={() => setShowGiphy(!showGiphy)}
               className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
             >
               <Smile className="w-4 h-4" />
             </button>
-            
+
             <input
               type="text"
               value={newComment}

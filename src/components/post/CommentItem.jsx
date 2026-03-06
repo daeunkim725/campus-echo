@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
+import { ArrowUp, ArrowDown, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
@@ -16,6 +16,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [showGiphy, setShowGiphy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [localUpvotes, setLocalUpvotes] = useState(comment.upvotes || 0);
+  const [localDownvotes, setLocalDownvotes] = useState(comment.downvotes || 0);
 
   const userId = currentUser?.id || "anon";
   const isOwner = currentUser && comment.created_by === currentUser.email;
@@ -28,28 +29,66 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const primary = schoolConfig?.primary || "#7C3AED";
   const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
   const votedUp = comment.voted_up_by?.includes(userId);
+  const votedDown = comment.voted_down_by?.includes(userId);
 
-  const handleUpvote = async () => {
+  const handleVote = async (type) => {
     if (loading) return;
     setLoading(true);
-    let newVoted = [...(comment.voted_up_by || [])];
-    let newCount = localUpvotes;
-    if (votedUp) {
-      newVoted = newVoted.filter(id => id !== userId);
-      newCount--;
-    } else {
-      newVoted.push(userId);
-      newCount++;
+
+    let newVotedUp = [...(comment.voted_up_by || [])];
+    let newVotedDown = [...(comment.voted_down_by || [])];
+    let newUpvotes = localUpvotes;
+    let newDownvotes = localDownvotes;
+
+    if (type === "up") {
+      if (votedUp) {
+        newVotedUp = newVotedUp.filter(id => id !== userId);
+        newUpvotes--;
+      } else {
+        newVotedUp.push(userId);
+        newUpvotes++;
+        if (votedDown) {
+          newVotedDown = newVotedDown.filter(id => id !== userId);
+          newDownvotes--;
+        }
+      }
+    } else if (type === "down") {
+      if (votedDown) {
+        newVotedDown = newVotedDown.filter(id => id !== userId);
+        newDownvotes--;
+      } else {
+        newVotedDown.push(userId);
+        newDownvotes++;
+        if (votedUp) {
+          newVotedUp = newVotedUp.filter(id => id !== userId);
+          newUpvotes--;
+        }
+      }
     }
-    setLocalUpvotes(newCount);
-    await base44.entities.Comment.update(comment.id, { upvotes: newCount, voted_up_by: newVoted });
+
+    setLocalUpvotes(newUpvotes);
+    setLocalDownvotes(newDownvotes);
+
+    // Update the local comment object reference for immediate UI consistency
+    comment.voted_up_by = newVotedUp;
+    comment.voted_down_by = newVotedDown;
+    comment.upvotes = newUpvotes;
+    comment.downvotes = newDownvotes;
+
+    await base44.entities.Comment.update(comment.id, {
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+      voted_up_by: newVotedUp,
+      voted_down_by: newVotedDown
+    });
+
     setLoading(false);
   };
 
   const handleReply = async () => {
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
-    
+
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
     const color = primary;
 
@@ -62,9 +101,11 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       author_alias: alias,
       author_color: color,
       upvotes: 0,
-      voted_up_by: []
+      downvotes: 0,
+      voted_up_by: [],
+      voted_down_by: []
     });
-    
+
     if (comment.created_by && comment.created_by !== currentUser.email) {
       await base44.entities.Notification.create({
         user_email: comment.created_by,
@@ -168,23 +209,29 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               )}
             </>
           )}
-          <div className="flex items-center gap-3 mt-1.5">
+          <div className="flex items-center gap-1.5 mt-1.5">
             <button
-              onClick={handleUpvote}
-              className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
-                votedUp ? "" : "text-slate-400 hover:text-slate-600"
-              }`}
-              style={votedUp ? { color: primary } : {}}
+              onClick={() => handleVote("up")}
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors px-1.5 py-0.5 rounded ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                }`}
             >
-              <ArrowUp className="w-3 h-3" />
+              <ArrowUp className="w-3.5 h-3.5" />
               {localUpvotes}
+            </button>
+            <button
+              onClick={() => handleVote("down")}
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors px-1.5 py-0.5 rounded ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                }`}
+            >
+              <ArrowDown className="w-3.5 h-3.5" />
+              {localDownvotes}
             </button>
             {depth < 2 && (
               <button
                 onClick={() => setShowReply(!showReply)}
-                className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600 transition-colors"
+                className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors ml-1.5 px-1.5 py-0.5 rounded"
               >
-                <CornerDownRight className="w-3 h-3" />
+                <CornerDownRight className="w-3.5 h-3.5" />
                 Reply
               </button>
             )}
@@ -195,19 +242,19 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               {gifUrl && (
                 <div className="relative inline-block bg-slate-100 rounded-xl overflow-hidden border border-slate-200 self-start">
                   <img src={stillUrl} alt="selected gif" className="h-24 object-cover" />
-                  <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+                  <button onClick={() => { setGifUrl(null); setStillUrl(null); }} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {showGiphy && (
-                <GiphyBrowser 
+                <GiphyBrowser
                   onSelect={(gif) => {
                     setGifUrl(gif.gif_url);
                     setStillUrl(gif.still_url);
                     setShowGiphy(false);
-                  }} 
-                  onClose={() => setShowGiphy(false)} 
+                  }}
+                  onClose={() => setShowGiphy(false)}
                 />
               )}
               <div className="flex gap-2">

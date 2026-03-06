@@ -58,7 +58,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
-  
+
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
@@ -216,10 +216,10 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Content */}
         {localPost.deleted ? (
-          <p className="text-slate-400 italic text-[13px] leading-relaxed mb-2">[deleted]</p>
+          <p className="text-slate-400 italic text-[14px] leading-[21px] mb-2">[deleted]</p>
         ) : (
           <div className="mb-2">
-            {localPost.content && <p className="text-slate-600 text-[13px] leading-relaxed line-clamp-3">{localPost.content}</p>}
+            {localPost.content && <p className="text-slate-800 text-[14px] leading-[21px] line-clamp-3">{localPost.content}</p>}
             {localPost.edited && <span className="text-[10px] text-slate-400 italic">edited</span>}
           </div>
         )}
@@ -235,9 +235,8 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
                   key={i}
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
-                  className={`w-full text-left rounded-xl border px-3 py-2 text-sm font-medium transition-all relative overflow-hidden ${
-                    hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
-                  }`}
+                  className={`w-full text-left rounded-xl border px-3 py-2 text-sm font-medium transition-all relative overflow-hidden ${hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
                   style={myVote ? { borderColor: primary, color: primary } : {}}
                 >
                   {hasVotedPoll && (
@@ -288,22 +287,22 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         )}
 
         {/* Actions */}
-        <div className={`flex items-center gap-1 border-t border-slate-50 relative ${localPost.category === "events" ? "pt-1.5" : "pt-2"}`}>
+        <div className={`flex items-center gap-0.5 border-t border-slate-50 relative ${localPost.category === "events" ? "pt-1.5" : "pt-1.5"}`}>
           {localPost.category !== "events" && (
             <>
               <button onClick={(e) => handleVote(e, "up")}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
                 <ArrowUp className="w-3.5 h-3.5" /><span>{localPost.upvotes || 0}</span>
               </button>
               <button onClick={(e) => handleVote(e, "down")}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
                 <ArrowDown className="w-3.5 h-3.5" /><span>{localPost.downvotes || 0}</span>
               </button>
             </>
           )}
           {localPost.category === "events" && (
             <div className="relative">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   if (hasVotedBell) handleRemoveInterest();
@@ -318,16 +317,16 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               {showInterestMenu && (
                 <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
                   <p className="text-[9px] font-bold text-slate-400 px-2.5 py-1 uppercase tracking-wider">Remind me</p>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(15);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">15 mins before</button>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(60);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 hour before</button>
-                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(1440);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 day before</button>
+                  <button onClick={(e) => { e.stopPropagation(); handleAddInterest(15); }} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">15 mins before</button>
+                  <button onClick={(e) => { e.stopPropagation(); handleAddInterest(60); }} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 hour before</button>
+                  <button onClick={(e) => { e.stopPropagation(); handleAddInterest(1440); }} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 day before</button>
                 </div>
               )}
             </div>
           )}
           <button onClick={e => e.stopPropagation()}
-            className={`flex items-center gap-1 transition-all ml-auto ${localPost.category === "events" ? "px-1.5 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-600" : "px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0}</span>
+            className={`flex items-center gap-1 transition-all ml-auto ${localPost.category === "events" ? "px-1.5 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-600" : "px-1.5 py-0.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0} comments</span>
           </button>
         </div>
       </div>
