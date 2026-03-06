@@ -95,7 +95,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-slate-100" style={{ borderTopColor: primary, borderTopWidth: 4 }}>
+        <div className="p-5 border-b border-slate-100 dark:border-[#223041]" style={{ borderTopColor: darkMode ? "#6EA8FF" : primary, borderTopWidth: 4 }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">Your Profile</h2>
             <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
@@ -126,9 +126,9 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     onClick={() => setSelectedMood(m.value)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${selectedMood === m.value
                       ? "text-white border-transparent"
-                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 dark:bg-[#121922] dark:border-[#223041] dark:text-[#A8B3C2]"
                       }`}
-                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
+                    style={selectedMood === m.value ? { backgroundColor: darkMode ? "#6EA8FF" : primary, borderColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" } : {}}
                   >
                     {m.label}
                   </button>
@@ -140,7 +140,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   onClick={handleMoodSave}
                   disabled={!selectedMood || saving}
                   className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
-                  style={{ backgroundColor: primary }}
+                  style={{ backgroundColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" }}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>
@@ -175,7 +175,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               {darkMode ? "Dark Mode" : "Light Mode"}
             </div>
-            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "bg-slate-800" : "bg-slate-200"}`}>
+            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "bg-[#6EA8FF]" : "bg-slate-200"}`}>
               <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-5.5" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "22px" : "2px" }} />
             </div>
           </button>
@@ -214,7 +214,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                           onClick={() => handleEditPost(post)}
                           disabled={saving}
                           className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
-                          style={{ backgroundColor: primary }}
+                          style={{ backgroundColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" }}
                         >
                           <Check className="w-3 h-3 inline mr-1" />Save
                         </button>

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Layout({ children, currentPageName }) {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
+    <div className="min-h-screen bg-[#F6F8FC] dark:bg-[#0B0F14] font-sans">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', sans-serif; }
@@ -24,9 +24,9 @@ export default function Layout({ children, currentPageName }) {
         html.dark, .dark body { background-color: #0B0F14 !important; color: #EAF0F7 !important; }
         
         /* Backgrounds */
-        .dark .bg-slate-50, .dark .bg-gray-50, .dark .bg-\\[\\#FAFAFA\\] { background-color: #0B0F14 !important; }
+        .dark .bg-slate-50, .dark .bg-gray-50 { background-color: #18212D !important; }
         .dark .bg-white, .dark .bg-white\\/90, .dark .bg-white\\/80, .dark .bg-white\\/70 { background-color: #121922 !important; border-color: #223041 !important; }
-        .dark .bg-slate-100, .dark .bg-gray-100, .dark .bg-slate-200 { background-color: #18212D !important; border-color: #223041 !important; }
+        .dark .bg-slate-100, .dark .bg-gray-100, .dark .bg-slate-200 { background-color: #1C2633 !important; border-color: #223041 !important; }
         
         /* Hover States */
         .dark .hover\\:bg-slate-50:hover, .dark .hover\\:bg-gray-50:hover, .dark .hover\\:bg-white:hover { background-color: #18212D !important; }
