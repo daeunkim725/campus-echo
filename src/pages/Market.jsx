@@ -13,6 +13,13 @@ import { useThemeTokens } from "@/components/utils/ThemeProvider";
 const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
 
+const BatBadge = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 18s-2-2.5-4-2.5-4 1.5-4 1.5 2-4.5 2-6 2-4 4-4 2 2.5 2 6 2 4.5 4 4.5 4-1.5 4-1.5-2 4.5-4 4.5-4-2.5-4-2.5z" />
+    <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 15v-1" />
+  </svg>
+);
+
 function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
