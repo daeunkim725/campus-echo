@@ -86,6 +86,15 @@ export default function Home() {
 
       {/* Feed */}
       <div className="max-w-xl mx-auto px-4 py-4 space-y-3">
+        {loading && (
+          <div className="flex items-center justify-center gap-2 py-4 text-slate-400 text-sm font-medium">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+            </span>
+            Listening for echoes...
+          </div>
+        )}
         {loading ? (
           Array(5).fill(0).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
