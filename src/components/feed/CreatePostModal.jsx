@@ -6,6 +6,8 @@ import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/school
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { toast } from "sonner";
+import { Radar } from "lucide-react";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
