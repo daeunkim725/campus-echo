@@ -250,7 +250,11 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
           )}
           {listing.pickup_location && (
             <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> {listing.pickup_location}
+              <span className="relative flex h-2 w-2 mr-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+              {listing.pickup_location}
             </span>
           )}
         </div>
