@@ -9,7 +9,7 @@ import EditPostModal from "@/components/feed/EditPostModal";
 import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -62,8 +62,24 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const primary = tokens.primary;
   const primaryLight = tokens.primaryLight;
+
+  const activeUpvoteStyle = isDark ? {
+    color: "#32D583",
+    borderColor: "rgba(50,213,131,0.55)",
+    backgroundColor: "rgba(50,213,131,0.06)",
+    boxShadow: "0 0 0 1px rgba(50,213,131,0.35), 0 0 10px rgba(50,213,131,0.28), 0 0 22px rgba(50,213,131,0.16)"
+  } : {};
+
+  const activeDownvoteStyle = isDark ? {
+    color: "#FF5C5C",
+    borderColor: "rgba(255,92,92,0.55)",
+    backgroundColor: "rgba(255,92,92,0.06)",
+    boxShadow: "0 0 0 1px rgba(255,92,92,0.35), 0 0 10px rgba(255,92,92,0.28), 0 0 22px rgba(255,92,92,0.16)"
+  } : {};
 
   const handleVote = async (e, type) => {
     e.stopPropagation();
@@ -290,12 +306,24 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         <div className={`flex items-center gap-0.5 border-t border-slate-50 relative ${localPost.category === "events" ? "pt-1.5" : "pt-1.5"}`}>
           {localPost.category !== "events" && (
             <>
-              <button onClick={(e) => handleVote(e, "up")}
-                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+              <button
+                onClick={(e) => handleVote(e, "up")}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all border ${votedUp
+                    ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
+                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
+                  }`}
+                style={votedUp ? activeUpvoteStyle : {}}
+              >
                 <ArrowUp className="w-3.5 h-3.5" /><span>{localPost.upvotes || 0}</span>
               </button>
-              <button onClick={(e) => handleVote(e, "down")}
-                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+              <button
+                onClick={(e) => handleVote(e, "down")}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all border ${votedDown
+                    ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
+                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
+                  }`}
+                style={votedDown ? activeDownvoteStyle : {}}
+              >
                 <ArrowDown className="w-3.5 h-3.5" /><span>{localPost.downvotes || 0}</span>
               </button>
             </>

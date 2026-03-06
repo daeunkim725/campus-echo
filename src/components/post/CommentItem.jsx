@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowUp, ArrowDown, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import ReportModal from "@/components/feed/ReportModal";
@@ -15,30 +16,51 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [stillUrl, setStillUrl] = useState(null);
   const [showGiphy, setShowGiphy] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [localUpvotes, setLocalUpvotes] = useState(comment.upvotes || 0);
-  const [localDownvotes, setLocalDownvotes] = useState(comment.downvotes || 0);
+  const [localComment, setLocalComment] = useState(comment);
+
+  useEffect(() => {
+    setLocalComment(comment);
+  }, [comment]);
 
   const userId = currentUser?.id || "anon";
-  const isOwner = currentUser && comment.created_by === currentUser.email;
+  const isOwner = currentUser && localComment.created_by === currentUser.email;
   const [showMenu, setShowMenu] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(comment.content || "");
+  const [editText, setEditText] = useState(localComment.content || "");
   const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
-  const primary = schoolConfig?.primary || "#7C3AED";
-  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
-  const votedUp = comment.voted_up_by?.includes(userId);
-  const votedDown = comment.voted_down_by?.includes(userId);
+  const tokens = useThemeTokens(schoolConfig);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const primary = tokens.primary;
+  const primaryLight = tokens.primaryLight;
+
+  const activeUpvoteStyle = isDark ? {
+    color: "#32D583",
+    borderColor: "rgba(50,213,131,0.55)",
+    backgroundColor: "rgba(50,213,131,0.06)",
+    boxShadow: "0 0 0 1px rgba(50,213,131,0.35), 0 0 10px rgba(50,213,131,0.28), 0 0 22px rgba(50,213,131,0.16)"
+  } : {};
+
+  const activeDownvoteStyle = isDark ? {
+    color: "#FF5C5C",
+    borderColor: "rgba(255,92,92,0.55)",
+    backgroundColor: "rgba(255,92,92,0.06)",
+    boxShadow: "0 0 0 1px rgba(255,92,92,0.35), 0 0 10px rgba(255,92,92,0.28), 0 0 22px rgba(255,92,92,0.16)"
+  } : {};
+
+  const votedUp = localComment.voted_up_by?.includes(userId);
+  const votedDown = localComment.voted_down_by?.includes(userId);
 
   const handleVote = async (type) => {
     if (loading) return;
     setLoading(true);
 
-    let newVotedUp = [...(comment.voted_up_by || [])];
-    let newVotedDown = [...(comment.voted_down_by || [])];
-    let newUpvotes = localUpvotes;
-    let newDownvotes = localDownvotes;
+    let newVotedUp = [...(localComment.voted_up_by || [])];
+    let newVotedDown = [...(localComment.voted_down_by || [])];
+    let newUpvotes = localComment.upvotes;
+    let newDownvotes = localComment.downvotes;
 
     if (type === "up") {
       if (votedUp) {
@@ -66,16 +88,16 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       }
     }
 
-    setLocalUpvotes(newUpvotes);
-    setLocalDownvotes(newDownvotes);
+    const updatedComment = {
+      ...localComment,
+      upvotes: newUpvotes,
+      downvotes: newDownvotes,
+      voted_up_by: newVotedUp,
+      voted_down_by: newVotedDown
+    };
+    setLocalComment(updatedComment);
 
-    // Update the local comment object reference for immediate UI consistency
-    comment.voted_up_by = newVotedUp;
-    comment.voted_down_by = newVotedDown;
-    comment.upvotes = newUpvotes;
-    comment.downvotes = newDownvotes;
-
-    await base44.entities.Comment.update(comment.id, {
+    await base44.entities.Comment.update(localComment.id, {
       upvotes: newUpvotes,
       downvotes: newDownvotes,
       voted_up_by: newVotedUp,
@@ -93,8 +115,8 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     const color = primary;
 
     await base44.entities.Comment.create({
-      post_id: comment.post_id,
-      parent_comment_id: comment.id,
+      post_id: localComment.post_id,
+      parent_comment_id: localComment.id,
       content: replyText.trim(),
       gif_url: gifUrl,
       still_url: stillUrl,
@@ -106,11 +128,11 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       voted_down_by: []
     });
 
-    if (comment.created_by && comment.created_by !== currentUser.email) {
+    if (localComment.created_by && localComment.created_by !== currentUser.email) {
       await base44.entities.Notification.create({
-        user_email: comment.created_by,
+        user_email: localComment.created_by,
         type: "reply",
-        post_id: comment.post_id,
+        post_id: localComment.post_id,
         actor_alias: alias,
         content: replyText.trim() || "Sent a GIF",
         read: false
@@ -127,21 +149,22 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
 
   const handleDelete = async () => {
     setShowMenu(false);
-    await base44.entities.Comment.update(comment.id, { deleted: true });
+    await base44.entities.Comment.update(localComment.id, { deleted: true });
     onReply?.();
   };
 
   const handleEdit = async () => {
     if (!editText.trim()) return;
     setLoading(true);
-    await base44.entities.Comment.update(comment.id, { content: editText.trim(), edited: true });
+    await base44.entities.Comment.update(localComment.id, { content: editText.trim(), edited: true });
+    setLocalComment(prev => ({ ...prev, content: editText.trim(), edited: true }));
     setIsEditing(false);
     setLoading(false);
     onReply?.();
   };
 
-  const timeAgo = comment.created_date
-    ? formatDistanceToNow(new Date(comment.created_date), { addSuffix: true })
+  const timeAgo = localComment.created_date
+    ? formatDistanceToNow(new Date(localComment.created_date), { addSuffix: true })
     : "";
 
   return (
@@ -151,13 +174,13 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[13px]"
           style={{ backgroundColor: primaryLight }}
         >
-          {getAliasEmoji(comment.author_alias)}
+          {getAliasEmoji(localComment.author_alias)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-1.5 mb-0.5">
-            <span className="text-[13px] font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
+            <span className="text-[13px] font-semibold text-slate-800 capitalize">{getCleanAlias(localComment.author_alias)}</span>
             <span className="text-[11px] text-slate-400">{timeAgo}</span>
-            {!comment.deleted && (
+            {!localComment.deleted && (
               <div className="relative ml-auto">
                 <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600">
                   <MoreHorizontal className="w-4 h-4" />
@@ -183,7 +206,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
               </div>
             )}
           </div>
-          {comment.deleted ? (
+          {localComment.deleted ? (
             <p className="text-[13px] text-slate-400 italic leading-relaxed">[deleted]</p>
           ) : isEditing ? (
             <div className="mt-2 flex flex-col gap-2">
@@ -201,10 +224,10 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             </div>
           ) : (
             <>
-              {comment.content && <p className="text-[13px] text-slate-700 leading-relaxed">{comment.content} {comment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
-              {comment.gif_url && (
+              {localComment.content && <p className="text-[13px] text-slate-700 leading-relaxed">{localComment.content} {localComment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
+              {localComment.gif_url && (
                 <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
-                  <PlayableGif gifUrl={comment.gif_url} stillUrl={comment.still_url} className="w-full" />
+                  <PlayableGif gifUrl={localComment.gif_url} stillUrl={localComment.still_url} className="w-full" />
                 </div>
               )}
             </>
@@ -212,19 +235,29 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           <div className="flex items-center gap-1.5 mt-1.5">
             <button
               onClick={() => handleVote("up")}
-              className={`flex items-center gap-1 text-[11px] font-medium transition-colors px-1.5 py-0.5 rounded ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+              className={`flex items-center justify-center w-6 h-6 rounded border transition-colors ${votedUp
+                  ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
+                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
                 }`}
+              style={votedUp ? activeUpvoteStyle : {}}
             >
               <ArrowUp className="w-3.5 h-3.5" />
-              {localUpvotes}
             </button>
+            <span className={`text-[11px] font-medium min-w-[12px] text-center ${votedUp ? (isDark ? "text-[#32D583]" : "text-green-600") :
+                votedDown ? (isDark ? "text-[#FF5C5C]" : "text-red-500") :
+                  "text-slate-600"
+              }`}>
+              {localComment.upvotes - Math.abs(localComment.downvotes || 0)}
+            </span>
             <button
               onClick={() => handleVote("down")}
-              className={`flex items-center gap-1 text-[11px] font-medium transition-colors px-1.5 py-0.5 rounded ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+              className={`flex items-center justify-center w-6 h-6 rounded border transition-colors ${votedDown
+                  ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
+                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
                 }`}
+              style={votedDown ? activeDownvoteStyle : {}}
             >
               <ArrowDown className="w-3.5 h-3.5" />
-              {localDownvotes}
             </button>
             {depth < 2 && (
               <button
