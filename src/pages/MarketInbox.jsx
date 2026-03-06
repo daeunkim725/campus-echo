@@ -7,6 +7,7 @@ import { createPageUrl } from "@/utils";
 import { MessageCircle, ArrowLeft, Tag, ShieldCheck, Clock } from "lucide-react";
 import ChatModal from "@/components/market/ChatModal";
 import { formatDistanceToNow } from "date-fns";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function MarketInbox() {
   const [threads, setThreads] = useState([]);
@@ -16,6 +17,7 @@ export default function MarketInbox() {
   const [selectedThread, setSelectedThread] = useState(null);
 
   const schoolConfig = getSchoolConfig(currentUser?.school);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -60,7 +62,7 @@ export default function MarketInbox() {
   }, [currentUser]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       {currentUser?.school ? (
         <SchoolTopBar
           currentUser={currentUser}
@@ -128,7 +130,7 @@ export default function MarketInbox() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
-                      <span className={`px-2 py-0.5 rounded font-bold ${isSeller ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                      <span className="px-2 py-0.5 rounded font-bold" style={isSeller ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : { backgroundColor: '#d1fae5', color: '#047857' }}>
                         {isSeller ? "Selling" : "Buying"}
                       </span>
                       {thread.status === 'locked' && (
