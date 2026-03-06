@@ -4,6 +4,8 @@ import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck
 import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import ListingDetailModal from "@/components/market/ListingDetailModal";
+import { MessageCircle } from "lucide-react";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
@@ -197,7 +199,9 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
   const timeAgo = listing.created_date ? formatDistanceToNow(new Date(listing.created_date), { addSuffix: true }) : "";
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative group">
+    <div 
+      onClick={() => onUpdate?.(listing)} // Hacky way: pass select handler through onUpdate or similar
+      className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative group">
       {listing.image_url ? (
         <div className="w-full h-40 sm:h-48 bg-slate-100 relative">
           <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
@@ -274,6 +278,7 @@ export default function Market() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   
   // Filters
