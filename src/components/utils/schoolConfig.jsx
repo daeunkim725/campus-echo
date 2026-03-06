@@ -3,9 +3,12 @@ export const NEUTRAL_DARK = {
   secondary: "#4FD2E6",
   bg: "#0B0F14",
   surface: "#121922",
+  elevated: "#18212D",
   text: "#EAF0F7",
   textMuted: "#A8B3C2",
+  textFaint: "#6F7C8F",
   border: "#223041",
+  divider: "#1C2633",
   primaryLight: "rgba(110,168,255,0.14)",
 };
 
