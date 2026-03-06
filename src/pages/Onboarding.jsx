@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2, Smile, Lock } from "lucide-react";
+import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2, Smile, Lock, MoreHorizontal } from "lucide-react";
 
 const MOODS = [
   { value: "happy", label: "Happy 😊" },
@@ -252,28 +252,32 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-[#0B1220]">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-4 py-3 sticky top-0 z-30">
+      <div className="bg-[#FFFFFF] border-b border-[#E5E7EB] px-4 py-3 sticky top-0 z-30">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center shadow-sm">
-              <span className="text-lg">🦇</span>
+            <div className="w-8 h-8 rounded-[10px] bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shadow-sm">
+              <span className="text-[16px]">🦇</span>
             </div>
-            <h1 className="text-lg font-bold text-slate-900 tracking-tight">Echo</h1>
+            <h1 className="text-[17px] font-bold text-[#0B1220] tracking-tight">Echo</h1>
           </div>
           {currentUser?.role === 'admin' && (
-            <div className="flex items-center gap-3">
-               <button onClick={() => window.location.href = createPageUrl("Onboarding") + "?reset=1"} className="text-[10px] font-bold text-slate-400 hover:text-slate-600 uppercase tracking-wide">
-                 Reset test
-               </button>
-               <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-wider rounded-md">
-                 Admin
-               </span>
-               <button onClick={() => window.location.href = createPageUrl("Home")} className="text-sm font-bold text-slate-900 hover:opacity-70">
-                 Skip →
-               </button>
-            </div>
+             <div className="relative">
+                <button onClick={() => {
+                  const menu = document.getElementById('admin-menu');
+                  menu.classList.toggle('hidden');
+                }} className="w-8 h-8 flex items-center justify-center text-[#64748B] hover:bg-[#F7F8FA] rounded-full transition-colors">
+                  <MoreHorizontal className="w-5 h-5" />
+                </button>
+                <div id="admin-menu" className="hidden absolute right-0 top-10 w-44 bg-[#FFFFFF] rounded-[16px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-[#E5E7EB] py-1.5 z-40">
+                  <div className="px-4 py-2 border-b border-[#E5E7EB] mb-1">
+                     <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Admin Tools</p>
+                  </div>
+                  <button onClick={() => window.location.href = createPageUrl("Onboarding") + "?reset=1"} className="w-full text-left px-4 py-2 text-[14px] font-medium text-[#0B1220] hover:bg-[#F7F8FA]">Reset test</button>
+                  <button onClick={() => window.location.href = createPageUrl("Home")} className="w-full text-left px-4 py-2 text-[14px] font-medium text-[#0B1220] hover:bg-[#F7F8FA]">Skip to feed</button>
+                </div>
+             </div>
           )}
         </div>
       </div>
@@ -283,79 +287,77 @@ export default function Onboarding() {
 
           {/* Step: Choose School */}
           {step === "school" && (
-            <div className="pb-24">
-              <div className="mb-6 text-center">
-                <h2 className="text-[22px] font-extrabold text-slate-900 mb-1.5 tracking-tight">Choose your school</h2>
-                <p className="text-slate-500 text-sm">Select the university you're enrolled at to join your community.</p>
+            <div className="pb-32">
+              <div className="mb-8 text-center">
+                <h2 className="text-[24px] font-bold text-[#0B1220] mb-2 tracking-tight">Choose your school</h2>
+                <p className="text-[#64748B] text-[15px]">Select the university you're enrolled at to join your community.</p>
               </div>
 
               {/* Live schools */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-2 gap-4 mb-6">
                 {SCHOOLS.filter(s => s.featured).map(school => {
                   const isSelected = selectedSchoolCode === school.code;
                   return (
                     <button
                       key={school.code}
                       onClick={() => handleSchoolClick(school)}
-                      className={`relative flex flex-col items-center p-5 rounded-2xl border transition-all duration-200 active:scale-95 text-center ${
+                      className={`relative flex flex-col items-center p-5 rounded-[20px] transition-all duration-200 active:scale-[0.98] text-center border ${
                         isSelected 
-                          ? "bg-white shadow-md ring-1" 
-                          : "bg-white border-slate-200 shadow-sm hover:border-slate-300 hover:shadow"
+                          ? "bg-[#FFFFFF] shadow-sm" 
+                          : "bg-[#FFFFFF] border-[#E5E7EB] shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] hover:border-slate-300 hover:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.08)]"
                       }`}
                       style={{
                         borderColor: isSelected ? school.color : "",
-                        "--tw-ring-color": isSelected ? school.color : ""
+                        backgroundColor: isSelected ? school.color + "08" : "#FFFFFF"
                       }}
                     >
                       {/* Live indicator */}
-                      <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                      <div className="absolute top-4 right-4 flex items-center gap-1.5">
                         <span className="relative flex h-1.5 w-1.5">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: school.color }}></span>
                           <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: school.color }}></span>
                         </span>
-                        <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: school.color }}>Live</span>
+                        <span className="text-[11px] font-medium" style={{ color: school.color }}>Live</span>
                       </div>
 
                       {/* Checkmark when selected */}
                       {isSelected && (
-                        <div className="absolute top-3 left-3 w-5 h-5 rounded-full flex items-center justify-center text-white shadow-sm" style={{ backgroundColor: school.color }}>
-                          <CheckCircle className="w-3 h-3" />
+                        <div className="absolute top-4 left-4 w-5 h-5 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: school.color }}>
+                          <CheckCircle className="w-3 h-3" strokeWidth={3} />
                         </div>
                       )}
 
-                      <div className="w-12 h-12 rounded-xl mb-3 flex items-center justify-center text-white text-sm font-bold shadow-sm"
-                        style={{ backgroundColor: school.color }}>
+                      <div className="w-[48px] h-[48px] rounded-[14px] mb-3 flex items-center justify-center text-[#0B1220] text-[15px] font-bold bg-[#F7F8FA] border border-[#E5E7EB]">
                         {school.code.slice(0, 3)}
                       </div>
-                      <p className="font-bold text-slate-800 text-sm mb-0.5">{school.name}</p>
-                      <p className="text-[11px] text-slate-400">{school.domains[0]}</p>
+                      <p className="font-semibold text-[#0B1220] text-[16px] mb-0.5">{school.name}</p>
+                      <p className="text-[13px] text-[#64748B]">{school.domains[0]}</p>
                     </button>
                   );
                 })}
               </div>
 
               {/* Coming soon schools */}
-              <div className="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+              <div className="border border-[#E5E7EB] rounded-[20px] bg-[#FFFFFF] shadow-[0_2px_8px_-4px_rgba(0,0,0,0.03)] overflow-hidden">
                 <button 
                   onClick={() => setShowComingSoon(!showComingSoon)}
-                  className="w-full px-4 py-3 flex items-center justify-between text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="w-full px-5 py-4 flex items-center justify-between text-[15px] font-medium text-[#64748B] hover:bg-[#F7F8FA] transition-colors"
                 >
                   More schools coming soon
-                  <span className="text-slate-400 text-lg leading-none">{showComingSoon ? '−' : '+'}</span>
+                  <span className="text-[#64748B] text-xl leading-none font-light">{showComingSoon ? '−' : '+'}</span>
                 </button>
                 
                 {showComingSoon && (
-                  <div className="p-3 pt-0 grid grid-cols-2 gap-2 bg-slate-50 border-t border-slate-100">
+                  <div className="p-4 pt-0 grid grid-cols-2 gap-2 bg-[#FFFFFF]">
                     {SCHOOLS.filter(s => !s.featured).map(school => (
                       <div
                         key={school.code}
-                        className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center gap-3 opacity-50 grayscale"
+                        className="bg-[#F7F8FA] border border-[#E5E7EB] rounded-[16px] p-3 flex items-center gap-3 opacity-60"
                       >
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shrink-0 shadow-sm"
-                          style={{ backgroundColor: school.color }}>
-                          {school.code.slice(0, 2)}
+                        <div className="w-9 h-9 rounded-[12px] bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center text-[#64748B] text-[11px] font-bold shrink-0">
+                          {school.code.slice(0, 3)}
                         </div>
-                        <p className="font-medium text-slate-700 text-xs truncate">{school.name}</p>
+                        <p className="font-medium text-[#64748B] text-[13px] truncate">{school.name}</p>
                       </div>
                     ))}
                   </div>
@@ -364,11 +366,11 @@ export default function Onboarding() {
 
               {/* Sticky Continue Button */}
               {selectedSchoolCode && (
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 animate-in slide-in-from-bottom flex justify-center z-20">
-                  <div className="w-full max-w-xl">
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#F7F8FA] via-[#F7F8FA]/90 to-transparent animate-in slide-in-from-bottom flex justify-center z-20 pb-8">
+                  <div className="w-full max-w-xl px-4">
                     <button
                       onClick={handleContinue}
-                      className="w-full py-3.5 rounded-xl text-white font-bold text-[15px] shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                      className="w-full py-4 rounded-[16px] text-white font-semibold text-[16px] shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all hover:opacity-90 active:scale-[0.98]"
                       style={{ backgroundColor: accentColor }}
                     >
                       Continue
