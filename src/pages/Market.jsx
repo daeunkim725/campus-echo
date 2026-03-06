@@ -248,16 +248,18 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
               {listing.category}
             </span>
           )}
-          {listing.pickup_location && (
-            <span className={`text-[9px] px-1 py-0.5 rounded font-medium flex items-center gap-1 ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
-              <MapPin className="w-3 h-3" /> {listing.pickup_location}
-            </span>
-          )}
         </div>
 
-        <div className="flex items-center justify-end pt-2.5 sm:pt-3 border-t border-slate-50">
-          <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
-            <Clock className="w-3 h-3" /> {timeAgo}
+        <div className="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-slate-50">
+          <div className="min-w-0 pr-2">
+            {listing.pickup_location && (
+              <span className={`text-[9px] px-1.5 py-0.5 rounded font-medium flex items-center gap-1 truncate ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
+                <MapPin className="w-3 h-3 shrink-0" /> <span className="truncate">{listing.pickup_location}</span>
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400 shrink-0">
+            <Clock className="w-3 h-3 shrink-0" /> {timeAgo}
           </div>
         </div>
       </div>
