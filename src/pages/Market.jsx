@@ -165,7 +165,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
             </div>
             
             <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex items-start gap-2">
-              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
+              <BatBadge className="w-4 h-4 shrink-0 mt-0.5 opacity-80" />
               <p>For your safety, only meet on campus during daylight hours. Never transfer money before seeing the item.</p>
             </div>
 
