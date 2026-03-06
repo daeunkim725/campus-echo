@@ -64,6 +64,15 @@ function isValidSchoolEmail(email, school) {
   return school.domains.some((d) => email.toLowerCase().endsWith(d));
 }
 
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 export default function Onboarding() {
   const [step, setStep] = useState("school"); // school | email | code | age | mood | locked | done
   const [selectedSchoolCode, setSelectedSchoolCode] = useState("");
