@@ -286,6 +286,7 @@ export default function Market() {
   // Filters
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterSort, setFilterSort] = useState("newest");
+  const [filterIncludeSold, setFilterIncludeSold] = useState(false);
 
   const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
@@ -312,6 +313,15 @@ export default function Market() {
       if (configSchoolCode) {
         data = data.filter((l) => !l.school || l.school === "all" || l.school === configSchoolCode);
       }
+
+      if (!filterIncludeSold) {
+        const twoDaysAgo = Date.now() - 48 * 60 * 60 * 1000;
+        data = data.filter(l => {
+          if (l.status !== "sold") return true;
+          const soldDate = new Date(l.updated_date || l.created_date).getTime();
+          return soldDate > twoDaysAgo;
+        });
+      }
       
       if (filterCategory !== "all") {
         data = data.filter(l => l.category === filterCategory);
@@ -329,7 +339,7 @@ export default function Market() {
     }
   };
 
-  useEffect(() => {fetchListings();}, [configSchoolCode, filterCategory, filterSort]);
+  useEffect(() => {fetchListings();}, [configSchoolCode, filterCategory, filterSort, filterIncludeSold]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
@@ -372,6 +382,16 @@ export default function Market() {
             <option value="price_low">Price: Low to High</option>
             <option value="price_high">Price: High to Low</option>
           </select>
+
+          <label className="flex items-center gap-1.5 ml-1 cursor-pointer flex-shrink-0 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+            <input 
+              type="checkbox" 
+              checked={filterIncludeSold} 
+              onChange={e => setFilterIncludeSold(e.target.checked)} 
+              className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3 h-3" 
+            />
+            Include sold
+          </label>
         </div>
       </div>
 
