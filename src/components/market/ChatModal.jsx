@@ -32,7 +32,21 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
   const fetchMessages = async () => {
     try {
       const msgs = await base44.entities.MarketMessage.list("+created_date", 100);
-      setMessages(msgs.filter(m => m.thread_id === thread.id));
+      const threadMsgs = msgs.filter(m => m.thread_id === thread.id);
+      
+      // Mark unread messages from other user as read
+      const unreadMsgs = threadMsgs.filter(m => m.sender_role !== myRole && m.sender_role !== "system" && !m.read);
+      for (const m of unreadMsgs) {
+        await base44.entities.MarketMessage.update(m.id, { read: true });
+      }
+      if (unreadMsgs.length > 0) {
+        // Update local state without re-fetching
+        threadMsgs.forEach(m => {
+          if (unreadMsgs.find(u => u.id === m.id)) m.read = true;
+        });
+      }
+
+      setMessages(threadMsgs);
     } finally {
       setLoading(false);
     }
