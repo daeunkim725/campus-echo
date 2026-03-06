@@ -165,9 +165,9 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
             if (msg.type === "offer") {
               return (
                 <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'ml-auto' : 'mr-auto'}`}>
-                  <div className={`rounded-2xl p-4 border ${isMine ? 'bg-indigo-50 border-indigo-100' : 'bg-white border-slate-200'} shadow-sm`}>
+                  <div className={`rounded-2xl p-4 border ${isMine ? 'border-transparent' : 'bg-white border-slate-200'} shadow-sm`} style={isMine ? { backgroundColor: tokens.primaryLight } : {}}>
                     <div className="flex items-center gap-2 mb-2">
-                      <Tag className={`w-4 h-4 ${isMine ? 'text-indigo-500' : 'text-slate-400'}`} />
+                      <Tag className={`w-4 h-4 ${isMine ? '' : 'text-slate-400'}`} style={isMine ? { color: tokens.primary } : {}} />
                       <span className="font-bold text-slate-900">${msg.offer_price?.toFixed(2)} Offer</span>
                       <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${msg.offer_status === 'pending' ? 'bg-amber-100 text-amber-700' : msg.offer_status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                         {msg.offer_status}
@@ -178,7 +178,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
                         <button onClick={() => handleUpdateOffer(msg.id, 'declined')} className="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
                           Decline
                         </button>
-                        <button onClick={() => handleUpdateOffer(msg.id, 'accepted')} className="flex-1 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-colors">
+                        <button onClick={() => handleUpdateOffer(msg.id, 'accepted')} className="flex-1 py-1.5 hover:opacity-90 text-white text-xs font-bold rounded-lg transition-colors" style={{ backgroundColor: tokens.primary, color: tokens.surface }}>
                           Accept
                         </button>
                       </div>
@@ -191,9 +191,9 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
             if (msg.type === "meetup") {
               return (
                 <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'ml-auto' : 'mr-auto'}`}>
-                  <div className={`rounded-2xl p-4 border ${isMine ? 'bg-indigo-50 border-indigo-100' : 'bg-white border-slate-200'} shadow-sm`}>
+                  <div className={`rounded-2xl p-4 border ${isMine ? 'border-transparent' : 'bg-white border-slate-200'} shadow-sm`} style={isMine ? { backgroundColor: tokens.primaryLight } : {}}>
                     <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-indigo-500" /> Meetup Plan
+                      <MapPin className="w-4 h-4" style={{ color: tokens.primary }} /> Meetup Plan
                     </h4>
                     <div className="space-y-1.5 text-sm">
                       <p className="flex items-center gap-2"><span className="text-slate-500 font-medium w-16">Where:</span> <span className="font-semibold text-slate-900">{msg.meetup_location}</span></p>
@@ -211,7 +211,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
             // text message
             return (
               <div key={msg.id} className={`flex flex-col max-w-[80%] ${isMine ? 'ml-auto items-end' : 'mr-auto items-start'}`}>
-                <div className={`px-4 py-2.5 rounded-2xl ${isMine ? 'bg-indigo-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
+                <div className={`px-4 py-2.5 rounded-2xl ${isMine ? 'text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`} style={isMine ? { backgroundColor: tokens.primary, color: tokens.surface } : {}}>
                   <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.content}</p>
                 </div>
                 <span className="text-[10px] text-slate-400 mt-1 px-1">
@@ -236,41 +236,41 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
             <div className="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
               <h4 className="text-sm font-bold text-slate-800 mb-2">Send an Offer</h4>
               <div className="flex gap-2 mb-2">
-                <input type="number" value={offerPrice} onChange={(e) => setOfferPrice(e.target.value)} placeholder="Price" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="number" value={offerPrice} onChange={(e) => setOfferPrice(e.target.value)} placeholder="Price" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2" style={{ "--tw-ring-color": tokens.primaryLight }} />
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setShowOfferForm(false)} className="flex-1 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 text-sm font-semibold">Cancel</button>
-                <button onClick={handleSendOffer} className="flex-1 py-2 bg-indigo-600 rounded-lg text-white text-sm font-semibold">Send Offer</button>
+                <button onClick={handleSendOffer} className="flex-1 py-2 rounded-lg text-sm font-semibold hover:opacity-90" style={{ backgroundColor: tokens.primary, color: tokens.surface }}>Send Offer</button>
               </div>
             </div>
           ) : showMeetupForm ? (
             <div className="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
               <h4 className="text-sm font-bold text-slate-800 mb-2">Plan Meetup</h4>
               <div className="space-y-2 mb-3">
-                <input type="text" value={meetupLocation} onChange={(e) => setMeetupLocation(e.target.value)} placeholder="Where? e.g. Library Cafe" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                <input type="text" value={meetupTime} onChange={(e) => setMeetupTime(e.target.value)} placeholder="When? e.g. Today 3pm" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="text" value={meetupLocation} onChange={(e) => setMeetupLocation(e.target.value)} placeholder="Where? e.g. Library Cafe" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2" style={{ "--tw-ring-color": tokens.primaryLight }} />
+                <input type="text" value={meetupTime} onChange={(e) => setMeetupTime(e.target.value)} placeholder="When? e.g. Today 3pm" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2" style={{ "--tw-ring-color": tokens.primaryLight }} />
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setShowMeetupForm(false)} className="flex-1 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 text-sm font-semibold">Cancel</button>
-                <button onClick={handleSendMeetup} className="flex-1 py-2 bg-indigo-600 rounded-lg text-white text-sm font-semibold">Send Plan</button>
+                <button onClick={handleSendMeetup} className="flex-1 py-2 rounded-lg text-sm font-semibold hover:opacity-90" style={{ backgroundColor: tokens.primary, color: tokens.surface }}>Send Plan</button>
               </div>
             </div>
           ) : (
             <div className="flex items-end gap-2">
               <div className="flex flex-col gap-1 shrink-0">
                 {!isSeller && (
-                  <button onClick={() => setShowOfferForm(true)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 transition-colors" title="Send Offer">
+                  <button onClick={() => setShowOfferForm(true)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" style={{ ":hover": { color: tokens.primary } }} title="Send Offer">
                     <Tag className="w-4 h-4" />
                   </button>
                 )}
                 {isSeller && (
-                  <button onClick={() => setShowMeetupForm(true)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-indigo-600 transition-colors" title="Plan Meetup">
+                  <button onClick={() => setShowMeetupForm(true)} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" style={{ ":hover": { color: tokens.primary } }} title="Plan Meetup">
                     <MapPin className="w-4 h-4" />
                   </button>
                 )}
               </div>
               
-              <form onSubmit={handleSend} className="flex-1 relative flex items-center bg-slate-100 rounded-2xl border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-300 transition-all overflow-hidden">
+              <form onSubmit={handleSend} className="flex-1 relative flex items-center bg-slate-100 rounded-2xl border border-slate-200 focus-within:ring-2 transition-all overflow-hidden" style={{ "--tw-ring-color": tokens.primaryLight }}>
                 <input
                   type="text"
                   value={inputText}
