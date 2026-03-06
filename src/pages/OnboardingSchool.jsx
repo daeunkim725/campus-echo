@@ -57,6 +57,15 @@ export default function OnboardingSchool() {
                             </button>
                         ))}
                     </div>
+
+                    <div className="mt-8 text-center">
+                        <p className="text-sm text-slate-500">
+                            Already have an account?{' '}
+                            <button onClick={() => navigateToLogin()} className="font-semibold text-slate-800 hover:underline">
+                                Log in
+                            </button>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
