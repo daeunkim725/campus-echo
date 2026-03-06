@@ -20,17 +20,32 @@ const MOODS = [
 
 const SCHOOLS = [
   { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#1A5276" },
-  { code: "EPFL", name: "EPFL", domains: ["@epfl.ch"], color: "#E74C3C" },
   { code: "UNIZH", name: "Uni Zürich", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#2980B9" },
-  { code: "UNIBASEL", name: "Uni Basel", domains: ["@unibas.ch"], color: "#8E44AD" },
-  { code: "UNIBE", name: "Uni Bern", domains: ["@unibe.ch", "@students.unibe.ch"], color: "#D35400" },
-  { code: "UNIL", name: "Uni Lausanne", domains: ["@unil.ch"], color: "#27AE60" },
-  { code: "UNIFR", name: "Uni Fribourg", domains: ["@unifr.ch"], color: "#C0392B" },
-  { code: "UNIGE", name: "Uni Genève", domains: ["@unige.ch", "@etu.unige.ch"], color: "#1ABC9C" },
-  { code: "UNISG", name: "Uni St. Gallen", domains: ["@unisg.ch", "@student.unisg.ch"], color: "#2C3E50" },
-  { code: "USI", name: "USI Lugano", domains: ["@usi.ch", "@student.usi.ch"], color: "#E67E22" },
-  { code: "UNILU", name: "Uni Lucerne", domains: ["@unilu.ch", "@student.unilu.ch"], color: "#16A085" },
 ];
+
+function CountdownTimer({ targetDate }) {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    if (!targetDate) return;
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = new Date(targetDate).getTime() - now;
+      if (distance < 0) {
+        setTimeLeft("Unlocked! Refresh page.");
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  return <>{timeLeft || "Calculating..."}</>;
+}
 
 function generateCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -51,12 +66,34 @@ export default function Onboarding() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedMood, setSelectedMood] = useState("");
+  const [dob, setDob] = useState("");
 
   useEffect(() => {
     base44.auth.me().then(u => {
       setCurrentUser(u);
-      if (u?.school_verified || u?.role === 'admin') {
+      
+      if (u?.unlock_at && !u?.age_verified) {
+         const unlockTime = new Date(u.unlock_at).getTime();
+         if (Date.now() >= unlockTime) {
+            base44.auth.updateMe({ age_verified: true, unlock_at: null }).then(() => {
+                if (u.mood) window.location.href = createPageUrl("Home");
+                else setStep("mood");
+            });
+            return;
+         } else {
+            setStep("locked");
+            return;
+         }
+      }
+
+      if (u?.role === 'admin') {
         window.location.href = createPageUrl("Home");
+      } else if (u?.school_verified && u?.age_verified && u?.mood) {
+        window.location.href = createPageUrl("Home");
+      } else if (u?.school_verified && !u?.age_verified) {
+        setStep("age");
+      } else if (u?.school_verified && u?.age_verified && !u?.mood) {
+        setStep("mood");
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Onboarding")));
   }, []);
@@ -117,7 +154,31 @@ export default function Onboarding() {
     });
 
     setLoading(false);
-    setStep("mood");
+    setStep("age");
+  };
+
+  const handleAgeVerify = async () => {
+    if (!dob) return;
+    setLoading(true);
+    const dobDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - dobDate.getFullYear();
+    const m = today.getMonth() - dobDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
+      age--;
+    }
+
+    if (age >= 18) {
+      await base44.auth.updateMe({ dob, age_verified: true, unlock_at: null });
+      setLoading(false);
+      setStep("mood");
+    } else {
+      const unlockDate = new Date(dobDate.getFullYear() + 18, dobDate.getMonth(), dobDate.getDate());
+      await base44.auth.updateMe({ dob, age_verified: false, unlock_at: unlockDate.toISOString() });
+      setCurrentUser(prev => ({ ...prev, unlock_at: unlockDate.toISOString() }));
+      setLoading(false);
+      setStep("locked");
+    }
   };
 
   const handleMoodSelect = async () => {
@@ -221,6 +282,54 @@ export default function Onboarding() {
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Send Code</>}
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step: Age Gate */}
+          {step === "age" && (
+            <div>
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center mb-4">
+                  <span className="text-2xl">🎂</span>
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-1">When were you born?</h2>
+                <p className="text-slate-500 text-sm">You must be at least 18 years old to join fizz.</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-200 p-5">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Date of Birth</p>
+                <input
+                  type="date"
+                  value={dob}
+                  onChange={e => setDob(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  className="w-full text-slate-800 text-sm placeholder:text-slate-400 focus:outline-none border border-slate-200 rounded-xl px-4 py-3"
+                />
+                <button
+                  onClick={handleAgeVerify}
+                  disabled={!dob || loading}
+                  className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-violet-600 text-white font-semibold text-sm hover:bg-violet-700 disabled:opacity-40 transition-all"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Continue</>}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step: Locked */}
+          {step === "locked" && (
+            <div className="text-center bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">🔒</span>
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 mb-2">Not yet unlocked</h2>
+              <p className="text-slate-500 mb-6 text-sm">You must be 18 to use fizz. You'll be able to join on {new Date(currentUser?.unlock_at).toLocaleDateString()}.</p>
+              
+              <div className="bg-slate-50 rounded-xl p-4 mb-4">
+                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Time remaining</p>
+                <div className="text-xl font-mono font-bold text-violet-600">
+                  <CountdownTimer targetDate={currentUser?.unlock_at} />
+                </div>
               </div>
             </div>
           )}
