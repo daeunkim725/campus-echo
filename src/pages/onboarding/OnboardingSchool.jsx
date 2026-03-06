@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 
 const SCHOOLS = [
@@ -57,6 +57,14 @@ export default function OnboardingSchool() {
                             </button>
                         ))}
                     </div>
+
+                    {/* Log in link */}
+                    <p className="text-center text-[11px] text-slate-400 mt-5">
+                        Already have an account?{" "}
+                        <Link to="/login" className="text-slate-700 font-medium hover:underline">
+                            Log in
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>
