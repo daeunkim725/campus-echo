@@ -385,6 +385,15 @@ export default function Market() {
 
       {/* Feed */}
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+        {loading && (
+          <div className="flex items-center justify-center gap-2 pb-4 text-slate-400 text-sm font-medium">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+            </span>
+            Sending a ping...
+          </div>
+        )}
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {Array(6).fill(0).map((_, i) => (
