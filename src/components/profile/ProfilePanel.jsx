@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { createPageUrl } from "@/utils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 
@@ -289,7 +289,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                         )}
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-xs text-slate-400">
-                            {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
+                            {post.created_date ? getShortTimeAgo(post.created_date) : ""}
                           </span>
                           {!post.deleted && (
                             <div className="flex gap-1">
@@ -368,7 +368,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                           <div className="truncate flex-1 pr-3">
                             <p className="text-sm font-medium text-slate-700 line-through truncate group-hover:text-slate-900">{listing.title}</p>
                             <p className="text-[10px] text-slate-500 mt-0.5">
-                              Sold {listing.updated_date ? formatDistanceToNow(new Date(listing.updated_date), { addSuffix: true }) : ''} for <span className="font-semibold text-slate-700">${listing.price.toFixed(2)}</span>
+                              Sold {listing.updated_date ? getShortTimeAgo(listing.updated_date) : ''} for <span className="font-semibold text-slate-700">${listing.price.toFixed(2)}</span>
                             </p>
                           </div>
                           <button
