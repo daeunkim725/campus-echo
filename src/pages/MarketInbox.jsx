@@ -4,7 +4,7 @@ import TopBar from "@/components/feed/TopBar";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { createPageUrl } from "@/utils";
-import { MessageCircle, ArrowLeft, Tag, ShieldCheck, Clock } from "lucide-react";
+import { MessageCircle, ArrowLeft, Tag } from "lucide-react";
 import ChatModal from "@/components/market/ChatModal";
 import { formatDistanceToNow } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";

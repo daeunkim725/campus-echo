@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
@@ -31,7 +31,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const [loading, setLoading] = useState(true);
   const [editingMood, setEditingMood] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
-  const [showAllSold, setShowAllSold] = useState(false);
+  const [isSoldCollapsed, setIsSoldCollapsed] = useState(true);
   const [selectedMood, setSelectedMood] = useState(currentUser?.mood || "");
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
@@ -346,35 +346,41 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               {myListings.filter(l => l.status === "sold").length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sold</h3>
-                    <div className="flex gap-2">
-                      <button onClick={handleBulkArchiveSold} className="text-[10px] flex items-center gap-1 text-slate-500 hover:text-slate-700"><Archive className="w-3 h-3" /> Archive All</button>
-                      <button onClick={handleBulkDeleteSold} className="text-[10px] flex items-center gap-1 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /> Delete All</button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    {myListings.filter(l => l.status === "sold").slice(0, showAllSold ? undefined : 3).map(listing => (
-                      <div key={listing.id} className="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-100 opacity-75">
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="truncate">
-                            <p className="text-sm font-medium text-slate-700 line-through truncate">{listing.title}</p>
-                            <p className="text-xs text-slate-500">Sold for ${listing.price.toFixed(2)}</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleRelist(listing)}
-                          className="px-2 py-1 bg-white text-slate-600 text-xs font-medium rounded-lg border border-slate-200 flex items-center gap-1 hover:bg-slate-100"
-                        >
-                          <RotateCcw className="w-3 h-3" /> Relist
-                        </button>
+                    <button
+                      onClick={() => setIsSoldCollapsed(!isSoldCollapsed)}
+                      className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors"
+                    >
+                      {isSoldCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      Sold ({myListings.filter(l => l.status === "sold").length})
+                    </button>
+                    {!isSoldCollapsed && (
+                      <div className="flex gap-2">
+                        <button onClick={handleBulkArchiveSold} className="text-[10px] flex items-center gap-1 text-slate-500 hover:text-slate-700"><Archive className="w-3 h-3" /> Archive All</button>
+                        <button onClick={handleBulkDeleteSold} className="text-[10px] flex items-center gap-1 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /> Delete All</button>
                       </div>
-                    ))}
-                    {!showAllSold && myListings.filter(l => l.status === "sold").length > 3 && (
-                      <button onClick={() => setShowAllSold(true)} className="text-xs text-indigo-600 font-medium w-full text-center py-1">
-                        View all sold ({myListings.filter(l => l.status === "sold").length})
-                      </button>
                     )}
                   </div>
+
+                  {!isSoldCollapsed && (
+                    <div className="space-y-2 mt-3 pl-1 border-l-2 border-slate-100 ml-1.5 pb-2">
+                      {myListings.filter(l => l.status === "sold").map(listing => (
+                        <div key={listing.id} className="flex items-center justify-between py-2 pl-3 pr-2 opacity-75 group hover:opacity-100 transition-opacity">
+                          <div className="truncate flex-1 pr-3">
+                            <p className="text-sm font-medium text-slate-700 line-through truncate group-hover:text-slate-900">{listing.title}</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5">
+                              Sold {listing.updated_date ? formatDistanceToNow(new Date(listing.updated_date), { addSuffix: true }) : ''} for <span className="font-semibold text-slate-700">${listing.price.toFixed(2)}</span>
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleRelist(listing)}
+                            className="shrink-0 px-2 py-1 bg-white text-slate-600 text-xs font-medium rounded-lg border border-slate-200 flex items-center gap-1 hover:bg-slate-50 shadow-sm"
+                          >
+                            <RotateCcw className="w-3 h-3" /> Relist
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

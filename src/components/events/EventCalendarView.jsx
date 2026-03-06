@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, format, parseISO, isSameDay, isBefore, isAfter } from "date-fns";
+import { eachDayOfInterval, startOfMonth, endOfMonth, getDay, format, parseISO, isSameDay } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function EventCalendarView({ events, onSelectDate, schoolConfig }) {

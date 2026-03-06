@@ -5,7 +5,6 @@ import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import ListingDetailModal from "@/components/market/ListingDetailModal";
-import { MessageCircle } from "lucide-react";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
@@ -158,7 +157,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
                 </>
               )}
             </div>
-            
+
             <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex items-start gap-2">
               <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
               <p>For your safety, only meet on campus during daylight hours. Never transfer money before seeing the item.</p>
@@ -199,19 +198,20 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
   const timeAgo = listing.created_date ? formatDistanceToNow(new Date(listing.created_date), { addSuffix: true }) : "";
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative group">
       {listing.image_url ? (
-        <div className="w-full h-40 sm:h-48 bg-slate-100 relative">
+        <div className={`w-full h-40 sm:h-48 bg-slate-100 relative ${listing.status === 'sold' ? 'grayscale opacity-60' : ''}`}>
           <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs sm:text-sm font-bold text-slate-900 shadow-sm">
-            ${listing.price.toFixed(2)}
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm ${listing.status === 'sold' ? 'bg-slate-700 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-900'}`}>
+            {listing.status === 'sold' ? "SOLD" : `$${listing.price.toFixed(2)}`}
           </div>
-          <button 
-            onClick={handleSave}
-            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? '' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-slate-600'}`}
-            style={isSaved ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
+          <button
+            onClick={listing.status === 'sold' ? undefined : handleSave}
+            disabled={listing.status === 'sold'}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${listing.status === 'sold' ? 'bg-white/50 text-slate-400 cursor-not-allowed opacity-50' : isSaved ? '' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-slate-600'}`}
+            style={isSaved && listing.status !== 'sold' ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
@@ -219,36 +219,37 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
       ) : (
         <div className="w-full h-32 sm:h-40 bg-slate-50 flex items-center justify-center relative">
           <Tag className="w-8 h-8 text-slate-300" />
-          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs sm:text-sm font-bold text-slate-900 shadow-sm border border-slate-100">
-            ${listing.price.toFixed(2)}
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm border ${listing.status === 'sold' ? 'bg-slate-700 text-white border-transparent' : 'bg-white/90 backdrop-blur-sm text-slate-900 border-slate-100'}`}>
+            {listing.status === 'sold' ? "SOLD" : `$${listing.price.toFixed(2)}`}
           </div>
-          <button 
-            onClick={handleSave}
-            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? '' : 'bg-white text-slate-400 hover:text-slate-600'}`}
-            style={isSaved ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
+          <button
+            onClick={listing.status === 'sold' ? undefined : handleSave}
+            disabled={listing.status === 'sold'}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${listing.status === 'sold' ? 'bg-white/50 text-slate-400 cursor-not-allowed opacity-50' : isSaved ? '' : 'bg-white text-slate-400 hover:text-slate-600'}`}
+            style={isSaved && listing.status !== 'sold' ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
         </div>
       )}
 
-      <div className="p-3 sm:p-4 flex flex-col flex-1">
-        <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-1 line-clamp-1">{listing.title}</h3>
+      <div className={`p-3 sm:p-4 flex flex-col flex-1 ${listing.status === 'sold' ? 'opacity-70' : ''}`}>
+        <h3 className={`text-sm sm:text-base font-bold mb-1 line-clamp-1 ${listing.status === 'sold' ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{listing.title}</h3>
         <p className="text-slate-500 text-xs line-clamp-2 mb-2 sm:mb-3 flex-1">{listing.description}</p>
-        
+
         <div className="flex flex-wrap gap-1.5 mb-3">
           {listing.condition && (
-            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
+            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
               {listing.condition}
             </span>
           )}
           {listing.category && (
-            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
+            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
               {listing.category}
             </span>
           )}
           {listing.pickup_location && (
-            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium flex items-center gap-1">
+            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium flex items-center gap-1 ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
               <MapPin className="w-3 h-3" /> {listing.pickup_location}
             </span>
           )}
@@ -282,7 +283,7 @@ export default function Market() {
   const [showCreate, setShowCreate] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  
+
   // Filters
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterSort, setFilterSort] = useState("newest");
@@ -315,18 +316,13 @@ export default function Market() {
       }
 
       if (!filterIncludeSold) {
-        const twoDaysAgo = Date.now() - 48 * 60 * 60 * 1000;
-        data = data.filter(l => {
-          if (l.status !== "sold") return true;
-          const soldDate = new Date(l.updated_date || l.created_date).getTime();
-          return soldDate > twoDaysAgo;
-        });
+        data = data.filter(l => l.status !== "sold");
       }
-      
+
       if (filterCategory !== "all") {
         data = data.filter(l => l.category === filterCategory);
       }
-      
+
       if (filterSort === "price_low") {
         data = data.sort((a, b) => a.price - b.price);
       } else if (filterSort === "price_high") {
@@ -339,7 +335,7 @@ export default function Market() {
     }
   };
 
-  useEffect(() => {fetchListings();}, [configSchoolCode, filterCategory, filterSort, filterIncludeSold]);
+  useEffect(() => { fetchListings(); }, [configSchoolCode, filterCategory, filterSort, filterIncludeSold]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
@@ -364,17 +360,17 @@ export default function Market() {
       {/* Filters Bar */}
       <div className="sticky z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 top-[65px]">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3 overflow-x-auto scrollbar-hide">
-          <select 
-            value={filterCategory} 
+          <select
+            value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
             className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
           >
             <option value="all">All Categories</option>
             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          
-          <select 
-            value={filterSort} 
+
+          <select
+            value={filterSort}
             onChange={e => setFilterSort(e.target.value)}
             className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
           >
@@ -384,11 +380,11 @@ export default function Market() {
           </select>
 
           <label className="flex items-center gap-1.5 ml-1 cursor-pointer flex-shrink-0 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
-            <input 
-              type="checkbox" 
-              checked={filterIncludeSold} 
-              onChange={e => setFilterIncludeSold(e.target.checked)} 
-              className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3 h-3" 
+            <input
+              type="checkbox"
+              checked={filterIncludeSold}
+              onChange={e => setFilterIncludeSold(e.target.checked)}
+              className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3 h-3"
             />
             Include sold
           </label>
@@ -420,7 +416,7 @@ export default function Market() {
               Buy and sell safely with verified students. Got textbooks, a bike, or an old monitor? Turn it into cash today.
             </p>
             <button
-              onClick={() => setShowCreate(true)} 
+              onClick={() => setShowCreate(true)}
               className="text-white w-full py-3 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: tokens.primary, color: tokens.surface }}>
               <Plus className="w-4 h-4" /> Start Selling
@@ -432,13 +428,13 @@ export default function Market() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {listings.map((listing) => (
-              <ListingCard 
-                key={listing.id} 
-                listing={listing} 
-                currentUser={currentUser} 
-                onUpdate={fetchListings} 
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                currentUser={currentUser}
+                onUpdate={fetchListings}
                 onClick={() => setSelectedListing(listing)}
-                schoolConfig={schoolConfig} 
+                schoolConfig={schoolConfig}
               />
             ))}
           </div>
@@ -448,12 +444,12 @@ export default function Market() {
       {showCreate && (
         <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} schoolConfig={schoolConfig} />
       )}
-      
+
       {selectedListing && (
-        <ListingDetailModal 
-          listing={selectedListing} 
-          currentUser={currentUser} 
-          onClose={() => setSelectedListing(null)} 
+        <ListingDetailModal
+          listing={selectedListing}
+          currentUser={currentUser}
+          onClose={() => setSelectedListing(null)}
           schoolConfig={schoolConfig}
           onUpdate={fetchListings}
         />

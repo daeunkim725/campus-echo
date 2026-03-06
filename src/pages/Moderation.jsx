@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Check, Trash2, ArrowLeft } from "lucide-react";
+import { Trash2, ArrowLeft } from "lucide-react";
 
 export default function Moderation() {
   const [reports, setReports] = useState([]);

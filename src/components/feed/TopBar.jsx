@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Bell, MessageCircle } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
+import ProfilePanel from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";

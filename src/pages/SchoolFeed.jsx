@@ -5,7 +5,7 @@ import PostCard from "@/components/feed/PostCard";
 import FilterDrawer from "@/components/feed/FilterDrawer";
 import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
-import { getSchoolConfig, SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
+import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
