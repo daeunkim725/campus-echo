@@ -301,7 +301,7 @@ export default function Market() {
   useEffect(() => {
     base44.auth.me().then((u) => {
       setCurrentUser(u);
-      if (!u?.school_verified && u?.role !== 'admin') {
+      if ((!u?.school_verified || !u?.age_verified) && u?.role !== 'admin') {
         window.location.href = createPageUrl("Onboarding");
         return;
       }
