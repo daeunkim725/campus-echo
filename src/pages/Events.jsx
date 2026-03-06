@@ -180,7 +180,7 @@ export default function Events() {
               <button
                 onClick={() => setShowCreate(true)}
                 className="mt-4 px-5 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all"
-                style={{ backgroundColor: tokens.primary }}
+                style={{ backgroundColor: tokens.primary, color: tokens.surface }}
               >
                 Create an event
               </button>
