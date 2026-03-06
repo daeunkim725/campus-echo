@@ -175,7 +175,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               {darkMode ? "Dark Mode" : "Light Mode"}
             </div>
-            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "bg-[#6EA8FF]" : "bg-slate-200"}`}>
+            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "" : "bg-slate-200"}`} style={darkMode ? { backgroundColor: primary } : {}}>
               <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-5.5" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "22px" : "2px" }} />
             </div>
           </button>
