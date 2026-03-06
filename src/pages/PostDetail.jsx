@@ -61,16 +61,16 @@ export default function PostDetail() {
 
   const activeUpvoteStyle = isDark ? {
     color: "#32D583",
-    borderColor: "rgba(50,213,131,0.55)",
-    backgroundColor: "rgba(50,213,131,0.06)",
-    boxShadow: "0 0 0 1px rgba(50,213,131,0.35), 0 0 10px rgba(50,213,131,0.28), 0 0 22px rgba(50,213,131,0.16)"
+    borderColor: "rgba(50,213,131,0.45)",
+    backgroundColor: "rgba(50,213,131,0.05)",
+    boxShadow: "0 0 0 1px rgba(50,213,131,0.25), 0 0 6px rgba(50,213,131,0.15), 0 0 12px rgba(50,213,131,0.08)"
   } : {};
 
   const activeDownvoteStyle = isDark ? {
     color: "#FF5C5C",
-    borderColor: "rgba(255,92,92,0.55)",
-    backgroundColor: "rgba(255,92,92,0.06)",
-    boxShadow: "0 0 0 1px rgba(255,92,92,0.35), 0 0 10px rgba(255,92,92,0.28), 0 0 22px rgba(255,92,92,0.16)"
+    borderColor: "rgba(255,92,92,0.45)",
+    backgroundColor: "rgba(255,92,92,0.05)",
+    boxShadow: "0 0 0 1px rgba(255,92,92,0.25), 0 0 6px rgba(255,92,92,0.15), 0 0 12px rgba(255,92,92,0.08)"
   } : {};
 
   useEffect(() => {
