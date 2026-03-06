@@ -87,6 +87,9 @@ export default function Onboarding() {
   const [error, setError] = useState("");
   const [selectedMood, setSelectedMood] = useState("");
   const [dob, setDob] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
