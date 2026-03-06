@@ -62,6 +62,11 @@ import OnboardingPassword from './pages/OnboardingPassword';
 import OnboardingProfile from './pages/OnboardingProfile';
 import OnboardingSchool from './pages/OnboardingSchool';
 import OnboardingVerify from './pages/OnboardingVerify';
+import OnboardingVerify from './pages/OnboardingVerify';
+import OnboardingPassword from './pages/OnboardingPassword';
+import OnboardingSchool from './pages/OnboardingSchool';
+import OnboardingAge from './pages/OnboardingAge';
+import OnboardingProfile from './pages/OnboardingProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +86,11 @@ export const PAGES = {
     "OnboardingProfile": OnboardingProfile,
     "OnboardingSchool": OnboardingSchool,
     "OnboardingVerify": OnboardingVerify,
+    "OnboardingVerify": OnboardingVerify,
+    "OnboardingPassword": OnboardingPassword,
+    "OnboardingSchool": OnboardingSchool,
+    "OnboardingAge": OnboardingAge,
+    "OnboardingProfile": OnboardingProfile,
 }
 
 export const pagesConfig = {
