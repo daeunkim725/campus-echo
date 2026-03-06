@@ -325,7 +325,7 @@ export default function Onboarding() {
                       )}
 
                       <div className="w-[48px] h-[48px] rounded-[14px] mb-3 flex items-center justify-center text-[#0B1220] text-[15px] font-bold bg-[#F7F8FA] border border-[#E5E7EB]">
-                        {school.code.slice(0, 3)}
+                        {school.code === 'UNIZH' ? 'UZH' : school.code.slice(0, 3)}
                       </div>
                       <p className="font-semibold text-[#0B1220] text-[16px] mb-0.5">{school.name}</p>
                       <p className="text-[13px] text-[#64748B]">{school.domains[0]}</p>
