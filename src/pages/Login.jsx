@@ -9,7 +9,13 @@ const SCHOOLS = [
 ];
 
 function isValidSchoolEmail(email, school) {
-    return school.domains.some(d => email.toLowerCase().endsWith(d));
+    const emailLower = email.toLowerCase();
+    const isAdmin =
+        emailLower.endsWith("@campusecho.app") ||
+        ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
+
+    if (isAdmin) return true;
+    return school.domains.some(d => emailLower.endsWith(d));
 }
 
 function getPasswordStrength(pw) {
@@ -225,10 +231,22 @@ function SignupFlow({ onSwitch, navigate }) {
     if (step === "email") {
         const handleSendCode = async () => {
             setError("");
+            const emailLower = schoolEmail.toLowerCase();
+            const isAdmin =
+                emailLower.endsWith("@campusecho.app") ||
+                ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
+
             if (!isValidSchoolEmail(schoolEmail, selectedSchool)) {
                 setError(`Use a valid ${selectedSchool.name} email (${selectedSchool.domains.join(" or ")})`);
                 return;
             }
+
+            // Admins bypass the OTP entirely
+            if (isAdmin) {
+                setStep("password");
+                return;
+            }
+
             setLoading(true);
             try {
                 const result = await apiSendVerificationCode(schoolEmail, selectedSchool.code);

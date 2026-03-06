@@ -225,9 +225,16 @@ export const SCHOOL_DOMAINS: Record<string, string[]> = {
 };
 
 export function isValidSchoolEmail(email: string, schoolCode: string): boolean {
+    const emailLower = email.toLowerCase();
+    const isAdmin =
+        emailLower.endsWith("@campusecho.app") ||
+        ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
+
+    if (isAdmin) return true;
+
     const domains = SCHOOL_DOMAINS[schoolCode];
     if (!domains) return false;
-    return domains.some(d => email.toLowerCase().endsWith(d));
+    return domains.some(d => emailLower.endsWith(d));
 }
 
 export function getSchoolForEmail(email: string): string | null {
