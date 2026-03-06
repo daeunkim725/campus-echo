@@ -215,7 +215,39 @@ export default function Onboarding() {
     });
 
     setLoading(false);
-    setStep("age");
+    setStep("password");
+  };
+
+  const handlePasswordSubmit = async () => {
+    setError("");
+    if (password.length < 8 || password.length > 12) {
+      setError("Password must be 8-12 characters long.");
+      return;
+    }
+    if (!/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      setError("Password must include at least one number or symbol.");
+      return;
+    }
+    const commonPasswords = ["password123", "password", "12345678", "qwertyuiop"];
+    if (commonPasswords.includes(password.toLowerCase())) {
+      setError("Please choose a less common password.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const hash = await hashPassword(password);
+      await base44.auth.updateMe({ password_hash: hash });
+      setLoading(false);
+      setStep("age");
+    } catch (err) {
+      setError("Failed to secure password. Try again.");
+      setLoading(false);
+    }
   };
 
   const handleAgeVerify = async () => {
