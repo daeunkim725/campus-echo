@@ -207,7 +207,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             )}
           </div>
           {localComment.deleted ? (
-            <p className="text-[13px] text-slate-400 italic leading-relaxed">[deleted]</p>
+            <p className="text-[11px] text-slate-400 italic leading-relaxed">[deleted]</p>
           ) : isEditing ? (
             <div className="mt-2 flex flex-col gap-2">
               <input
@@ -224,7 +224,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             </div>
           ) : (
             <>
-              {localComment.content && <p className="text-[13px] text-slate-700 leading-relaxed">{localComment.content} {localComment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
+              {localComment.content && <p className="text-[11px] text-slate-700 leading-relaxed">{localComment.content} {localComment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
               {localComment.gif_url && (
                 <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
                   <PlayableGif gifUrl={localComment.gif_url} stillUrl={localComment.still_url} className="w-full" />
