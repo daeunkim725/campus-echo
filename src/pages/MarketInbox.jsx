@@ -75,7 +75,8 @@ export default function MarketInbox() {
           onPost={handleBackToMarket}
           activePage="market"
           schoolConfig={schoolConfig}
-          schoolCode={currentUser.school} />
+          schoolCode={currentUser.school}
+          hideFABs={true} />
       ) : (
         <TopBar
           currentUser={currentUser}
@@ -83,26 +84,35 @@ export default function MarketInbox() {
           onPost={handleBackToMarket}
           postLabel="Sell"
           activePage="market"
-          schoolConfig={schoolConfig} />
+          schoolConfig={schoolConfig}
+          hideFABs={true} />
       )}
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button onClick={handleBackToMarket} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm border border-slate-100 hover:bg-slate-50">
-            <ArrowLeft className="w-5 h-5" />
+      <div className="max-w-2xl mx-auto px-4 py-4 sm:py-5">
+        <div className="flex items-center gap-3 mb-4">
+          <button onClick={handleBackToMarket} className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
           </button>
-          <h1 className="text-2xl font-black text-slate-900">My Item Threads</h1>
+          <h1 className="text-xl font-bold text-slate-900">My Item Threads</h1>
         </div>
 
         {loading ? (
           <div className="space-y-3">
-            {[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-2xl animate-pulse border border-slate-100"></div>)}
+            {[1,2,3].map(i => <div key={i} className="h-20 bg-white rounded-xl animate-pulse border border-slate-100"></div>)}
           </div>
         ) : threads.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 px-6">
-            <MessageCircle className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-900 mb-2">No active messages</h3>
-            <p className="text-slate-500 text-sm">When you message a seller or receive an inquiry on your items, it will appear here.</p>
+          <div className="text-center py-10 bg-white rounded-2xl border border-slate-100 px-5 max-w-sm mx-auto shadow-sm my-6">
+            <MessageCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-900 mb-1.5">No messages yet</h3>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">When you message a seller or receive an inquiry on your items, it will appear here.</p>
+            <div className="space-y-2">
+              <button onClick={handleBackToMarket} className="w-full py-2.5 text-white text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2" style={{ backgroundColor: tokens.primary, color: tokens.surface }}>
+                Browse Market
+              </button>
+              <button onClick={handleBackToMarket} className="w-full py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors">
+                Post an item
+              </button>
+            </div>
           </div>
         ) : (
           <div className="space-y-3">

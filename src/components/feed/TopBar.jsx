@@ -7,7 +7,7 @@ import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
-export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
+export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false }) {
   const [showProfile, setShowProfile] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
@@ -68,23 +68,27 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
         </div>
       </div>
 
-      {/* Floating Notification Button */}
-      <button
-        onClick={() => window.location.href = createPageUrl("Notifications")}
-        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-11 h-11 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
-      >
-        <Bell className="w-5 h-5" />
-        {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
-      </button>
+      {!hideFABs && (
+        <>
+          {/* Floating Notification Button */}
+          <button
+            onClick={() => window.location.href = createPageUrl("Notifications")}
+            className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-11 h-11 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+          >
+            <Bell className="w-5 h-5" />
+            {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
+          </button>
 
-      {/* Floating Post Button */}
-      <button
-        onClick={onPost}
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95"
-        style={{ backgroundColor: primary }}
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+          {/* Floating Post Button */}
+          <button
+            onClick={onPost}
+            className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95"
+            style={{ backgroundColor: primary }}
+          >
+            <Plus className="w-6 h-6" />
+          </button>
+        </>
+      )}
 
       {showProfile && (
         <ProfilePanel
