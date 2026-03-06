@@ -10,6 +10,7 @@ export default function PageNotFound({}) {
     const pageName = location.pathname.substring(1);
 
     useEffect(() => {
+        console.log("PageNotFound mounted for path:", location.pathname);
         const path = location.pathname.toLowerCase();
         if (path.startsWith('/onboarding/')) {
             const page = path.split('/')[2];
