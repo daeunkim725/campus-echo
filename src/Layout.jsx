@@ -15,9 +15,9 @@ export default function Layout({ children, currentPageName }) {
   const d = config.dark;
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] font-sans" style={{ backgroundColor: 'var(--theme-bg)' }}>
+    <div className="min-h-screen bg-[#F6F8FC] dark:bg-[var(--theme-bg)] font-sans">
       <style>{`
-        :root {
+        :root.dark, .dark {
           --theme-bg: ${d.bg};
           --theme-surface: ${d.surface};
           --theme-elevated: ${d.elevated};
