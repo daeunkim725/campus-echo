@@ -61,13 +61,18 @@ export default function MarketInbox() {
     fetchThreads();
   }, [currentUser]);
 
+  const handleBackToMarket = () => {
+    const school = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+    window.location.href = createPageUrl("Market") + (school ? `?school=${school}` : "");
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       {currentUser?.school ? (
         <SchoolTopBar
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
-          onPost={() => window.location.href = createPageUrl("Market")}
+          onPost={handleBackToMarket}
           activePage="market"
           schoolConfig={schoolConfig}
           schoolCode={currentUser.school} />
@@ -75,7 +80,7 @@ export default function MarketInbox() {
         <TopBar
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
-          onPost={() => window.location.href = createPageUrl("Market")}
+          onPost={handleBackToMarket}
           postLabel="Sell"
           activePage="market"
           schoolConfig={schoolConfig} />
@@ -83,7 +88,7 @@ export default function MarketInbox() {
 
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => window.location.href = createPageUrl("Market")} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm border border-slate-100 hover:bg-slate-50">
+          <button onClick={handleBackToMarket} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm border border-slate-100 hover:bg-slate-50">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-2xl font-black text-slate-900">My Item Threads</h1>
