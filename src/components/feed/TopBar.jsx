@@ -62,7 +62,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
 
               {/* Logo + nav tabs */}
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
+                <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
                 <div className="flex bg-slate-100 p-1 rounded-lg">
                   <button
                     onClick={() => window.location.href = createPageUrl("Home")}
