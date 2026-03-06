@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
@@ -138,7 +138,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const hasVotedPoll = localPost.poll_options?.some(o => o.voted_by?.includes(userId));
 
   const timeAgo = localPost.created_date
-    ? formatDistanceToNow(new Date(localPost.created_date), { addSuffix: true })
+    ? getShortTimeAgo(localPost.created_date)
     : "";
 
   return (

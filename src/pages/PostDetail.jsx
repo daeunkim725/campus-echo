@@ -20,7 +20,7 @@ const categoryColors = {
   advice: "bg-teal-50 text-teal-600",
   events: "bg-indigo-50 text-indigo-600",
 };
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import CommentItem from "@/components/post/CommentItem";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
@@ -213,7 +213,7 @@ export default function PostDetail() {
   };
   const votedUp = post.voted_up_by?.includes(userId);
   const votedDown = post.voted_down_by?.includes(userId);
-  const timeAgo = post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : "";
+  const timeAgo = post.created_date ? getShortTimeAgo(post.created_date) : "";
 
   const handleDelete = async () => {
     await base44.entities.Post.update(post.id, { deleted: true });

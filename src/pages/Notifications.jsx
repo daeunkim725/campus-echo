@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowLeft, Bell, MessageCircle, CornerDownRight, Calendar } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -71,7 +71,7 @@ export default function Notifications() {
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{getTitle(n)}</p>
                   <p className="text-[13px] text-slate-600 mt-0.5 line-clamp-2">{n.content}</p>
-                  <p className="text-[11px] text-slate-400 mt-1">{formatDistanceToNow(new Date(n.created_date), {addSuffix: true})}</p>
+                  <p className="text-[11px] text-slate-400 mt-1">{getShortTimeAgo(n.created_date)}</p>
                 </div>
               </div>
             </a>

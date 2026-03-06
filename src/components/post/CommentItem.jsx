@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { ArrowUp, ArrowDown, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
@@ -164,7 +164,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   };
 
   const timeAgo = localComment.created_date
-    ? formatDistanceToNow(new Date(localComment.created_date), { addSuffix: true })
+    ? getShortTimeAgo(localComment.created_date)
     : "";
 
   return (

@@ -8,7 +8,7 @@ import ListingDetailModal from "@/components/market/ListingDetailModal";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
@@ -195,7 +195,7 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
     setSaving(false);
   };
 
-  const timeAgo = listing.created_date ? formatDistanceToNow(new Date(listing.created_date), { addSuffix: true }) : "";
+  const timeAgo = listing.created_date ? getShortTimeAgo(listing.created_date) : "";
 
   return (
     <div

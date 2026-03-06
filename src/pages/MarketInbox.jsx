@@ -6,7 +6,7 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { createPageUrl } from "@/utils";
 import { MessageCircle, ArrowLeft, Tag } from "lucide-react";
 import ChatModal from "@/components/market/ChatModal";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function MarketInbox() {
@@ -142,7 +142,7 @@ export default function MarketInbox() {
                     <div className="flex items-start justify-between mb-1">
                       <h4 className="font-bold text-slate-900 truncate pr-2">{listing.title}</h4>
                       <span className="text-xs font-medium text-slate-500 shrink-0">
-                        {formatDistanceToNow(new Date(thread.updated_date || thread.created_date))} ago
+                        {getShortTimeAgo(thread.updated_date || thread.created_date)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
