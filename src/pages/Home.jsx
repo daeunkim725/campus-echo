@@ -69,7 +69,7 @@ export default function Home() {
   useEffect(() => { fetchPosts(); }, [filters]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
+    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       <TopBar
         currentUser={currentUser}
         onUserUpdate={u => setCurrentUser(u)}
