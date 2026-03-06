@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { apiSendVerificationCode, apiVerifyCode } from "@/api/apiClient";
 import { Mail, Loader2, ChevronLeft, AlertCircle } from "lucide-react";
@@ -165,6 +165,14 @@ export default function OnboardingVerify() {
                             </div>
                         </>
                     )}
+
+                    {/* Log in link */}
+                    <Link
+                        to="/login"
+                        className="w-full mt-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-[13px] font-semibold hover:bg-slate-50 transition-all flex items-center justify-center"
+                    >
+                        Already have an account? Log in
+                    </Link>
                 </div>
             </div>
         </div>
