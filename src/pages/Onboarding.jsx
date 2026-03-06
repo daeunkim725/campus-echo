@@ -20,7 +20,7 @@ const MOODS = [
 
 const SCHOOLS = [
   { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#215CAF", featured: true },
-  { code: "UNIZH", name: "Uni Zürich", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#0028A5", featured: true },
+  { code: "UNIZH", name: "UZH", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#0028A5", featured: true },
   { code: "EPFL", name: "EPFL", domains: ["@epfl.ch"], color: "#E74C3C" },
   { code: "UNIBASEL", name: "Uni Basel", domains: ["@unibas.ch"], color: "#8E44AD" },
   { code: "UNIBE", name: "Uni Bern", domains: ["@unibe.ch", "@students.unibe.ch"], color: "#D35400" },
