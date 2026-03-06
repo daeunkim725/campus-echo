@@ -49,6 +49,7 @@
  */
 import Events from './pages/Events';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import Market from './pages/Market';
 import MarketInbox from './pages/MarketInbox';
 import Moderation from './pages/Moderation';
@@ -62,6 +63,7 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "Events": Events,
     "Home": Home,
+    "Login": Login,
     "Market": Market,
     "MarketInbox": MarketInbox,
     "Moderation": Moderation,
