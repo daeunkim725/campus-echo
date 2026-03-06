@@ -295,9 +295,9 @@ export default function PostDetail() {
 
           {post.title && <p className="font-semibold text-slate-900 text-[17px] mb-2">{post.title}</p>}
           {post.deleted ? (
-            <p className="text-slate-400 italic text-[15px] mb-4">[deleted]</p>
+            <p className="text-slate-400 italic text-[11px] mb-4">[deleted]</p>
           ) : (
-            <p className="text-slate-800 text-[14px] leading-[21px] mb-4">{post.content}</p>
+            <p className="text-slate-800 text-[11px] leading-[16px] mb-4">{post.content}</p>
           )}
 
           {/* Poll Options */}

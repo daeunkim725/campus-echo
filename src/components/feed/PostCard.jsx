@@ -232,10 +232,10 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Content */}
         {localPost.deleted ? (
-          <p className="text-slate-400 italic text-[14px] leading-[21px] mb-2">[deleted]</p>
+          <p className="text-slate-400 italic text-[11px] leading-[16px] mb-2">[deleted]</p>
         ) : (
           <div className="mb-2">
-            {localPost.content && <p className="text-slate-800 text-[14px] leading-[21px] line-clamp-3">{localPost.content}</p>}
+            {localPost.content && <p className="text-slate-800 text-[11px] leading-[16px] line-clamp-3">{localPost.content}</p>}
             {localPost.edited && <span className="text-[10px] text-slate-400 italic">edited</span>}
           </div>
         )}
