@@ -27,8 +27,11 @@ export function getMoodLabel(val) {
 
 export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoolConfig }) {
   const [myPosts, setMyPosts] = useState([]);
+  const [myListings, setMyListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingMood, setEditingMood] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts");
+  const [showAllSold, setShowAllSold] = useState(false);
   const [selectedMood, setSelectedMood] = useState(currentUser?.mood || "");
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
@@ -45,10 +48,48 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
   const fetchMyPosts = async () => {
     setLoading(true);
-    const all = await base44.entities.Post.list("-created_date", 200);
-    const mine = all.filter(p => p.created_by === currentUser?.email);
-    setMyPosts(mine);
+    const [posts, listings] = await Promise.all([
+      base44.entities.Post.list("-created_date", 200),
+      base44.entities.MarketListing.list("-created_date", 200)
+    ]);
+    setMyPosts(posts.filter(p => p.created_by === currentUser?.email));
+    setMyListings(listings.filter(l => l.created_by === currentUser?.email));
     setLoading(false);
+  };
+
+  const handleRelist = async (listing) => {
+    setLoading(true);
+    await base44.entities.MarketListing.create({
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      image_url: listing.image_url,
+      school: listing.school,
+      author_alias: listing.author_alias,
+      author_color: listing.author_color,
+      condition: listing.condition,
+      category: listing.category,
+      pickup_location: listing.pickup_location,
+      saved_by: [],
+      status: "active"
+    });
+    fetchMyPosts();
+  };
+
+  const handleBulkArchiveSold = async () => {
+    const sold = myListings.filter(l => l.status === "sold");
+    for (const l of sold) {
+      await base44.entities.MarketListing.update(l.id, { status: "archived" });
+    }
+    fetchMyPosts();
+  };
+
+  const handleBulkDeleteSold = async () => {
+    const sold = myListings.filter(l => l.status === "sold");
+    for (const l of sold) {
+      await base44.entities.MarketListing.delete(l.id);
+    }
+    fetchMyPosts();
   };
 
   const handleMoodSave = async () => {
