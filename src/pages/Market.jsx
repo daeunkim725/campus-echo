@@ -266,7 +266,7 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
             </div>
             <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 flex items-center gap-1">
               {getCleanAlias(listing.author_alias)}
-              {listing.school && <ShieldCheck className="w-3 h-3 text-green-500" />}
+              {listing.school && <BatBadge className="w-3 h-3 text-indigo-500" />}
             </span>
           </div>
           <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
