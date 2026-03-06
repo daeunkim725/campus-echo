@@ -28,20 +28,23 @@ export function useThemeTokens(schoolConfig) {
     const { resolvedTheme } = useTheme();
     const mode = resolvedTheme === "dark" ? "dark" : "light";
 
-    if (!schoolConfig) {
-        return {
-            primary: "#7C3AED",
-            secondary: "#6D28D9",
-            bg: "#F5F3FF",
-            surface: "#FFFFFF",
-            text: "#0F172A",
-            textMuted: "#475569",
-            border: "#E2E8F0",
-            primaryLight: "#EDE9FE",
-        };
-    }
+    // Overriding background and surface to force neutral white/gray theme for "Echo"
+    const base = schoolConfig ? (schoolConfig[mode] || schoolConfig.light) : {
+        primary: "#7C3AED",
+        secondary: "#6D28D9",
+        bg: "#FAFAFA",
+        surface: "#FFFFFF",
+        text: "#0F172A",
+        textMuted: "#475569",
+        border: "#E2E8F0",
+        primaryLight: "#EDE9FE",
+    };
 
-    return schoolConfig[mode] || schoolConfig.light;
+    return {
+        ...base,
+        bg: "#FAFAFA",
+        surface: "#FFFFFF"
+    };
 }
 
 /**
