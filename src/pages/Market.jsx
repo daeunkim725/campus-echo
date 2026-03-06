@@ -19,6 +19,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [isFree, setIsFree] = useState(false);
   const [category, setCategory] = useState("Other");
   const [condition, setCondition] = useState("Good");
   const [pickup, setPickup] = useState("");
@@ -31,7 +32,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !price) return;
+    if (!title.trim() || (!price && !isFree)) return;
     setLoading(true);
     try {
       let image_url = null;
@@ -47,7 +48,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
       await base44.entities.MarketListing.create({
         title,
         description,
-        price: parseFloat(price),
+        price: isFree ? 0 : parseFloat(price),
         image_url,
         school: currentUser?.school || "all",
         author_alias: alias,
@@ -89,10 +90,20 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm font-semibold text-slate-700 block mb-1">Price</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-sm font-semibold text-slate-700 block">Price</label>
+                  <button 
+                    type="button"
+                    onClick={() => { setIsFree(!isFree); if (!isFree) setPrice(""); }}
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${isFree ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  >
+                    FREE
+                  </button>
+                </div>
                 <div className="relative">
                   <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
-                  <input type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl pl-9 pr-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none" min="0" step="0.01" />
+                  <input type="number" placeholder="0.00" value={isFree ? "" : price} onChange={(e) => setPrice(e.target.value)} disabled={isFree} className={`w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl pl-9 pr-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none ${isFree ? "opacity-50 cursor-not-allowed" : ""}`} min="0" step="0.01" />
+                  {isFree && <div className="absolute inset-0 pl-9 flex items-center text-slate-500 font-medium">Free</div>}
                 </div>
               </div>
               <div>
@@ -102,7 +113,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
                 </select>
               </div>
             </div>
-            <button onClick={() => setStep(2)} disabled={!title.trim() || !price} className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 mt-4 disabled:opacity-50" style={{ backgroundColor: tokens.primary }}>
+            <button onClick={() => setStep(2)} disabled={!title.trim() || (!price && !isFree)} className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 mt-4 disabled:opacity-50" style={{ backgroundColor: tokens.primary }}>
               Next <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -204,8 +215,8 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
       {listing.image_url ? (
         <div className={`w-full h-40 sm:h-48 bg-slate-100 relative ${listing.status === 'sold' ? 'grayscale opacity-60' : ''}`}>
           <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm ${listing.status === 'sold' ? 'bg-slate-700 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-900'}`}>
-            {listing.status === 'sold' ? "SOLD" : `$${listing.price.toFixed(2)}`}
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm ${listing.status === 'sold' ? 'bg-slate-700 text-white' : listing.price === 0 ? 'bg-green-100 text-green-700' : 'bg-white/90 backdrop-blur-sm text-slate-900'}`}>
+            {listing.status === 'sold' ? "SOLD" : listing.price === 0 ? "FREE" : `$${listing.price.toFixed(2)}`}
           </div>
           <button
             onClick={listing.status === 'sold' ? undefined : handleSave}
@@ -219,8 +230,8 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
       ) : (
         <div className="w-full h-32 sm:h-40 bg-slate-50 flex items-center justify-center relative">
           <Tag className="w-8 h-8 text-slate-300" />
-          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm border ${listing.status === 'sold' ? 'bg-slate-700 text-white border-transparent' : 'bg-white/90 backdrop-blur-sm text-slate-900 border-slate-100'}`}>
-            {listing.status === 'sold' ? "SOLD" : `$${listing.price.toFixed(2)}`}
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm border ${listing.status === 'sold' ? 'bg-slate-700 text-white border-transparent' : listing.price === 0 ? 'bg-green-100 text-green-700 border-transparent' : 'bg-white/90 backdrop-blur-sm text-slate-900 border-slate-100'}`}>
+            {listing.status === 'sold' ? "SOLD" : listing.price === 0 ? "FREE" : `$${listing.price.toFixed(2)}`}
           </div>
           <button
             onClick={listing.status === 'sold' ? undefined : handleSave}

@@ -98,7 +98,7 @@ export default function ListingDetailModal({ listing, currentUser, onClose, scho
                 <div>
                   <div className="flex items-start justify-between mb-2">
                     <h1 className="text-2xl font-black text-slate-900 leading-tight">{listing.title}</h1>
-                    <span className="text-2xl font-black text-green-600">${listing.price?.toFixed(2)}</span>
+                    <span className="text-2xl font-black text-green-600">{listing.price === 0 ? "FREE" : `$${listing.price?.toFixed(2)}`}</span>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
