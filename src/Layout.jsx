@@ -82,6 +82,18 @@ export default function Layout({ children, currentPageName }) {
         .dark .bg-indigo-50, .dark .bg-blue-50 { background-color: var(--theme-primary-light) !important; color: var(--theme-primary) !important; }
         .dark .text-indigo-600, .dark .text-blue-600, .dark .hover\\:text-blue-600:hover { color: var(--theme-primary) !important; }
         
+        /* Category Chips in dark mode */
+        .dark .bg-pink-50 { background-color: rgba(236,72,153,0.1) !important; color: #EC4899 !important; }
+        .dark .text-pink-600 { color: #EC4899 !important; }
+        .dark .bg-amber-50 { background-color: rgba(245,158,11,0.1) !important; color: #F59E0B !important; }
+        .dark .text-amber-600 { color: #F59E0B !important; }
+        .dark .bg-orange-50 { background-color: rgba(249,115,22,0.1) !important; color: #F97316 !important; }
+        .dark .text-orange-600 { color: #F97316 !important; }
+        .dark .bg-purple-50 { background-color: rgba(168,85,247,0.1) !important; color: #A855F7 !important; }
+        .dark .text-purple-600 { color: #A855F7 !important; }
+        .dark .bg-teal-50 { background-color: rgba(20,184,166,0.1) !important; color: #14B8A6 !important; }
+        .dark .text-teal-600 { color: #14B8A6 !important; }
+        
         /* Form elements */
         .dark input, .dark textarea, .dark select { background-color: var(--theme-elevated) !important; color: var(--theme-text) !important; border-color: var(--theme-border) !important; }
         .dark input::placeholder, .dark textarea::placeholder { color: var(--theme-faint) !important; }
