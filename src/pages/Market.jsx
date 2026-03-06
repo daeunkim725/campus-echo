@@ -298,7 +298,7 @@ export default function Market() {
         window.location.href = createPageUrl("Onboarding");
         return;
       }
-      if (u?.role !== "admin" && u?.school !== schoolCode && schoolCode) {
+      if (u?.role !== "admin" && u?.school && u.school !== schoolCode) {
         window.location.href = createPageUrl("Market") + `?school=${u.school}`;
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")));
