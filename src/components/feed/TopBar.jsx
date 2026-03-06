@@ -7,7 +7,7 @@ import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
-export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false }) {
+export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false, alwaysSticky = false }) {
   const [showProfile, setShowProfile] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
@@ -20,7 +20,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
     if (currentUser?.email) {
       base44.entities.Notification.filter({ user_email: currentUser.email, read: false })
         .then(res => setUnreadCount(res.length))
-        .catch(() => {});
+        .catch(() => { });
 
       base44.entities.MarketThread.list()
         .then(threads => {
@@ -37,16 +37,19 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
                   }
                 });
                 setUnreadMessages(count);
-              }).catch(() => {});
+              }).catch(() => { });
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [currentUser]);
 
   return (
     <>
-      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
+      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 ${alwaysSticky
+          ? "top-0"
+          : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
+        }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -118,7 +121,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
                 </button>
               </div>
             )}
-            
+
             {showNotifMenu && (
               <div className="fixed inset-0 z-[-1]" onClick={() => setShowNotifMenu(false)} />
             )}

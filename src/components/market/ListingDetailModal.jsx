@@ -103,22 +103,22 @@ export default function ListingDetailModal({ listing, currentUser, onClose, scho
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     {listing.status === 'sold' && (
-                      <span className="px-2.5 py-1 rounded-md bg-red-100 text-red-700 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wide flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Sold
                       </span>
                     )}
                     {listing.condition && (
-                      <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold">
                         Condition: {listing.condition}
                       </span>
                     )}
                     {listing.pickup_location && (
-                      <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-semibold flex items-center gap-1">
                         <MapPin className="w-3 h-3" /> {listing.pickup_location}
                       </span>
                     )}
                     {listing.status !== 'sold' && (
-                      <span className="px-2.5 py-1 rounded-md bg-green-50 text-green-700 text-xs font-semibold flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-md bg-green-50 text-green-700 text-[10px] font-semibold flex items-center gap-1">
                         <ShieldCheck className="w-3 h-3" /> Verified Student Seller
                       </span>
                     )}

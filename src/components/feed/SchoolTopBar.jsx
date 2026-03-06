@@ -8,7 +8,7 @@ import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
-export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode, hideFABs = false }) {
+export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode, hideFABs = false, alwaysSticky = false }) {
   const [showProfile, setShowProfile] = useState(false);
   const [showSchoolPicker, setShowSchoolPicker] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
@@ -23,7 +23,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
     if (currentUser?.email) {
       base44.entities.Notification.filter({ user_email: currentUser.email, read: false })
         .then(res => setUnreadCount(res.length))
-        .catch(() => {});
+        .catch(() => { });
 
       base44.entities.MarketThread.list()
         .then(threads => {
@@ -40,10 +40,10 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                   }
                 });
                 setUnreadMessages(count);
-              }).catch(() => {});
+              }).catch(() => { });
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [currentUser]);
 
@@ -54,7 +54,10 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
 
   return (
     <>
-      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
+      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 ${alwaysSticky
+          ? "top-0"
+          : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
+        }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -138,7 +141,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                 </button>
               </div>
             )}
-            
+
             {showNotifMenu && (
               <div className="fixed inset-0 z-[-1]" onClick={() => setShowNotifMenu(false)} />
             )}

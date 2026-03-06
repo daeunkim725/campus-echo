@@ -239,17 +239,17 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
 
         <div className="flex flex-wrap gap-1.5 mb-3">
           {listing.condition && (
-            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
+            <span className={`text-[9px] px-1 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
               {listing.condition}
             </span>
           )}
           {listing.category && (
-            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
+            <span className={`text-[9px] px-1 py-0.5 rounded font-medium ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
               {listing.category}
             </span>
           )}
           {listing.pickup_location && (
-            <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded font-medium flex items-center gap-1 ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
+            <span className={`text-[9px] px-1 py-0.5 rounded font-medium flex items-center gap-1 ${listing.status === 'sold' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
               <MapPin className="w-3 h-3" /> {listing.pickup_location}
             </span>
           )}
@@ -342,7 +342,8 @@ export default function Market() {
           onPost={() => setShowCreate(true)}
           activePage="market"
           schoolConfig={schoolConfig}
-          schoolCode={schoolCode} />
+          schoolCode={schoolCode}
+          alwaysSticky={true} />
       ) : (
         <TopBar
           currentUser={currentUser}
@@ -350,7 +351,8 @@ export default function Market() {
           onPost={() => setShowCreate(true)}
           postLabel="Sell"
           activePage="market"
-          schoolConfig={schoolConfig} />
+          schoolConfig={schoolConfig}
+          alwaysSticky={true} />
       )}
 
       {/* Filters Bar */}
