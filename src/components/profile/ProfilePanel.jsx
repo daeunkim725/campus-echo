@@ -36,6 +36,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(5);
 
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
