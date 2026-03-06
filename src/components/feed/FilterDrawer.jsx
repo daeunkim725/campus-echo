@@ -1,5 +1,6 @@
 import React from "react";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { BatSilhouette } from "@/components/ui/BatIcons";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
