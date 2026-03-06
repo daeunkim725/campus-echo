@@ -399,8 +399,8 @@ export default function Market() {
             </p>
             <button
               onClick={() => setShowCreate(true)} 
-              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
-              style={{ backgroundColor: tokens.primary }}>
+              className="text-white w-full py-3 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
+              style={{ backgroundColor: tokens.primary, color: tokens.surface }}>
               <Plus className="w-4 h-4" /> Start Selling
             </button>
             <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
@@ -440,9 +440,9 @@ export default function Market() {
       {/* Floating Inbox Button */}
       <button
         onClick={() => window.location.href = createPageUrl("MarketInbox")}
-        className="fixed bottom-24 right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full bg-white text-slate-700 shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 border border-slate-100"
+        className="fixed bottom-[104px] right-6 z-40 flex items-center justify-center w-11 h-11 rounded-full bg-white text-slate-700 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-100"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-5 h-5" />
       </button>
     </div>
   );

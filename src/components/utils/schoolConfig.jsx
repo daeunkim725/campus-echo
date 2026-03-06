@@ -255,26 +255,26 @@ export const SCHOOL_CONFIG = {
 };
 
 export const DEFAULT_SCHOOL = {
-  name: "fizz",
+  name: "🦇 Echo",
   light: {
-    primary: "#7C3AED",
-    secondary: "#6D28D9",
-    bg: "#F5F3FF",
+    primary: "#1A1A1A",
+    secondary: "#404040",
+    bg: "#FAFAFA",
     surface: "#FFFFFF",
     text: "#0F172A",
-    textMuted: "#475569",
+    textMuted: "#64748B",
     border: "#E2E8F0",
-    primaryLight: "#EDE9FE",
+    primaryLight: "#F1F5F9",
   },
   dark: {
-    primary: "#A78BFA",
-    secondary: "#8B5CF6",
-    bg: "#0C0A18",
-    surface: "#16102A",
-    text: "#EDE6FF",
-    textMuted: "#A090C0",
-    border: "#2A2040",
-    primaryLight: "#251A40",
+    primary: "#F8FAFC",
+    secondary: "#CBD5E1",
+    bg: "#0B0F19",
+    surface: "#111827",
+    text: "#F8FAFC",
+    textMuted: "#94A3B8",
+    border: "#1E293B",
+    primaryLight: "#1E293B",
   },
 };
 

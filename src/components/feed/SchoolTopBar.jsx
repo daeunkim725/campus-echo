@@ -53,11 +53,11 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                     onClick={() => setShowSchoolPicker(true)}
                     className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
                   >
-                    {schoolConfig?.name || "fizz"}
+                    {schoolConfig?.name || "🦇 Echo"}
                     <ChevronDown className="w-4 h-4 text-slate-400" />
                   </button>
                 ) : (
-                  <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "fizz"}</h1>
+                  <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
                 )}
 
                 {/* Nav tabs */}
@@ -91,7 +91,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
       {/* Floating Notification Button */}
       <button
         onClick={() => window.location.href = createPageUrl("Notifications")}
-        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-11 h-11 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
