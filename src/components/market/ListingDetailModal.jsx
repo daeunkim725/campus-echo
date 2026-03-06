@@ -5,6 +5,7 @@ import ChatModal from "./ChatModal";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { createPageUrl } from "@/utils";
 
 export default function ListingDetailModal({ listing, currentUser, onClose, schoolConfig, onUpdate }) {
   const tokens = useThemeTokens(schoolConfig);
@@ -18,7 +19,7 @@ export default function ListingDetailModal({ listing, currentUser, onClose, scho
   const handleMessageClick = async () => {
     if (isSeller) {
       // Seller can't message themselves from here, they go to inbox
-      window.location.href = "/MarketInbox"; // or handle differently
+      window.location.href = createPageUrl("MarketInbox"); // or handle differently
       return;
     }
     
@@ -141,7 +142,7 @@ export default function ListingDetailModal({ listing, currentUser, onClose, scho
           <div className="p-4 border-t border-slate-100 shrink-0 bg-white shadow-[0_-4px_15px_-5px_rgba(0,0,0,0.05)]">
             {isSeller ? (
               <div className="flex gap-3">
-                <button onClick={() => window.location.href = "/MarketInbox"} className="flex-1 py-3.5 bg-slate-100 text-slate-700 font-semibold rounded-xl text-[15px] hover:bg-slate-200 transition-colors">
+                <button onClick={() => window.location.href = createPageUrl("MarketInbox")} className="flex-1 py-3.5 bg-slate-100 text-slate-700 font-semibold rounded-xl text-[15px] hover:bg-slate-200 transition-colors">
                   View Messages
                 </button>
                 {listing.status !== 'sold' && (
