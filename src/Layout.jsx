@@ -21,6 +21,13 @@ export default function Layout({ children, currentPageName }) {
         }
         .animate-in.slide-in-from-bottom { animation: slide-in-from-bottom 0.3s ease-out; }
       `}</style>
+      <Toaster position="top-center" expand={true} richColors toastOptions={{
+        classNames: {
+          toast: 'rounded-xl shadow-lg border border-slate-100 flex items-center gap-3',
+          success: 'bg-white text-slate-800 font-medium',
+          icon: 'text-indigo-500' // Using indigo for radar/echo theme
+        }
+      }} />
       {children}
     </div>
   );
