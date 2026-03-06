@@ -64,6 +64,9 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
         pickup_location: pickup,
         saved_by: []
       });
+      toast.success("Echo sent successfully. Your listing is live!", {
+        icon: <Radar className="w-5 h-5 text-indigo-500 animate-[spin_3s_linear_infinite]" />
+      });
       onCreated();
       onClose();
     } finally {
