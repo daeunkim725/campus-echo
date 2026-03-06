@@ -515,6 +515,74 @@ to join your community.</p>
             </div>
           }
 
+          {/* Step: Password */}
+          {step === "password" &&
+          <div>
+              <div className="mb-6 text-center">
+                <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ backgroundColor: accentColor + "1A", color: accentColor }}>
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h2 className="text-[22px] font-extrabold text-slate-900 mb-1.5 tracking-tight">Create a password</h2>
+                <p className="text-slate-500 text-sm">Secure your account for future logins.</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => {setPassword(e.target.value);setError("");}}
+                      className="w-full text-slate-800 text-[15px] placeholder:text-slate-400 focus:outline-none border border-slate-200 rounded-xl px-4 py-3.5 transition-colors focus:border-slate-300"
+                      onFocus={(e) => e.target.style.borderColor = accentColor}
+                      onBlur={(e) => e.target.style.borderColor = ""}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-medium"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirm Password</label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => {setConfirmPassword(e.target.value);setError("");}}
+                    className="w-full text-slate-800 text-[15px] placeholder:text-slate-400 focus:outline-none border border-slate-200 rounded-xl px-4 py-3.5 transition-colors focus:border-slate-300"
+                    onFocus={(e) => e.target.style.borderColor = accentColor}
+                    onBlur={(e) => e.target.style.borderColor = ""}
+                    onKeyDown={(e) => e.key === "Enter" && password && confirmPassword && handlePasswordSubmit()}
+                  />
+                </div>
+
+                <div className="text-xs text-slate-500 space-y-1.5 mt-1">
+                  <p className={`flex items-center gap-1.5 ${password.length >= 8 && password.length <= 12 ? 'text-green-600' : ''}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current"></span> 8-12 characters
+                  </p>
+                  <p className={`flex items-center gap-1.5 ${/[0-9!@#$%^&*(),.?":{}|<>]/.test(password) ? 'text-green-600' : ''}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current"></span> 1 number or symbol
+                  </p>
+                </div>
+
+                {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+                
+                <button
+                  onClick={handlePasswordSubmit}
+                  disabled={!password || !confirmPassword || password !== confirmPassword || loading}
+                  className="mt-6 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-[15px] disabled:opacity-40 transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Continue</>}
+                </button>
+              </div>
+            </div>
+          }
+
           {/* Step: Age Gate */}
           {step === "age" &&
           <div>
