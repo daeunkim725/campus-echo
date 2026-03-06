@@ -255,16 +255,7 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
           )}
         </div>
 
-        <div className="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-slate-50">
-          <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px]" style={{ backgroundColor: tokens.primaryLight }}>
-              {getAliasEmoji(listing.author_alias)}
-            </div>
-            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 flex items-center gap-1">
-              {getCleanAlias(listing.author_alias)}
-              {listing.school && <ShieldCheck className="w-3 h-3 text-green-500" />}
-            </span>
-          </div>
+        <div className="flex items-center justify-end pt-2.5 sm:pt-3 border-t border-slate-50">
           <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
             <Clock className="w-3 h-3" /> {timeAgo}
           </div>
@@ -380,8 +371,8 @@ export default function Market() {
               <button
                 onClick={() => setFilterFree(!filterFree)}
                 className={`text-[11px] font-medium px-3 py-1 rounded-full transition-colors border ${filterFree
-                    ? "bg-slate-100 text-slate-800 border-slate-300"
-                    : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
+                  ? "bg-slate-100 text-slate-800 border-slate-300"
+                  : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
                   }`}
                 style={filterFree ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
               >
@@ -390,8 +381,8 @@ export default function Market() {
               <button
                 onClick={() => setFilterIncludeSold(!filterIncludeSold)}
                 className={`text-[11px] font-medium px-3 py-1 rounded-full transition-colors border ${filterIncludeSold
-                    ? "bg-slate-100 text-slate-800 border-slate-300"
-                    : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
+                  ? "bg-slate-100 text-slate-800 border-slate-300"
+                  : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
                   }`}
                 style={filterIncludeSold ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
               >
