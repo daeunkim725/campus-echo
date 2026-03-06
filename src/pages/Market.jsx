@@ -1,26 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus, Image as ImageIcon, X, Loader2, DollarSign } from "lucide-react";
+import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck, MapPin, Clock, Tag, ChevronRight, ChevronLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { formatDistanceToNow } from "date-fns";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
-function CreateListingModal({ onClose, onCreated, currentUser }) {
+const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
+const CONDITIONS = ["New", "Like New", "Good", "Fair"];
+
+function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
+  const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("Other");
+  const [condition, setCondition] = useState("Good");
+  const [pickup, setPickup] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const tokens = useThemeTokens(schoolConfig);
 
   const handleImageSelect = (e) => {
     if (e.target.files && e.target.files[0]) setImage(e.target.files[0]);
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !description.trim() || !price) return;
+    if (!title.trim() || !price) return;
     setLoading(true);
     try {
       let image_url = null;
@@ -40,7 +50,11 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
         image_url,
         school: currentUser?.school || "all",
         author_alias: alias,
-        author_color: color
+        author_color: color,
+        condition,
+        category,
+        pickup_location: pickup,
+        saved_by: []
       });
       onCreated();
       onClose();
@@ -50,109 +64,207 @@ function CreateListingModal({ onClose, onCreated, currentUser }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 sm:zoom-in-95" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-0" onClick={onClose}>
+      <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900">Sell something</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <div className="flex items-center gap-3">
+            {step > 1 && (
+              <button onClick={() => setStep(step - 1)} className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-slate-100">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            )}
+            <h2 className="text-lg font-bold text-slate-900">List an Item (Step {step}/3)</h2>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-100">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <input
-              type="text"
-              placeholder="What are you selling?"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full text-lg font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent" />
-
-          </div>
-          <div>
-            <div className="flex items-center border-b border-slate-200 pb-2">
-              <DollarSign className="w-5 h-5 text-slate-400" />
-              <input
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent ml-2"
-                min="0"
-                step="0.01" />
-
+        {step === 1 && (
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-semibold text-slate-700 block mb-1">Title</label>
+              <input type="text" placeholder="e.g. Intro to Physics Textbook" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none" />
             </div>
-          </div>
-          <div>
-            <textarea
-              placeholder="Describe your item..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full min-h-[100px] text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none resize-none bg-transparent border border-slate-200 rounded-xl p-3" />
-
-          </div>
-
-          {image &&
-          <div className="relative inline-block mt-2">
-              <img src={URL.createObjectURL(image)} alt="Preview" className="h-32 rounded-xl object-cover" />
-              <button
-              onClick={() => setImage(null)}
-              className="absolute -top-2 -right-2 bg-slate-800 text-white p-1 rounded-full shadow-md">
-
-                <X className="w-3 h-3" />
-              </button>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-semibold text-slate-700 block mb-1">Price</label>
+                <div className="relative">
+                  <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                  <input type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl pl-9 pr-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none" min="0" step="0.01" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700 block mb-1">Category</label>
+                <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none">
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
             </div>
-          }
-
-          <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-            <label className="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-full hover:bg-slate-50">
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
-              <ImageIcon className="w-5 h-5" />
-            </label>
-            <button
-              onClick={handleSubmit}
-              disabled={!title.trim() || !description.trim() || !price || loading}
-              className="px-6 py-2.5 rounded-full text-white font-semibold text-sm disabled:opacity-40 flex items-center gap-2 hover:opacity-90"
-              style={{ backgroundColor: getSchoolConfig(currentUser?.school)?.primary || "#7C3AED" }}>
-
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              List Item
+            <button onClick={() => setStep(2)} disabled={!title.trim() || !price} className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 mt-4 disabled:opacity-50" style={{ backgroundColor: tokens.primary }}>
+              Next <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-        </div>
-      </div>
-    </div>);
+        )}
 
+        {step === 2 && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-semibold text-slate-700 block mb-1">Condition</label>
+                <select value={condition} onChange={(e) => setCondition(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none">
+                  {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700 block mb-1">Pickup Area</label>
+                <input type="text" placeholder="e.g. Main Library" value={pickup} onChange={(e) => setPickup(e.target.value)} className="w-full text-base font-medium text-slate-900 bg-slate-50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-slate-200 outline-none" />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-slate-700 block mb-1">Description (Optional)</label>
+              <textarea placeholder="More details about your item..." value={description} onChange={(e) => setDescription(e.target.value)} className="w-full h-24 text-sm text-slate-700 bg-slate-50 border-0 rounded-xl p-4 focus:ring-2 focus:ring-slate-200 outline-none resize-none" />
+            </div>
+            <button onClick={() => setStep(3)} className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 mt-4 disabled:opacity-50" style={{ backgroundColor: tokens.primary }}>
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="space-y-4">
+            <label className="text-sm font-semibold text-slate-700 block">Add a Photo (Optional)</label>
+            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+              {image ? (
+                <>
+                  <img src={URL.createObjectURL(image)} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    <button onClick={() => setImage(null)} className="bg-white text-slate-900 px-3 py-1.5 rounded-lg font-medium text-sm">Remove</button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-400 mb-3 shadow-sm border border-slate-100">
+                    <ImageIcon className="w-5 h-5" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-700">Upload an image</p>
+                  <p className="text-xs text-slate-400 mt-1 mb-4">Clear photos help sell faster!</p>
+                  <label className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer hover:bg-slate-50 transition-colors">
+                    Choose File
+                    <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
+                  </label>
+                </>
+              )}
+            </div>
+            
+            <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
+              <p>For your safety, only meet on campus during daylight hours. Never transfer money before seeing the item.</p>
+            </div>
+
+            <button onClick={handleSubmit} disabled={loading} className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 mt-4 disabled:opacity-50 hover:opacity-90" style={{ backgroundColor: tokens.primary }}>
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Publish Listing
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
-function ListingCard({ listing }) {
+function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
+  const [saving, setSaving] = useState(false);
+  const userId = currentUser?.id || "anon";
+  const isSaved = listing.saved_by?.includes(userId);
+  const tokens = useThemeTokens(schoolConfig);
+
+  const handleSave = async (e) => {
+    e.stopPropagation();
+    if (saving || !currentUser) return;
+    setSaving(true);
+    let newSaved = [...(listing.saved_by || [])];
+    if (isSaved) {
+      newSaved = newSaved.filter(id => id !== userId);
+    } else {
+      newSaved.push(userId);
+    }
+    await base44.entities.MarketListing.update(listing.id, { saved_by: newSaved });
+    onUpdate?.();
+    setSaving(false);
+  };
+
+  const timeAgo = listing.created_date ? formatDistanceToNow(new Date(listing.created_date), { addSuffix: true }) : "";
+
   return (
-    <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[16px]" style={{ backgroundColor: getSchoolConfig(listing.school)?.primaryLight || "#EDE9FE" }}>
-            {getAliasEmoji(listing.author_alias)}
+    <div className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative group">
+      {listing.image_url ? (
+        <div className="w-full h-40 sm:h-48 bg-slate-100 relative">
+          <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs sm:text-sm font-bold text-slate-900 shadow-sm">
+            ${listing.price.toFixed(2)}
           </div>
-          <div>
-            <div className="text-sm font-semibold text-slate-900 capitalize">{getCleanAlias(listing.author_alias)}</div>
-            <div className="text-xs text-slate-500">{new Date(listing.created_date).toLocaleDateString()}</div>
-          </div>
+          <button 
+            onClick={handleSave}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-indigo-50 text-indigo-600' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-slate-600'}`}
+          >
+            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
         </div>
-        <div className="bg-green-100 text-green-800 font-bold px-3 py-1 rounded-lg">
-          ${listing.price.toFixed(2)}
+      ) : (
+        <div className="w-full h-32 sm:h-40 bg-slate-50 flex items-center justify-center relative">
+          <Tag className="w-8 h-8 text-slate-300" />
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs sm:text-sm font-bold text-slate-900 shadow-sm border border-slate-100">
+            ${listing.price.toFixed(2)}
+          </div>
+          <button 
+            onClick={handleSave}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-indigo-50 text-indigo-600' : 'bg-white text-slate-400 hover:text-slate-600'}`}
+          >
+            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
+        </div>
+      )}
+
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
+        <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-1 line-clamp-1">{listing.title}</h3>
+        <p className="text-slate-500 text-xs line-clamp-2 mb-2 sm:mb-3 flex-1">{listing.description}</p>
+        
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {listing.condition && (
+            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
+              {listing.condition}
+            </span>
+          )}
+          {listing.category && (
+            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
+              {listing.category}
+            </span>
+          )}
+          {listing.pickup_location && (
+            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium flex items-center gap-1">
+              <MapPin className="w-3 h-3" /> {listing.pickup_location}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-slate-50">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px]" style={{ backgroundColor: tokens.primaryLight }}>
+              {getAliasEmoji(listing.author_alias)}
+            </div>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 flex items-center gap-1">
+              {getCleanAlias(listing.author_alias)}
+              {listing.school && <ShieldCheck className="w-3 h-3 text-green-500" />}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
+            <Clock className="w-3 h-3" /> {timeAgo}
+          </div>
         </div>
       </div>
-
-      <h3 className="text-lg font-bold text-slate-900 mb-2">{listing.title}</h3>
-      <p className="text-slate-600 text-sm whitespace-pre-wrap mb-4">{listing.description}</p>
-
-      {listing.image_url &&
-      <div className="mb-4">
-          <img src={listing.image_url} alt="Listing" className="w-full max-h-80 object-cover rounded-xl border border-slate-100" />
-        </div>
-      }
-    </div>);
-
+    </div>
+  );
 }
 
 export default function Market() {
@@ -163,9 +275,14 @@ export default function Market() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  
+  // Filters
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [filterSort, setFilterSort] = useState("newest");
 
   const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
+  const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
     base44.auth.me().then((u) => {
@@ -185,9 +302,18 @@ export default function Market() {
     try {
       let data = await base44.entities.MarketListing.list("-created_date", 100);
 
-      // Only show listings from user's school community
       if (configSchoolCode) {
         data = data.filter((l) => !l.school || l.school === "all" || l.school === configSchoolCode);
+      }
+      
+      if (filterCategory !== "all") {
+        data = data.filter(l => l.category === filterCategory);
+      }
+      
+      if (filterSort === "price_low") {
+        data = data.sort((a, b) => a.price - b.price);
+      } else if (filterSort === "price_high") {
+        data = data.sort((a, b) => b.price - a.price);
       }
 
       setListings(data);
@@ -196,74 +322,98 @@ export default function Market() {
     }
   };
 
-  useEffect(() => {fetchListings();}, [configSchoolCode]);
+  useEffect(() => {fetchListings();}, [configSchoolCode, filterCategory, filterSort]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: schoolConfig.bg }}>
-      {schoolCode ?
-      <SchoolTopBar
-        currentUser={currentUser}
-        onUserUpdate={(u) => setCurrentUser(u)}
-        onPost={() => setShowCreate(true)}
-        activePage="market"
-        schoolConfig={schoolConfig}
-        schoolCode={schoolCode} /> :
+    <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
+      {schoolCode ? (
+        <SchoolTopBar
+          currentUser={currentUser}
+          onUserUpdate={(u) => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          activePage="market"
+          schoolConfig={schoolConfig}
+          schoolCode={schoolCode} />
+      ) : (
+        <TopBar
+          currentUser={currentUser}
+          onUserUpdate={(u) => setCurrentUser(u)}
+          onPost={() => setShowCreate(true)}
+          postLabel="Sell"
+          activePage="market"
+          schoolConfig={schoolConfig} />
+      )}
 
-
-      <TopBar
-        currentUser={currentUser}
-        onUserUpdate={(u) => setCurrentUser(u)}
-        onPost={() => setShowCreate(true)}
-        postLabel="Sell"
-        activePage="market"
-        schoolConfig={schoolConfig} />
-
-      }
-
-      {/* Feed */}
-      <div className="max-w-xl mx-auto px-4 py-6 space-y-4">
-        {loading ?
-        Array(3).fill(0).map((_, i) =>
-        <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-200" />
-                  <div className="h-3 w-28 bg-slate-200 rounded" />
-                </div>
-                <div className="h-8 w-16 bg-slate-200 rounded-lg" />
-              </div>
-              <div className="space-y-2 mb-4">
-                <div className="h-4 bg-slate-200 rounded w-full" />
-                <div className="h-3 bg-slate-200 rounded w-4/5" />
-              </div>
-              <div className="h-40 bg-slate-200 rounded-xl w-full" />
-            </div>
-        ) :
-        listings.length === 0 ?
-        <div className="text-center py-20">
-            <div className="text-5xl mb-4">🛍️</div>
-            <p className="text-slate-500 font-medium">No items for sale yet</p>
-            <p className="text-slate-400 text-sm mt-1">Be the first to list something!</p>
-            <button
-            onClick={() => setShowCreate(true)} className="text-white mt-4 px-6 py-2.5 text-sm font-semibold rounded-full transition-all hover:opacity-90"
-            style={{ backgroundColor: schoolConfig?.primary || "#7C3AED" }}>
-
-
-              Sell an item
-            </button>
-          </div> :
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {listings.map((listing) =>
-          <ListingCard key={listing.id} listing={listing} />
-          )}
-          </div>
-        }
+      {/* Filters Bar */}
+      <div className="sticky z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 top-[65px]">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3 overflow-x-auto scrollbar-hide">
+          <select 
+            value={filterCategory} 
+            onChange={e => setFilterCategory(e.target.value)}
+            className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          >
+            <option value="all">All Categories</option>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          
+          <select 
+            value={filterSort} 
+            onChange={e => setFilterSort(e.target.value)}
+            className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          >
+            <option value="newest">Newest First</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+          </select>
+        </div>
       </div>
 
-      {showCreate &&
-      <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} />
-      }
-    </div>);
+      {/* Feed */}
+      <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            {Array(6).fill(0).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100 animate-pulse">
+                <div className="h-32 bg-slate-200" />
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  <div className="h-3 bg-slate-200 rounded w-full" />
+                  <div className="h-3 bg-slate-200 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : listings.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 px-6 max-w-md mx-auto shadow-sm my-10">
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5">
+              <Tag className="w-10 h-10 text-slate-300" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Your Campus Market</h3>
+            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+              Buy and sell safely with verified students. Got textbooks, a bike, or an old monitor? Turn it into cash today.
+            </p>
+            <button
+              onClick={() => setShowCreate(true)} 
+              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
+              style={{ backgroundColor: tokens.primary }}>
+              <Plus className="w-4 h-4" /> Start Selling
+            </button>
+            <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
+              <ShieldCheck className="w-3 h-3" /> 100% verified student community
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            {listings.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} currentUser={currentUser} onUpdate={fetchListings} schoolConfig={schoolConfig} />
+            ))}
+          </div>
+        )}
+      </div>
 
+      {showCreate && (
+        <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} schoolConfig={schoolConfig} />
+      )}
+    </div>
+  );
 }
