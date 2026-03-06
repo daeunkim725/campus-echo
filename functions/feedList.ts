@@ -1,139 +1,87 @@
-/**
- * feedList — Get anonymous feed posts for a school
- * POST { school, sort, category, department, limit, offset }
- * Requires: authenticated + verified user
- * Returns: anonymized posts (no author identity exposed)
- */
+import { requireVerified, handleCORS, getAnonId } from './_shared/authMiddleware.ts';
 
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import {
-    requireVerified,
-    corsHeaders,
-    handleCORS,
-} from './_shared/authMiddleware.ts';
-
-Deno.serve(async (req) => {
-    const corsResp = handleCORS(req);
-    if (corsResp) return corsResp;
-
-    if (req.method !== "POST" && req.method !== "GET") {
-        return Response.json({ error: "Method not allowed" }, { status: 405, headers: corsHeaders() });
-    }
+export default async function (req: Request) {
+    const corsResponse = handleCORS(req);
+    if (corsResponse) return corsResponse;
 
     try {
-        // Require authenticated + verified user
         const { user, base44 } = await requireVerified(req);
 
-        // Parse params from body (POST) or query string (GET)
-        let params: any = {};
-        if (req.method === "POST") {
-            try { params = await req.json(); } catch { params = {}; }
-        } else {
-            const url = new URL(req.url);
-            params = {
-                school: url.searchParams.get("school"),
-                sort: url.searchParams.get("sort") || "new",
-                category: url.searchParams.get("category") || "all",
-                department: url.searchParams.get("department") || "all",
-                limit: parseInt(url.searchParams.get("limit") || "50"),
-                offset: parseInt(url.searchParams.get("offset") || "0"),
-            };
+        if (req.method !== "GET") {
+            return Response.json({ error: "Method not allowed" }, { status: 405 });
         }
 
-        const school = params.school || user.school;
-        const sort = params.sort || "new";
-        const category = params.category || "all";
-        const department = params.department || "all";
-        const limit = Math.min(params.limit || 50, 200);
-        const offset = params.offset || 0;
+        const url = new URL(req.url);
+        const sort = url.searchParams.get("sort") || "new"; // new, hot, top
+        const page = parseInt(url.searchParams.get("page") || "1", 10);
+        const limit = parseInt(url.searchParams.get("limit") || "20", 10);
+        // Fallback to ETH if user has no school somehow
+        const userSchool = user.school || "ETH";
 
-        // Fetch posts sorted by newest first
-        let posts = await base44.asServiceRole.entities.Post.list("-created_date", 500);
+        // Fetch all posts for the school. 
+        // We use asServiceRole to bypass base RLS rules, we filter Manually
+        let allPosts = await base44.asServiceRole.entities.Post.filter({
+            school_id: userSchool
+        });
 
-        // Filter to school
-        if (school) {
-            posts = posts.filter((p: any) => {
-                if (!p.department || p.department === "all") return true;
-                if (school === "ETH") return p.department.startsWith("D-") || p.department === "ETH";
-                return p.department === school;
-            });
-        }
+        // Filter out deleted posts
+        allPosts = allPosts.filter((p: any) => !p.deleted_at);
 
-        // Filter by category
-        if (category !== "all") {
-            posts = posts.filter((p: any) => p.category === category);
-        } else {
-            // Default: exclude events category
-            posts = posts.filter((p: any) => p.category !== "events");
-        }
-
-        // Filter by department
-        if (department !== "all") {
-            posts = posts.filter((p: any) => p.department === department);
-        }
-
-        // Sort
-        if (sort === "hot") {
-            posts.sort((a: any, b: any) =>
-                ((b.upvotes || 0) + (b.comment_count || 0)) -
-                ((a.upvotes || 0) + (a.comment_count || 0))
-            );
+        // Sort posts
+        if (sort === "new") {
+            allPosts.sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
         } else if (sort === "top") {
-            posts.sort((a: any, b: any) =>
-                ((b.upvotes || 0) - (b.downvotes || 0)) -
-                ((a.upvotes || 0) - (a.downvotes || 0))
-            );
+            allPosts.sort((a: any, b: any) => {
+                const bNet = (b.upvotes || 0) - (b.downvotes || 0);
+                const aNet = (a.upvotes || 0) - (a.downvotes || 0);
+                return bNet - aNet;
+            });
+        } else if (sort === "hot") {
+            allPosts.sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
         }
-        // "new" is already sorted by -created_date
 
         // Paginate
-        const total = posts.length;
-        const paginated = posts.slice(offset, offset + limit);
+        const startIndex = (page - 1) * limit;
+        const paginatedPosts = allPosts.slice(startIndex, startIndex + limit);
 
-        // Anonymize: strip author identity fields
-        const anonymized = paginated.map((post: any) => ({
-            id: post.id,
-            title: post.title,
-            content: post.content,
-            category: post.category,
-            department: post.department,
-            academic_level: post.academic_level,
-            media_url: post.media_url,
-            gif_url: post.gif_url,
-            poll_options: post.poll_options,
-            upvotes: post.upvotes || 0,
-            downvotes: post.downvotes || 0,
-            comment_count: post.comment_count || 0,
-            created_date: post.created_date,
-            updated_date: post.updated_date,
-            deleted: post.deleted || false,
-            // Anonymous author info — only mood/alias, never real identity
-            author_mood: post.author_mood || null,
-            author_alias: post.author_alias || "Anonymous",
-            author_school: post.author_school || school,
-            // Whether current user is the author (for edit/delete perms)
-            is_own_post: post.created_by === user.id || post.created_by === user.email,
-            // Event fields
-            event_date: post.event_date,
-            event_time: post.event_time,
-            event_location: post.event_location,
-            interested_users: post.interested_users?.length || 0,
-        }));
+        // Fetch current user's votes for these posts
+        const postIds = paginatedPosts.map((p: any) => p.id);
+        const userVotes = await base44.asServiceRole.entities.Vote.filter({
+            user_email: user.email,
+            target_type: "post"
+        });
+
+        const voteMap: Record<string, number> = {};
+        for (const v of userVotes) {
+            if (postIds.includes((v as any).target_id)) {
+                voteMap[(v as any).target_id] = (v as any).vote_value;
+            }
+        }
+
+        // Fetch user's persistent anon ID to flag their own posts
+        const myAnonId = await getAnonId(user.email);
+
+        // Sanitize and format the response
+        const sanitizedPosts = paginatedPosts.map((p: any) => {
+            const isOwn = (p.author_email === user.email) || (p.author_anon_id === myAnonId);
+            const safePost = {
+                ...p,
+                is_own_post: isOwn,
+                user_vote: voteMap[p.id] || 0 // 1 for up, -1 for down, 0 for none
+            };
+            // NEVER reveal real identity to the client
+            delete safePost.author_email;
+            return safePost;
+        });
 
         return Response.json({
-            posts: anonymized,
-            total,
-            limit,
-            offset,
-            has_more: offset + limit < total,
-        }, { headers: corsHeaders() });
+            posts: sanitizedPosts,
+            has_more: startIndex + limit < allPosts.length
+        });
 
-    } catch (error) {
-        if (error instanceof Response) return error;
-        console.error("Feed list error:", error);
-        return Response.json(
-            { error: "Failed to load feed." },
-            { status: 500, headers: corsHeaders() }
-        );
+    } catch (err) {
+        if (err instanceof Response) return err;
+        console.error("Feed list error:", err);
+        return Response.json({ error: "Failed to fetch feed" }, { status: 500 });
     }
-});
+}

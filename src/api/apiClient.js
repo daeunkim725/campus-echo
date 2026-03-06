@@ -101,20 +101,115 @@ export async function apiVerifyCode(code, verificationId) {
     });
 }
 
-// ──────────────────────────────────────────
-// Feed API
-// ──────────────────────────────────────────
+// ───────────────────────────────────────────────
+// Feed API (Anonymous)
+// ───────────────────────────────────────────────
 
-export async function apiFeedList(params = {}) {
-    return await apiFetch("feedList", {
-        method: "POST",
-        body: JSON.stringify(params),
+export const apiFeedList = async (sort = 'new', page = 1, limit = 20) => {
+    return apiFetch('feedList', {
+        method: 'GET',
+        params: { sort, page, limit }
     });
-}
+};
 
-export async function apiFeedCreate(postData) {
-    return await apiFetch("feedCreate", {
-        method: "POST",
-        body: JSON.stringify(postData),
+export const apiFeedCreate = async (content, category, post_type = 'text', poll_options = null) => {
+    return apiFetch('feedCreate', {
+        method: 'POST',
+        body: { content, category, post_type, poll_options }
     });
-}
+};
+
+export const apiFeedDelete = async (postId) => {
+    return apiFetch('feedDelete', {
+        method: 'DELETE',
+        params: { id: postId }
+    });
+};
+
+// ───────────────────────────────────────────────
+// Comment API (Anonymous)
+// ───────────────────────────────────────────────
+
+export const apiCommentList = async (postId) => {
+    return apiFetch('commentList', {
+        method: 'GET',
+        params: { post_id: postId }
+    });
+};
+
+export const apiCommentCreate = async (postId, content) => {
+    return apiFetch('commentCreate', {
+        method: 'POST',
+        body: { post_id: postId, content }
+    });
+};
+
+export const apiCommentDelete = async (commentId) => {
+    return apiFetch('commentDelete', {
+        method: 'DELETE',
+        params: { id: commentId }
+    });
+};
+
+// ───────────────────────────────────────────────
+// Vote & Report API
+// ───────────────────────────────────────────────
+
+export const apiVote = async (targetType, targetId, voteValue) => {
+    return apiFetch('vote', {
+        method: 'POST',
+        body: { target_type: targetType, target_id: targetId, vote_value: voteValue }
+    });
+};
+
+export const apiPollVote = async (postId, optionIndex) => {
+    return apiFetch('pollVote', {
+        method: 'POST',
+        body: { post_id: postId, option_index: optionIndex }
+    });
+};
+
+export const apiReportCreate = async (targetType, targetId, reason) => {
+    return apiFetch('reportCreate', {
+        method: 'POST',
+        body: { target_type: targetType, target_id: targetId, reason }
+    });
+};
+
+// ───────────────────────────────────────────────
+// Market API (Anonymous)
+// ───────────────────────────────────────────────
+
+export const apiMarketList = async (category, isFree, includeSold, sort = 'newest', page = 1, limit = 20) => {
+    const params = { sort, page, limit };
+    if (category) params.category = category;
+    if (isFree !== undefined && isFree !== null) params.is_free = isFree;
+    if (includeSold !== undefined && includeSold !== null) params.include_sold = includeSold;
+
+    return apiFetch('marketListListings', {
+        method: 'GET',
+        params
+    });
+};
+
+export const apiMarketCreate = async (listingData) => {
+    // listingData: { title, description, price, is_free, category, condition, pickup_location_tag, images }
+    return apiFetch('marketCreateListing', {
+        method: 'POST',
+        body: listingData
+    });
+};
+
+export const apiMarketUpdate = async (listingId, updateData) => {
+    return apiFetch('marketUpdateListing', {
+        method: 'PUT',
+        body: { id: listingId, ...updateData }
+    });
+};
+
+export const apiMarketDelete = async (listingId) => {
+    return apiFetch('marketDeleteListing', {
+        method: 'DELETE',
+        params: { id: listingId }
+    });
+};

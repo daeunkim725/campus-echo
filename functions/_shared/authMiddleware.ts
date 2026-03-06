@@ -257,3 +257,20 @@ export function handleCORS(req: Request): Response | null {
     }
     return null;
 }
+
+// ──────────────────────────────────────────────
+// Anonymity hashing
+// ──────────────────────────────────────────────
+
+/**
+ * Deterministically hash an email to generate a persistent anonymous ID for a user.
+ * This guarantees users have a consistent "author_anon_id" without exposing their email.
+ */
+export async function getAnonId(email: string): Promise<string> {
+    const salt = Deno.env.get("JWT_SECRET") || "fallback_campus_echo_salt";
+    const msg = new TextEncoder().encode(email + salt);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msg);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+}
+
