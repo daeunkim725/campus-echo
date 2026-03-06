@@ -126,9 +126,9 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     onClick={() => setSelectedMood(m.value)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${selectedMood === m.value
                       ? "text-white border-transparent"
-                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 dark:bg-[#121922] dark:border-[#223041] dark:text-[#A8B3C2]"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                       }`}
-                    style={selectedMood === m.value ? { backgroundColor: darkMode ? "#6EA8FF" : primary, borderColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" } : {}}
+                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" } : {}}
                   >
                     {m.label}
                   </button>
