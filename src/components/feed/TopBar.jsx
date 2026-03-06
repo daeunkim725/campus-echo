@@ -52,21 +52,10 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
         }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
+            {/* Logo + nav tabs */}
             <div className="flex items-center gap-3">
-              {/* Profile avatar */}
-              <button
-                onClick={() => setShowProfile(true)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform active:scale-95"
-                style={{ backgroundColor: tokens.primaryLight }}
-                title="Your profile"
-              >
-                {getMoodEmoji(currentUser?.mood)}
-              </button>
-
-              {/* Logo + nav tabs */}
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
-                <div className="flex bg-slate-100 p-1 rounded-lg">
+              <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
+              <div className="flex bg-slate-100 p-1 rounded-lg">
                   <button
                     onClick={() => window.location.href = createPageUrl("Home")}
                     className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
