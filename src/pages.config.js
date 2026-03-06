@@ -50,18 +50,18 @@
 import Events from './pages/Events';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Market from './pages/Market';
 import MarketInbox from './pages/MarketInbox';
 import Moderation from './pages/Moderation';
 import Notifications from './pages/Notifications';
 import Onboarding from './pages/Onboarding';
+import OnboardingAge from './pages/OnboardingAge';
+import OnboardingPassword from './pages/OnboardingPassword';
+import OnboardingProfile from './pages/OnboardingProfile';
+import OnboardingSchool from './pages/OnboardingSchool';
+import OnboardingVerify from './pages/OnboardingVerify';
 import PostDetail from './pages/PostDetail';
 import SchoolFeed from './pages/SchoolFeed';
-import OnboardingVerify from './pages/OnboardingVerify';
-import OnboardingPassword from './pages/OnboardingPassword';
-import OnboardingSchool from './pages/OnboardingSchool';
-import OnboardingAge from './pages/OnboardingAge';
-import OnboardingProfile from './pages/OnboardingProfile';
+import Market from './pages/Market';
 import OnboardingAge from './pages/OnboardingAge';
 import OnboardingPassword from './pages/OnboardingPassword';
 import OnboardingProfile from './pages/OnboardingProfile';
@@ -74,18 +74,18 @@ export const PAGES = {
     "Events": Events,
     "Home": Home,
     "Login": Login,
-    "Market": Market,
     "MarketInbox": MarketInbox,
     "Moderation": Moderation,
     "Notifications": Notifications,
     "Onboarding": Onboarding,
+    "OnboardingAge": OnboardingAge,
+    "OnboardingPassword": OnboardingPassword,
+    "OnboardingProfile": OnboardingProfile,
+    "OnboardingSchool": OnboardingSchool,
+    "OnboardingVerify": OnboardingVerify,
     "PostDetail": PostDetail,
     "SchoolFeed": SchoolFeed,
-    "OnboardingVerify": OnboardingVerify,
-    "OnboardingPassword": OnboardingPassword,
-    "OnboardingSchool": OnboardingSchool,
-    "OnboardingAge": OnboardingAge,
-    "OnboardingProfile": OnboardingProfile,
+    "Market": Market,
     "OnboardingAge": OnboardingAge,
     "OnboardingPassword": OnboardingPassword,
     "OnboardingProfile": OnboardingProfile,
