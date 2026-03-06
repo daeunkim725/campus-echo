@@ -439,13 +439,6 @@ export default function Market() {
         />
       )}
 
-      {/* Floating Inbox Button */}
-      <button
-        onClick={() => window.location.href = createPageUrl("MarketInbox")}
-        className="fixed bottom-[104px] right-6 z-40 flex items-center justify-center w-11 h-11 rounded-full bg-white text-slate-700 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-100"
-      >
-        <MessageCircle className="w-5 h-5" />
-      </button>
     </div>
   );
 }
