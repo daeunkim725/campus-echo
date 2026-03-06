@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { createPageUrl } from "@/utils";
@@ -27,8 +27,11 @@ export function getMoodLabel(val) {
 
 export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoolConfig }) {
   const [myPosts, setMyPosts] = useState([]);
+  const [myListings, setMyListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingMood, setEditingMood] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts");
+  const [showAllSold, setShowAllSold] = useState(false);
   const [selectedMood, setSelectedMood] = useState(currentUser?.mood || "");
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
@@ -45,10 +48,48 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
   const fetchMyPosts = async () => {
     setLoading(true);
-    const all = await base44.entities.Post.list("-created_date", 200);
-    const mine = all.filter(p => p.created_by === currentUser?.email);
-    setMyPosts(mine);
+    const [posts, listings] = await Promise.all([
+      base44.entities.Post.list("-created_date", 200),
+      base44.entities.MarketListing.list("-created_date", 200)
+    ]);
+    setMyPosts(posts.filter(p => p.created_by === currentUser?.email));
+    setMyListings(listings.filter(l => l.created_by === currentUser?.email));
     setLoading(false);
+  };
+
+  const handleRelist = async (listing) => {
+    setLoading(true);
+    await base44.entities.MarketListing.create({
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      image_url: listing.image_url,
+      school: listing.school,
+      author_alias: listing.author_alias,
+      author_color: listing.author_color,
+      condition: listing.condition,
+      category: listing.category,
+      pickup_location: listing.pickup_location,
+      saved_by: [],
+      status: "active"
+    });
+    fetchMyPosts();
+  };
+
+  const handleBulkArchiveSold = async () => {
+    const sold = myListings.filter(l => l.status === "sold");
+    for (const l of sold) {
+      await base44.entities.MarketListing.update(l.id, { status: "archived" });
+    }
+    fetchMyPosts();
+  };
+
+  const handleBulkDeleteSold = async () => {
+    const sold = myListings.filter(l => l.status === "sold");
+    for (const l of sold) {
+      await base44.entities.MarketListing.delete(l.id);
+    }
+    fetchMyPosts();
   };
 
   const handleMoodSave = async () => {
@@ -128,7 +169,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                       ? "text-white border-transparent"
                       : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                       }`}
-                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary } : {}}
+                    style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" } : {}}
                   >
                     {m.label}
                   </button>
@@ -140,7 +181,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   onClick={handleMoodSave}
                   disabled={!selectedMood || saving}
                   className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
-                  style={{ backgroundColor: primary }}
+                  style={{ backgroundColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" }}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>
@@ -158,6 +199,15 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
         {/* Settings */}
         <div className="p-4 border-b border-slate-100 space-y-1">
+          {currentUser?.role === 'admin' && (
+            <button
+              onClick={() => window.location.href = createPageUrl("Moderation")}
+              className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-indigo-50 text-indigo-600 text-sm font-medium transition-all"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Moderation Queue
+            </button>
+          )}
           <button
             onClick={handleToggleDark}
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-all"
@@ -166,7 +216,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               {darkMode ? "Dark Mode" : "Light Mode"}
             </div>
-            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "bg-slate-800" : "bg-slate-200"}`}>
+            <div className={`w-10 h-5 rounded-full transition-all ${darkMode ? "" : "bg-slate-200"}`} style={darkMode ? { backgroundColor: primary } : {}}>
               <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-5.5" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "22px" : "2px" }} />
             </div>
           </button>
@@ -179,71 +229,154 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           </button>
         </div>
 
-        {/* My Posts */}
+        {/* Tabs for Posts and Listings */}
+        <div className="flex border-b border-slate-100">
+          <button
+            onClick={() => setActiveTab("posts")}
+            className={`flex-1 py-3 text-sm font-semibold transition-all ${activeTab === "posts" ? "text-slate-900 border-b-2" : "text-slate-500"}`}
+            style={activeTab === "posts" ? { borderBottomColor: primary } : {}}
+          >
+            Posts ({myPosts.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("listings")}
+            className={`flex-1 py-3 text-sm font-semibold transition-all ${activeTab === "listings" ? "text-slate-900 border-b-2" : "text-slate-500"}`}
+            style={activeTab === "listings" ? { borderBottomColor: primary } : {}}
+          >
+            Listings ({myListings.filter(l => l.status !== 'archived').length})
+          </button>
+        </div>
+
+        {/* Tab Content */}
         <div className="p-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Your Posts ({myPosts.length})</p>
           {loading ? (
             <div className="space-y-3">
               {[1, 2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
             </div>
-          ) : myPosts.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
+          ) : activeTab === "posts" ? (
+            myPosts.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {myPosts.map(post => (
+                  <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                    {editingPost === post.id ? (
+                      <div>
+                        <textarea
+                          value={editContent}
+                          onChange={e => setEditContent(e.target.value)}
+                          className="w-full text-sm text-slate-700 bg-white border border-slate-200 rounded-xl p-3 resize-none min-h-[80px] focus:outline-none"
+                        />
+                        <div className="flex gap-2 mt-2">
+                          <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border border-slate-200 text-slate-500">Cancel</button>
+                          <button
+                            onClick={() => handleEditPost(post)}
+                            disabled={saving}
+                            className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
+                            style={{ backgroundColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" }}
+                          >
+                            <Check className="w-3 h-3 inline mr-1" />Save
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className={`text-sm mb-2 ${post.deleted ? "text-slate-400 italic" : "text-slate-700"}`}>
+                          {post.content}
+                        </p>
+                        {post.edited && !post.deleted && (
+                          <span className="text-xs text-slate-400 italic">edited</span>
+                        )}
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-xs text-slate-400">
+                            {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
+                          </span>
+                          {!post.deleted && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingPost(post.id); setEditContent(post.content); }}
+                                className="p-1.5 rounded-lg hover:bg-white text-slate-400 hover:text-slate-600 transition-all"
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeletePost(post)}
+                                className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )
           ) : (
-            <div className="space-y-3">
-              {myPosts.map(post => (
-                <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                  {editingPost === post.id ? (
-                    <div>
-                      <textarea
-                        value={editContent}
-                        onChange={e => setEditContent(e.target.value)}
-                        className="w-full text-sm text-slate-700 bg-white border border-slate-200 rounded-xl p-3 resize-none min-h-[80px] focus:outline-none"
-                      />
-                      <div className="flex gap-2 mt-2">
-                        <button onClick={() => setEditingPost(null)} className="flex-1 py-1.5 text-xs rounded-lg border border-slate-200 text-slate-500">Cancel</button>
+            <div className="space-y-4">
+              {/* Active Listings */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Active</h3>
+                {myListings.filter(l => l.status !== "sold" && l.status !== "archived").length === 0 ? (
+                  <p className="text-sm text-slate-400 mb-4">No active listings.</p>
+                ) : (
+                  <div className="space-y-2 mb-4">
+                    {myListings.filter(l => l.status !== "sold" && l.status !== "archived").map(listing => (
+                      <div key={listing.id} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          {listing.image_url ? (
+                            <img src={listing.image_url} alt={listing.title} className="w-10 h-10 object-cover rounded-lg shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 bg-slate-200 rounded-lg shrink-0 flex items-center justify-center text-slate-400 text-xs font-bold">$</div>
+                          )}
+                          <div className="truncate">
+                            <p className="text-sm font-bold text-slate-900 truncate">{listing.title}</p>
+                            <p className="text-xs text-slate-500">${listing.price.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Sold Listings */}
+              {myListings.filter(l => l.status === "sold").length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sold</h3>
+                    <div className="flex gap-2">
+                      <button onClick={handleBulkArchiveSold} className="text-[10px] flex items-center gap-1 text-slate-500 hover:text-slate-700"><Archive className="w-3 h-3" /> Archive All</button>
+                      <button onClick={handleBulkDeleteSold} className="text-[10px] flex items-center gap-1 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /> Delete All</button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {myListings.filter(l => l.status === "sold").slice(0, showAllSold ? undefined : 3).map(listing => (
+                      <div key={listing.id} className="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-100 opacity-75">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          <div className="truncate">
+                            <p className="text-sm font-medium text-slate-700 line-through truncate">{listing.title}</p>
+                            <p className="text-xs text-slate-500">Sold for ${listing.price.toFixed(2)}</p>
+                          </div>
+                        </div>
                         <button
-                          onClick={() => handleEditPost(post)}
-                          disabled={saving}
-                          className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
-                          style={{ backgroundColor: primary }}
+                          onClick={() => handleRelist(listing)}
+                          className="px-2 py-1 bg-white text-slate-600 text-xs font-medium rounded-lg border border-slate-200 flex items-center gap-1 hover:bg-slate-100"
                         >
-                          <Check className="w-3 h-3 inline mr-1" />Save
+                          <RotateCcw className="w-3 h-3" /> Relist
                         </button>
                       </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className={`text-sm mb-2 ${post.deleted ? "text-slate-400 italic" : "text-slate-700"}`}>
-                        {post.content}
-                      </p>
-                      {post.edited && !post.deleted && (
-                        <span className="text-xs text-slate-400 italic">edited</span>
-                      )}
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-slate-400">
-                          {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
-                        </span>
-                        {!post.deleted && (
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => { setEditingPost(post.id); setEditContent(post.content); }}
-                              className="p-1.5 rounded-lg hover:bg-white text-slate-400 hover:text-slate-600 transition-all"
-                            >
-                              <Pencil className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeletePost(post)}
-                              className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
+                    ))}
+                    {!showAllSold && myListings.filter(l => l.status === "sold").length > 3 && (
+                      <button onClick={() => setShowAllSold(true)} className="text-xs text-indigo-600 font-medium w-full text-center py-1">
+                        View all sold ({myListings.filter(l => l.status === "sold").length})
+                      </button>
+                    )}
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           )}
         </div>

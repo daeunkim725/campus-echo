@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
+import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -22,19 +23,44 @@ const categoryColors = {
   events: "bg-indigo-50 text-indigo-600",
 };
 
-export default function PostCard({ post, currentUser, onUpdate }) {
+export default function PostCard({ post, currentUser, onUpdate, schoolConfig: propSchoolConfig }) {
   const [loading, setLoading] = useState(false);
   const [localPost, setLocalPost] = useState(post);
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [showInterestMenu, setShowInterestMenu] = useState(false);
   const navigate = useNavigate();
 
   const userId = currentUser?.id || "anon";
+  const hasVotedBell = localPost.interested_users?.some(u => u.user_id === userId);
+
+  const handleAddInterest = async (minutes) => {
+    setShowInterestMenu(false);
+    if (!currentUser) return;
+    const newUsers = [...(localPost.interested_users || []), {
+      user_id: currentUser.id,
+      email: currentUser.email,
+      reminder_minutes: minutes,
+      notified: false
+    }];
+    setLocalPost({ ...localPost, interested_users: newUsers });
+    await base44.entities.Post.update(localPost.id, { interested_users: newUsers });
+    onUpdate?.();
+  };
+
+  const handleRemoveInterest = async () => {
+    const newUsers = (localPost.interested_users || []).filter(u => u.user_id !== userId);
+    setLocalPost({ ...localPost, interested_users: newUsers });
+    await base44.entities.Post.update(localPost.id, { interested_users: newUsers });
+    onUpdate?.();
+  };
   const isOwner = localPost.created_by === currentUser?.email;
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
-
-  const schoolConfig = getSchoolConfig(currentUser?.school);
+  
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
   const primaryLight = tokens.primaryLight;
@@ -60,7 +86,6 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     const updated = { ...localPost, upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown };
     setLocalPost(updated);
     await base44.entities.Post.update(localPost.id, { upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown });
-    onUpdate?.();
     setLoading(false);
   };
 
@@ -104,19 +129,18 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     <>
       <div
         onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
-        className="rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border"
-        style={{ backgroundColor: tokens.surface, borderColor: tokens.border }}
+        className="bg-white rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {Array.from(localPost.author_alias || "A")[0]}
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] shadow-sm"
+              style={{ backgroundColor: primaryLight }}>
+              {getAliasEmoji(localPost.author_alias)}
             </div>
             <div>
-              <p className="text-xs font-semibold capitalize" style={{ color: tokens.text }}>{localPost.author_alias || "Anonymous"}</p>
-              <p className="text-[10px] leading-tight whitespace-nowrap" style={{ color: tokens.textMuted }}>{timeAgo}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
+              <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -128,8 +152,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                 </span>
               )}
               {localPost.academic_level && localPost.academic_level !== "all" && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full font-medium"
-                  style={{ backgroundColor: tokens.divider, color: tokens.textMuted }}>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
                   {localPost.academic_level}
                 </span>
               )}
@@ -145,32 +168,40 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               )}
             </div>
 
-            {/* Owner menu */}
-            {isOwner && !localPost.deleted && (
+            {/* Post menu */}
+            {!localPost.deleted && (
               <div className="relative ml-1" onClick={e => e.stopPropagation()}>
                 <button
                   onClick={() => setShowMenu(v => !v)}
-                  className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
-                  style={{ color: tokens.textMuted }}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-8 border rounded-xl shadow-lg z-20 py-1 w-32"
-                    style={{ backgroundColor: tokens.surfaceElevated, borderColor: tokens.border }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors"
-                      style={{ color: tokens.text }}
-                    >
-                      <Pencil className="w-3.5 h-3.5" /> Edit
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
-                    </button>
+                  <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    {isOwner ? (
+                      <>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        <button
+                          onClick={handleDelete}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowReport(true); }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <Flag className="w-3.5 h-3.5" /> Report
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -180,22 +211,22 @@ export default function PostCard({ post, currentUser, onUpdate }) {
 
         {/* Title */}
         {localPost.title && (
-          <p className="font-semibold text-[15px] mb-1 line-clamp-2" style={{ color: tokens.text }}>{localPost.title}</p>
+          <p className="font-semibold text-slate-900 text-sm mb-0.5 line-clamp-2">{localPost.title}</p>
         )}
 
         {/* Content */}
         {localPost.deleted ? (
-          <p className="italic text-sm leading-relaxed mb-3" style={{ color: tokens.textMuted }}>[deleted]</p>
+          <p className="text-slate-400 italic text-[13px] leading-relaxed mb-2">[deleted]</p>
         ) : (
-          <div className="mb-3">
-            {localPost.content && <p className="text-sm leading-relaxed line-clamp-3" style={{ color: tokens.textMuted }}>{localPost.content}</p>}
-            {localPost.edited && <span className="text-xs italic" style={{ color: tokens.textMuted }}>edited</span>}
+          <div className="mb-2">
+            {localPost.content && <p className="text-slate-600 text-[13px] leading-relaxed line-clamp-3">{localPost.content}</p>}
+            {localPost.edited && <span className="text-[10px] text-slate-400 italic">edited</span>}
           </div>
         )}
 
         {/* Poll Options */}
         {localPost.post_type === "poll" && localPost.poll_options && (
-          <div className="space-y-2 mb-3" onClick={e => e.stopPropagation()}>
+          <div className="space-y-1.5 mb-2" onClick={e => e.stopPropagation()}>
             {localPost.poll_options.map((opt, i) => {
               const pct = totalPollVotes > 0 ? Math.round((opt.votes || 0) / totalPollVotes * 100) : 0;
               const myVote = opt.voted_by?.includes(userId);
@@ -204,44 +235,40 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                   key={i}
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
-                  className="w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden"
-                  style={myVote
-                    ? { borderColor: primary, color: primary }
-                    : { borderColor: tokens.border, color: tokens.text }}
+                  className={`w-full text-left rounded-xl border px-3 py-2 text-sm font-medium transition-all relative overflow-hidden ${
+                    hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
+                  }`}
+                  style={myVote ? { borderColor: primary, color: primary } : {}}
                 >
                   {hasVotedPoll && (
-                    <div className="absolute inset-0 rounded-xl" style={{ width: `${pct}%`, backgroundColor: myVote ? primaryLight : tokens.divider }} />
+                    <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: primaryLight } : {}) }} />
                   )}
                   <span className="relative flex items-center justify-between">
                     <span>{opt.text}</span>
-                    {hasVotedPoll && <span className="text-xs" style={{ color: tokens.textMuted }}>{pct}%</span>}
+                    {hasVotedPoll && <span className="text-xs text-slate-400">{pct}%</span>}
                   </span>
                 </button>
               );
             })}
-            <p className="text-xs" style={{ color: tokens.textMuted }}>{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
           </div>
         )}
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="flex items-center gap-3 text-xs mb-2 flex-wrap" style={{ color: tokens.textMuted }}>
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <span>{localPost.event_date}</span>
+          <div className="flex items-center gap-3 text-[11px] text-slate-500 mb-2 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
+              <span className="font-medium">{localPost.event_date}</span>
             </div>
-            {localPost.event_time && (
-              <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                <span>{localPost.event_time}</span>
-              </div>
-            )}
-            {localPost.event_location && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                <span>{localPost.event_location}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              <span>{localPost.event_time}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5" />
+              <span>{localPost.event_location}</span>
+            </div>
           </div>
         )}
 
@@ -249,33 +276,58 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {!localPost.deleted && (
           <>
             {localPost.gif_url ? (
-              <div className="mb-3 rounded-xl overflow-hidden" style={{ backgroundColor: tokens.divider }}>
-                <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-96" />
+              <div className="mb-2 rounded-xl overflow-hidden bg-slate-100">
+                <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-64" />
               </div>
             ) : localPost.image_url ? (
-              <div className="mb-3 rounded-xl overflow-hidden">
-                <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
+              <div className="mb-2 rounded-xl overflow-hidden">
+                <img src={localPost.image_url} alt="" className="w-full max-h-48 object-cover" />
               </div>
             ) : null}
           </>
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-1 pt-2 border-t" style={{ borderColor: tokens.divider }}>
-          <button onClick={(e) => handleVote(e, "up")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : ""}`}
-            style={!votedUp ? { color: tokens.textMuted } : {}}>
-            <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
-          </button>
-          <button onClick={(e) => handleVote(e, "down")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : ""}`}
-            style={!votedDown ? { color: tokens.textMuted } : {}}>
-            <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
-          </button>
+        <div className={`flex items-center gap-1 border-t border-slate-50 relative ${localPost.category === "events" ? "pt-1.5" : "pt-2"}`}>
+          {localPost.category !== "events" && (
+            <>
+              <button onClick={(e) => handleVote(e, "up")}
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowUp className="w-3.5 h-3.5" /><span>{localPost.upvotes || 0}</span>
+              </button>
+              <button onClick={(e) => handleVote(e, "down")}
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+                <ArrowDown className="w-3.5 h-3.5" /><span>{localPost.downvotes || 0}</span>
+              </button>
+            </>
+          )}
+          {localPost.category === "events" && (
+            <div className="relative">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (hasVotedBell) handleRemoveInterest();
+                  else setShowInterestMenu(!showInterestMenu);
+                }}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium transition-all ${hasVotedBell ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
+              >
+                <Bell className={`w-3.5 h-3.5 ${hasVotedBell ? "fill-current" : ""}`} />
+                <span>{localPost.interested_users?.length || 0}</span>
+              </button>
+
+              {showInterestMenu && (
+                <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                  <p className="text-[9px] font-bold text-slate-400 px-2.5 py-1 uppercase tracking-wider">Remind me</p>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(15);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">15 mins before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(60);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 hour before</button>
+                  <button onClick={(e) => {e.stopPropagation(); handleAddInterest(1440);}} className="w-full text-left px-2.5 py-1 text-[11px] text-slate-700 hover:bg-slate-50">1 day before</button>
+                </div>
+              )}
+            </div>
+          )}
           <button onClick={e => e.stopPropagation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ml-auto"
-            style={{ color: tokens.textMuted }}>
-            <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
+            className={`flex items-center gap-1 transition-all ml-auto ${localPost.category === "events" ? "px-1.5 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-600" : "px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0}</span>
           </button>
         </div>
       </div>
@@ -286,6 +338,14 @@ export default function PostCard({ post, currentUser, onUpdate }) {
           onClose={() => setShowEdit(false)}
           onSaved={handleEditSaved}
           primaryColor={primary}
+        />
+      )}
+      {showReport && (
+        <ReportModal
+          targetType="post"
+          targetId={localPost.id}
+          currentUser={currentUser}
+          onClose={() => setShowReport(false)}
         />
       )}
     </>

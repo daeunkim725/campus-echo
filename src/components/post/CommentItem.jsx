@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowUp, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
+import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 
 export default function CommentItem({ comment, currentUser, onReply, depth = 0 }) {
@@ -20,12 +20,13 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const userId = currentUser?.id || "anon";
   const isOwner = currentUser && comment.created_by === currentUser.email;
   const [showMenu, setShowMenu] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content || "");
-  const schoolConfig = getSchoolConfig(currentUser?.school);
-  const tokens = useThemeTokens(schoolConfig);
-  const primary = tokens.primary;
-  const primaryLight = tokens.primaryLight;
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = getSchoolConfig(effectiveSchool);
+  const primary = schoolConfig?.primary || "#7C3AED";
+  const primaryLight = schoolConfig?.primaryLight || "#EDE9FE";
   const votedUp = comment.voted_up_by?.includes(userId);
 
   const handleUpvote = async () => {
@@ -48,7 +49,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const handleReply = async () => {
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
-
+    
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
     const color = primary;
 
@@ -63,6 +64,18 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
       upvotes: 0,
       voted_up_by: []
     });
+    
+    if (comment.created_by && comment.created_by !== currentUser.email) {
+      await base44.entities.Notification.create({
+        user_email: comment.created_by,
+        type: "reply",
+        post_id: comment.post_id,
+        actor_alias: alias,
+        content: replyText.trim() || "Sent a GIF",
+        read: false
+      });
+    }
+
     setReplyText("");
     setGifUrl(null);
     setStillUrl(null);
@@ -91,42 +104,46 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     : "";
 
   return (
-    <div className={depth > 0 ? "ml-8 pl-4" : ""} style={depth > 0 ? { borderLeftWidth: 2, borderLeftColor: tokens.divider } : {}}>
-      <div className="flex gap-3 py-3">
+    <div className={depth > 0 ? "ml-6 border-l-2 border-slate-100 pl-3" : ""}>
+      <div className="flex gap-2.5 py-2.5">
         <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm"
-          style={{ backgroundColor: primary }}
+          className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[13px]"
+          style={{ backgroundColor: primaryLight }}
         >
           {getAliasEmoji(comment.author_alias)}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-sm font-semibold capitalize" style={{ color: tokens.text }}>{comment.author_alias}</span>
-            <span className="text-xs" style={{ color: tokens.textMuted }}>{timeAgo}</span>
-            {isOwner && !comment.deleted && (
+          <div className="flex items-baseline gap-1.5 mb-0.5">
+            <span className="text-[13px] font-semibold text-slate-800 capitalize">{getCleanAlias(comment.author_alias)}</span>
+            <span className="text-[11px] text-slate-400">{timeAgo}</span>
+            {!comment.deleted && (
               <div className="relative ml-auto">
-                <button onClick={() => setShowMenu(!showMenu)} style={{ color: tokens.textMuted }}>
+                <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600">
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-6 border rounded-xl shadow-lg z-20 py-1 w-32"
-                    style={{ backgroundColor: tokens.surfaceElevated, borderColor: tokens.border }}>
-                    <button onClick={() => { setShowMenu(false); setIsEditing(true); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors"
-                      style={{ color: tokens.text }}>
-                      <Pencil className="w-3.5 h-3.5" /> Edit
-                    </button>
-                    <button onClick={handleDelete}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
-                    </button>
+                  <div className="absolute right-0 top-6 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    {isOwner ? (
+                      <>
+                        <button onClick={() => { setShowMenu(false); setIsEditing(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        <button onClick={handleDelete} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => { setShowMenu(false); setShowReport(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                        <Flag className="w-3.5 h-3.5" /> Report
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
             )}
           </div>
           {comment.deleted ? (
-            <p className="text-[14px] italic leading-relaxed" style={{ color: tokens.textMuted }}>[deleted]</p>
+            <p className="text-[13px] text-slate-400 italic leading-relaxed">[deleted]</p>
           ) : isEditing ? (
             <div className="mt-2 flex flex-col gap-2">
               <input
@@ -134,40 +151,40 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                 value={editText}
                 onChange={e => setEditText(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleEdit()}
-                className="w-full text-sm rounded-xl border px-3 py-2 focus:outline-none"
-                style={{ borderColor: tokens.border, backgroundColor: tokens.surface, color: tokens.text }}
+                className="w-full text-sm rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:border-slate-400"
               />
               <div className="flex justify-end gap-2">
-                <button onClick={() => setIsEditing(false)} className="text-xs px-2 py-1" style={{ color: tokens.textMuted }}>Cancel</button>
+                <button onClick={() => setIsEditing(false)} className="text-xs text-slate-500 px-2 py-1">Cancel</button>
                 <button onClick={handleEdit} disabled={loading} className="text-xs text-white px-3 py-1 rounded-lg hover:opacity-90" style={{ backgroundColor: primary }}>Save</button>
               </div>
             </div>
           ) : (
             <>
-              {comment.content && <p className="text-[14px] leading-relaxed" style={{ color: tokens.text }}>{comment.content} {comment.edited && <span className="text-[11px] italic ml-1" style={{ color: tokens.textMuted }}>(edited)</span>}</p>}
+              {comment.content && <p className="text-[13px] text-slate-700 leading-relaxed">{comment.content} {comment.edited && <span className="text-[10px] text-slate-400 italic ml-1">(edited)</span>}</p>}
               {comment.gif_url && (
-                <div className="mt-2 rounded-xl overflow-hidden max-w-[200px]" style={{ backgroundColor: tokens.divider }}>
+                <div className="mt-2 rounded-xl overflow-hidden bg-slate-100 max-w-[200px]">
                   <PlayableGif gifUrl={comment.gif_url} stillUrl={comment.still_url} className="w-full" />
                 </div>
               )}
             </>
           )}
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-3 mt-1.5">
             <button
               onClick={handleUpvote}
-              className="flex items-center gap-1 text-xs font-medium transition-colors"
-              style={votedUp ? { color: primary } : { color: tokens.textMuted }}
+              className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
+                votedUp ? "" : "text-slate-400 hover:text-slate-600"
+              }`}
+              style={votedUp ? { color: primary } : {}}
             >
-              <ArrowUp className="w-3.5 h-3.5" />
+              <ArrowUp className="w-3 h-3" />
               {localUpvotes}
             </button>
             {depth < 2 && (
               <button
                 onClick={() => setShowReply(!showReply)}
-                className="flex items-center gap-1 text-xs font-medium transition-colors"
-                style={{ color: tokens.textMuted }}
+                className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600 transition-colors"
               >
-                <CornerDownRight className="w-3.5 h-3.5" />
+                <CornerDownRight className="w-3 h-3" />
                 Reply
               </button>
             )}
@@ -176,29 +193,27 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           {showReply && (
             <div className="mt-3 flex flex-col gap-2 relative">
               {gifUrl && (
-                <div className="relative inline-block rounded-xl overflow-hidden border self-start"
-                  style={{ backgroundColor: tokens.divider, borderColor: tokens.border }}>
+                <div className="relative inline-block bg-slate-100 rounded-xl overflow-hidden border border-slate-200 self-start">
                   <img src={stillUrl} alt="selected gif" className="h-24 object-cover" />
-                  <button onClick={() => { setGifUrl(null); setStillUrl(null); }} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+                  <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {showGiphy && (
-                <GiphyBrowser
+                <GiphyBrowser 
                   onSelect={(gif) => {
                     setGifUrl(gif.gif_url);
                     setStillUrl(gif.still_url);
                     setShowGiphy(false);
-                  }}
-                  onClose={() => setShowGiphy(false)}
+                  }} 
+                  onClose={() => setShowGiphy(false)} 
                 />
               )}
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowGiphy(!showGiphy)}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors flex-shrink-0"
-                  style={{ backgroundColor: tokens.divider, color: tokens.textMuted }}
+                  className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
                 >
                   <Smile className="w-4 h-4" />
                 </button>
@@ -208,8 +223,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
                   onChange={e => setReplyText(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && handleReply()}
                   placeholder="Write a reply..."
-                  className="flex-1 text-sm rounded-xl border px-3 py-2 focus:outline-none"
-                  style={{ borderColor: tokens.border, backgroundColor: tokens.surface, color: tokens.text }}
+                  className="flex-1 text-[13px] rounded-xl border border-slate-200 px-3 py-1.5 focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
                 />
                 <button
                   onClick={handleReply}
@@ -224,6 +238,14 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
           )}
         </div>
       </div>
+      {showReport && (
+        <ReportModal
+          targetType="comment"
+          targetId={comment.id}
+          currentUser={currentUser}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </div>
   );
 }

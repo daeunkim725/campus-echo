@@ -7,6 +7,7 @@ import CreatePostModal from "@/components/feed/CreatePostModal";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getSchoolConfig, SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -19,6 +20,7 @@ export default function SchoolFeed() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const scrollDirection = useScrollDirection();
 
   const schoolConfig = getSchoolConfig(schoolCode);
   const tokens = useThemeTokens(schoolConfig);
@@ -85,13 +87,13 @@ export default function SchoolFeed() {
         schoolCode={schoolCode}
       />
 
-      <div className="sticky top-[65px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-xl mx-auto px-4 py-2.5">
+      <div className={`sticky z-30 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? 'top-0' : 'top-[65px]'}`}>
+        <div className="max-w-3xl mx-auto px-4 py-2.5">
           <FilterDrawer filters={filters} onChange={setFilters} userSchool={schoolCode} />
         </div>
       </div>
 
-      <div className="max-w-xl mx-auto px-4 py-4 space-y-3">
+      <div className="max-w-3xl mx-auto px-4 py-4 space-y-3">
         {loading ? (
           Array(5).fill(0).map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">

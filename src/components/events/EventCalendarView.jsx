@@ -103,9 +103,6 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
                 <span className={`font-medium ${isCurrentMonth ? "text-slate-900" : "text-slate-300"}`}>
                   {day.getDate()}
                 </span>
-                {isToday && (
-                  <span className="text-[9px] text-slate-500 mt-0.5">today</span>
-                )}
                 {dayEvents.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center w-full">
                     {dayEvents.slice(0, 2).map((_, i) => (
@@ -121,6 +118,9 @@ export default function EventCalendarView({ events, onSelectDate, schoolConfig }
                       </span>
                     )}
                   </div>
+                )}
+                {isToday && (
+                  <span className="text-[9px] text-slate-500 mt-0.5 leading-none">today</span>
                 )}
               </div>
             </button>

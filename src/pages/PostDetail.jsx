@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock, Smile, X } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowDown, MessageCircle, Send, MoreHorizontal, Pencil, Trash2, BarChart2, Calendar, MapPin, Clock, Smile, X, Bell } from "lucide-react";
 import EditPostModal from "@/components/feed/EditPostModal";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
+import { useScrollDirection } from "@/components/utils/useScrollDirection";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const categoryColors = {
   general: "bg-slate-100 text-slate-600",
@@ -47,14 +48,17 @@ export default function PostDetail() {
   const [commentSort, setCommentSort] = useState("new");
   const [showMenu, setShowMenu] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showInterestMenu, setShowInterestMenu] = useState(false);
+  const scrollDirection = useScrollDirection();
 
-  const schoolConfig = getSchoolConfig(currentUser?.school);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
   const primaryLight = tokens.primaryLight;
 
   useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => { });
+    base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
 
   const fetchData = async () => {
@@ -106,7 +110,7 @@ export default function PostDetail() {
   const handleComment = async () => {
     if ((!newComment.trim() && !gifUrl) || !post) return;
     setSubmitting(true);
-
+    
     const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
     const color = primary;
 
@@ -122,6 +126,19 @@ export default function PostDetail() {
     });
 
     await base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
+    
+    // Notify post author
+    if (post.created_by && post.created_by !== currentUser.email) {
+      await base44.entities.Notification.create({
+        user_email: post.created_by,
+        type: "comment",
+        post_id: post.id,
+        actor_alias: alias,
+        content: newComment.trim() || "Sent a GIF",
+        read: false
+      });
+    }
+
     setNewComment("");
     setGifUrl(null);
     setStillUrl(null);
@@ -133,7 +150,7 @@ export default function PostDetail() {
     .filter(c => !c.parent_comment_id)
     .sort((a, b) => commentSort === "best"
       ? (b.upvotes || 0) - (a.upvotes || 0)
-      : new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
+      : new Date(b.created_date) - new Date(a.created_date)
     );
   const getReplies = (commentId) => comments.filter(c => c.parent_comment_id === commentId);
 
@@ -156,6 +173,26 @@ export default function PostDetail() {
 
   const userId = currentUser?.id || "anon";
   const isOwner = post.created_by === currentUser?.email;
+  const hasVotedBell = post.interested_users?.some(u => u.user_id === userId);
+
+  const handleAddInterest = async (minutes) => {
+    setShowInterestMenu(false);
+    if (!currentUser) return;
+    const newUsers = [...(post.interested_users || []), {
+      user_id: currentUser.id,
+      email: currentUser.email,
+      reminder_minutes: minutes,
+      notified: false
+    }];
+    setPost({ ...post, interested_users: newUsers });
+    await base44.entities.Post.update(post.id, { interested_users: newUsers });
+  };
+
+  const handleRemoveInterest = async () => {
+    const newUsers = (post.interested_users || []).filter(u => u.user_id !== userId);
+    setPost({ ...post, interested_users: newUsers });
+    await base44.entities.Post.update(post.id, { interested_users: newUsers });
+  };
   const votedUp = post.voted_up_by?.includes(userId);
   const votedDown = post.voted_down_by?.includes(userId);
   const timeAgo = post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : "";
@@ -187,8 +224,8 @@ export default function PostDetail() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-xl mx-auto px-4 py-3.5 flex items-center gap-3">
+      <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
+        <div className="max-w-3xl mx-auto px-4 py-3.5 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -196,16 +233,16 @@ export default function PostDetail() {
         </div>
       </div>
 
-      <div className="max-w-xl mx-auto px-4 py-4">
+      <div className="max-w-3xl mx-auto px-4 py-4">
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm shadow-sm"
-              style={{ backgroundColor: primary }}>
-              {Array.from(post.author_alias || "A")[0]}
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[15px] shadow-sm"
+              style={{ backgroundColor: primaryLight }}>
+              {getAliasEmoji(post.author_alias)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{post.author_alias || "Anonymous"}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(post.author_alias)}</p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
@@ -256,8 +293,9 @@ export default function PostDetail() {
                     key={i}
                     onClick={() => handlePollVote(i)}
                     disabled={hasVotedPoll}
-                    className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
-                      }`}
+                    className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
+                      hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
                     style={myVote ? { borderColor: primary, color: primary } : {}}
                   >
                     {hasVotedPoll && (
@@ -286,23 +324,19 @@ export default function PostDetail() {
 
           {/* Event Details */}
           {post.category === "events" && post.event_date && !post.deleted && (
-            <div className="flex items-center gap-3 text-xs text-slate-600 mb-2 flex-wrap">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-slate-400" />
-                <span>{post.event_date}</span>
+            <div className="flex items-center gap-4 text-xs text-slate-500 mb-4 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                <span className="font-medium">{post.event_date}</span>
               </div>
-              {post.event_time && (
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-slate-400" />
-                  <span>{post.event_time}</span>
-                </div>
-              )}
-              {post.event_location && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-slate-400" />
-                  <span>{post.event_location}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{post.event_time}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>{post.event_location}</span>
+              </div>
             </div>
           )}
 
@@ -332,24 +366,53 @@ export default function PostDetail() {
           </div>
 
           {/* Vote Bar */}
-          <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
-            <button
-              onClick={() => handleVote("up")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
-                }`}
-            >
-              <ArrowUp className="w-4 h-4" />
-              {post.upvotes || 0}
-            </button>
-            <button
-              onClick={() => handleVote("down")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
-                }`}
-            >
-              <ArrowDown className="w-4 h-4" />
-              {post.downvotes || 0}
-            </button>
-            <span className="ml-auto flex items-center gap-1.5 text-sm text-slate-400">
+          <div className={`flex items-center gap-2 border-t border-slate-100 relative ${post.category === "events" ? "pt-2" : "pt-3"}`}>
+            {post.category !== "events" && (
+              <>
+                <button
+                  onClick={() => handleVote("up")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50"
+                  }`}
+                >
+                  <ArrowUp className="w-4 h-4" />
+                  {post.upvotes || 0}
+                </button>
+                <button
+                  onClick={() => handleVote("down")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50"
+                  }`}
+                >
+                  <ArrowDown className="w-4 h-4" />
+                  {post.downvotes || 0}
+                </button>
+              </>
+            )}
+            {post.category === "events" && (
+              <div className="relative">
+                <button 
+                  onClick={() => {
+                    if (hasVotedBell) handleRemoveInterest();
+                    else setShowInterestMenu(!showInterestMenu);
+                  }}
+                  className={`flex items-center gap-1.5 px-1.5 py-1 rounded text-xs font-medium transition-all ${hasVotedBell ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
+                >
+                  <Bell className={`w-4 h-4 ${hasVotedBell ? "fill-current" : ""}`} />
+                  <span>{post.interested_users?.length || 0}</span>
+                </button>
+
+                {showInterestMenu && (
+                  <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                    <p className="text-[9px] font-bold text-slate-400 px-2.5 py-1 uppercase tracking-wider">Remind me</p>
+                    <button onClick={() => handleAddInterest(15)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">15 mins before</button>
+                    <button onClick={() => handleAddInterest(60)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">1 hour before</button>
+                    <button onClick={() => handleAddInterest(1440)} className="w-full text-left px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-50">1 day before</button>
+                  </div>
+                )}
+              </div>
+            )}
+            <span className={`ml-auto flex items-center gap-1.5 text-slate-400 ${post.category === "events" ? "text-[11px] px-1.5 py-1" : "text-sm"}`}>
               <MessageCircle className="w-4 h-4" />
               {comments.length} comments
             </span>
@@ -358,14 +421,15 @@ export default function PostDetail() {
 
         {/* Comments Header + Sort */}
         <div className="flex items-center justify-between mb-2 px-1">
-          <p className="text-sm font-bold text-slate-700">{comments.length} Comments</p>
+          <p className="text-[13px] font-bold text-slate-700">{comments.length} Comments</p>
           <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
             {["best", "new"].map(s => (
               <button
                 key={s}
                 onClick={() => setCommentSort(s)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all capitalize ${commentSort === s ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
-                  }`}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all capitalize ${
+                  commentSort === s ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                }`}
               >
                 {s === "best" ? "⭐ Best" : "🕐 New"}
               </button>
@@ -403,40 +467,40 @@ export default function PostDetail() {
 
       {/* Comment Input (Fixed to bottom) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-2 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-3xl mx-auto px-1">
           {gifUrl && (
             <div className="relative inline-block mb-3 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
               <img src={stillUrl} alt="selected gif" className="h-32 object-cover" />
-              <button onClick={() => { setGifUrl(null); setStillUrl(null); }} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+              <button onClick={() => {setGifUrl(null); setStillUrl(null);}} className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
                 <X className="w-3 h-3" />
               </button>
             </div>
           )}
           <div className="flex gap-2 items-center relative">
             {showGiphy && (
-              <GiphyBrowser
+              <GiphyBrowser 
                 onSelect={(gif) => {
                   setGifUrl(gif.gif_url);
                   setStillUrl(gif.still_url);
                   setShowGiphy(false);
-                }}
-                onClose={() => setShowGiphy(false)}
+                }} 
+                onClose={() => setShowGiphy(false)} 
               />
             )}
-
+            
             <button
               onClick={() => setShowGiphy(!showGiphy)}
-              className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors flex-shrink-0"
             >
-              <Smile className="w-5 h-5" />
+              <Smile className="w-4 h-4" />
             </button>
-
+            
             <input
               type="text"
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
               placeholder="Add a comment anonymously..."
-              className="flex-1 bg-slate-100 text-[14px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-3 rounded-full border border-slate-200 focus:bg-white transition-colors"
+              className="flex-1 bg-slate-100 text-[13px] text-slate-800 placeholder:text-slate-500 focus:outline-none px-4 py-2 rounded-full border border-slate-200 focus:bg-white transition-colors"
               onKeyDown={e => e.key === 'Enter' && handleComment()}
               onFocus={(e) => e.target.style.borderColor = primary}
               onBlur={(e) => e.target.style.borderColor = ""}
@@ -444,13 +508,13 @@ export default function PostDetail() {
             <button
               onClick={handleComment}
               disabled={(!newComment.trim() && !gifUrl) || submitting}
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
               style={{ backgroundColor: primary }}
             >
               {submitting ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <Send className="w-4 h-4 ml-0.5" />
+                <Send className="w-3.5 h-3.5 ml-0.5" />
               )}
             </button>
           </div>
