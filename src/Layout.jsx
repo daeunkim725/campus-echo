@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 export default function Layout({ children, currentPageName }) {
   const [config, setConfig] = useState(getSchoolConfig(null));
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Layout mounted on path:", window.location.pathname);
+    const path = location.pathname.toLowerCase();
+    if (path.startsWith('/onboarding/') && path !== '/onboarding') {
+      const parts = path.split('/');
+      if (parts[2]) {
+        const page = parts[2].charAt(0).toUpperCase() + parts[2].slice(1);
+        navigate(`/Onboarding${page}`, { replace: true });
+        return;
+      }
+    }
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
     base44.auth.me().then(u => {
       const school = u?.school || (u?.role === 'admin' ? 'ETH' : null);
       setConfig(getSchoolConfig(school));
