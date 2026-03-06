@@ -3,6 +3,37 @@ import { apiMe, apiLogout, hasToken, clearToken } from '@/api/apiClient';
 
 const AuthContext = createContext(null);
 
+const ADMIN_EMAILS = ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"];
+
+function isAdminEmail(email) {
+  if (!email) return false;
+  const lower = email.toLowerCase();
+  return lower.endsWith("@campusecho.app") || ADMIN_EMAILS.includes(lower);
+}
+
+/**
+ * Checks completion flags in order and returns the first
+ * incomplete onboarding route, or null if fully onboarded.
+ */
+export function getOnboardingRoute(user) {
+  if (!user) return '/login';
+
+  // Admins skip all onboarding
+  if (user.role === 'admin' || isAdminEmail(user.email)) return null;
+
+  if (!user.school_id) return '/onboarding/school';
+  if (!user.email_verified) return '/onboarding/verify';
+  if (!user.password_set) return '/onboarding/password';
+
+  // Age gate: if under-18 countdown is active, redirect there
+  if (!user.age_verified) return '/onboarding/age';
+  if (user.unlock_at && new Date(user.unlock_at) > new Date()) return '/onboarding/age';
+
+  if (!user.profile_complete) return '/onboarding/profile';
+
+  return null; // Fully onboarded → main app
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,6 +89,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (updates) => {
+    setUser(prev => {
+      const updated = { ...prev, ...updates };
+      // Also update localStorage for admin users
+      if (updated.role === 'admin') {
+        localStorage.setItem('campus_echo_user', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
   const logout = async (shouldRedirect = true) => {
     try {
       await apiLogout();
@@ -66,16 +108,35 @@ export const AuthProvider = ({ children }) => {
     }
 
     localStorage.removeItem('campus_echo_user');
+    localStorage.removeItem('campus_echo_token');
+    localStorage.removeItem('campus_echo_theme');
+    localStorage.removeItem('admin_setup_complete');
+
+    // Clear any Base44 SDK keys
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith("base44") || key.startsWith("b44") || key.includes("token") || key.includes("session"))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+
+    // Clear cookies
+    document.cookie.split(";").forEach(c => {
+      document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    });
+
     setUser(null);
     setIsAuthenticated(false);
 
     if (shouldRedirect) {
-      window.location.href = '/Login';
+      window.location.replace('/login');
     }
   };
 
   const navigateToLogin = () => {
-    window.location.href = '/Login';
+    window.location.replace('/login');
   };
 
   const refreshUser = async () => {
@@ -100,6 +161,8 @@ export const AuthProvider = ({ children }) => {
       navigateToLogin,
       checkAppState: checkAuth,
       refreshUser,
+      updateUser,
+      getOnboardingRoute: () => getOnboardingRoute(user),
     }}>
       {children}
     </AuthContext.Provider>
