@@ -228,7 +228,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               <p className="text-sm text-slate-400 text-center py-8">You haven't posted anything yet.</p>
             ) : (
               <div className="space-y-3">
-                {myPosts.map(post => (
+                {myPosts.slice(0, visiblePostsCount).map(post => (
                   <div key={post.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                     {editingPost === post.id ? (
                       <div>
