@@ -312,17 +312,14 @@ export default function Onboarding() {
                       }}
                     >
                       {/* Live indicator */}
-                      <div className="absolute top-4 right-4 flex items-center gap-1.5">
-                        <span className="relative flex h-1.5 w-1.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: school.color }}></span>
-                          <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: school.color }}></span>
-                        </span>
+                      <div className="absolute top-3 left-4 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: school.color }}></span>
                         <span className="text-[11px] font-medium" style={{ color: school.color }}>Live</span>
                       </div>
 
                       {/* Checkmark when selected */}
                       {isSelected && (
-                        <div className="absolute top-4 left-4 w-5 h-5 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: school.color }}>
+                        <div className="absolute top-3 right-4 w-5 h-5 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: school.color }}>
                           <CheckCircle className="w-3 h-3" strokeWidth={3} />
                         </div>
                       )}
