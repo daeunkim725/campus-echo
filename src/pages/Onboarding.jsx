@@ -398,7 +398,7 @@ to join your community.</p>
                 value={schoolEmail}
                 onChange={(e) => {setSchoolEmail(e.target.value);setError("");}}
                 placeholder={`e.g. yourname${selectedSchool.domains[0]}`}
-                className="w-full text-[#0B1220] text-[16px] placeholder:text-[#94A3B8] focus:outline-none border border-[#E5E7EB] rounded-[16px] px-4 py-4 transition-all"
+                className="w-full bg-white text-[#000000] text-[16px] placeholder:text-[#94A3B8] focus:outline-none border border-[#E5E7EB] rounded-[16px] px-4 py-4 transition-all"
                 onFocus={(e) => {
                   e.target.style.borderColor = accentColor;
                   e.target.style.boxShadow = `0 0 0 4px ${accentColor}25`;
