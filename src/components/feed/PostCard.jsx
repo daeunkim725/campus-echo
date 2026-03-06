@@ -354,7 +354,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           )}
           <button onClick={e => e.stopPropagation()}
             className={`flex items-center gap-1 transition-all ml-auto ${localPost.category === "events" ? "px-1.5 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-600" : "px-1.5 py-0.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
-            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0} comments</span>
+            <MessageCircle className="w-3.5 h-3.5" /><span>{localPost.comment_count || 0}</span>
           </button>
         </div>
       </div>

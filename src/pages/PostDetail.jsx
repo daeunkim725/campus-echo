@@ -435,7 +435,7 @@ export default function PostDetail() {
             )}
             <span className={`ml-auto flex items-center gap-1 text-slate-400 ${post.category === "events" ? "text-[11px] px-1.5 py-1" : "text-xs px-2 py-1"}`}>
               <MessageCircle className="w-3.5 h-3.5" />
-              {comments.length} comments
+              {comments.length}
             </span>
           </div>
         </div>
