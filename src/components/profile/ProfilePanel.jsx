@@ -364,6 +364,40 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
             </div>
           )}
         </div>
+        </div>
+
+        {/* Settings (Moved to bottom) */}
+        <div className="p-3 border-t border-slate-100 space-y-0.5 bg-slate-50 mt-auto">
+          {currentUser?.role === 'admin' && (
+            <button
+              onClick={() => window.location.href = createPageUrl("Moderation")}
+              className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600 text-xs font-medium transition-all"
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              Moderation Queue
+            </button>
+          )}
+          <div
+            className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition-all"
+          >
+            <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
+              {darkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
+              {darkMode ? "Dark Mode" : "Light Mode"}
+            </div>
+            <button
+              onClick={handleToggleDark}
+              className={`w-8 h-4 rounded-full transition-all ${darkMode ? "" : "bg-slate-200"}`} style={darkMode ? { backgroundColor: primary } : {}}>
+              <div className={`w-3 h-3 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-4" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "18px" : "2px" }} />
+            </button>
+          </div>
+          <button
+            onClick={() => base44.auth.logout(createPageUrl("Home"))}
+            className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-red-100 text-red-500 text-xs font-medium transition-all"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sign out
+          </button>
+        </div>
       </div>
     </div>
   );
