@@ -104,16 +104,23 @@ export default function Home() {
             </div>
           ))
         ) : posts.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-5xl mb-4">👻</div>
-            <p className="text-slate-500 font-medium">No posts yet</p>
-            <p className="text-slate-400 text-sm mt-1">Be the first to post something!</p>
+          <div className="text-center py-24 flex flex-col items-center">
+            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative">
+              <div className="absolute inset-0 rounded-full border border-slate-200 animate-ping opacity-20" style={{ animationDuration: '3s' }}></div>
+              <div className="absolute inset-4 rounded-full border border-slate-200 animate-ping opacity-20" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-slate-300">
+                <path d="M12 18s-2-2.5-4-2.5-4 1.5-4 1.5 2-4.5 2-6 2-4 4-4 2 2.5 2 6 2 4.5 4 4.5 4-1.5 4-1.5-2 4.5-4 4.5-4-2.5-4-2.5z" />
+                <path d="M12 15v-1" />
+              </svg>
+            </div>
+            <p className="text-slate-600 font-medium text-lg">It's quiet in here.</p>
+            <p className="text-slate-400 text-sm mt-2 mb-8">Send out an echo by posting!</p>
             <button
               onClick={() => setShowCreate(true)}
-              className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-all hover:opacity-90"
+              className="px-8 py-3 rounded-full text-white text-sm font-semibold transition-all active:scale-[0.98] shadow-sm hover:shadow-md"
               style={{ backgroundColor: tokens.primary }}
             >
-              Create a post
+              Send Echo
             </button>
           </div>
         ) : (
