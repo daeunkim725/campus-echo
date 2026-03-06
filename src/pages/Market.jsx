@@ -9,6 +9,7 @@ import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { toast } from "sonner";
 
 const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
