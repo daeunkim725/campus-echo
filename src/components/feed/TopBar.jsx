@@ -47,9 +47,9 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
   return (
     <>
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 ${alwaysSticky
-          ? "top-0"
-          : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
-        }`}>
+        ? "top-0"
+        : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
+      }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
             {/* Logo + nav tabs */}
