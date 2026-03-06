@@ -199,39 +199,6 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           )}
         </div>
 
-        {/* Settings */}
-        <div className="p-4 border-b border-slate-100 space-y-1">
-          {currentUser?.role === 'admin' && (
-            <button
-              onClick={() => window.location.href = createPageUrl("Moderation")}
-              className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-indigo-50 text-indigo-600 text-sm font-medium transition-all"
-            >
-              <ShieldAlert className="w-4 h-4" />
-              Moderation Queue
-            </button>
-          )}
-          <div
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all"
-          >
-            <div className="flex items-center gap-2 text-sm text-slate-700 font-medium">
-              {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-              {darkMode ? "Dark Mode" : "Light Mode"}
-            </div>
-            <button
-              onClick={handleToggleDark}
-              className={`w-10 h-5 rounded-full transition-all ${darkMode ? "" : "bg-slate-200"}`} style={darkMode ? { backgroundColor: primary } : {}}>
-              <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${darkMode ? "ml-5.5" : "ml-0.5"}`} style={{ marginLeft: darkMode ? "22px" : "2px" }} />
-            </button>
-          </div>
-          <button
-            onClick={() => base44.auth.logout(createPageUrl("Home"))}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-50 text-red-500 text-sm font-medium transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign out
-          </button>
-        </div>
-
         {/* Tabs for Posts and Listings */}
         <div className="flex border-b border-slate-100">
           <button
