@@ -175,7 +175,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
   );
 }
 
-function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
+function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) {
   const [saving, setSaving] = useState(false);
   const userId = currentUser?.id || "anon";
   const isSaved = listing.saved_by?.includes(userId);
@@ -200,7 +200,7 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
 
   return (
     <div 
-      onClick={() => onUpdate?.(listing)} // Hacky way: pass select handler through onUpdate or similar
+      onClick={onClick}
       className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative group">
       {listing.image_url ? (
         <div className="w-full h-40 sm:h-48 bg-slate-100 relative">
@@ -410,7 +410,14 @@ export default function Market() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} currentUser={currentUser} onUpdate={fetchListings} schoolConfig={schoolConfig} />
+              <ListingCard 
+                key={listing.id} 
+                listing={listing} 
+                currentUser={currentUser} 
+                onUpdate={fetchListings} 
+                onClick={() => setSelectedListing(listing)}
+                schoolConfig={schoolConfig} 
+              />
             ))}
           </div>
         )}
@@ -419,6 +426,24 @@ export default function Market() {
       {showCreate && (
         <CreateListingModal onClose={() => setShowCreate(false)} onCreated={fetchListings} currentUser={currentUser} schoolConfig={schoolConfig} />
       )}
+      
+      {selectedListing && (
+        <ListingDetailModal 
+          listing={selectedListing} 
+          currentUser={currentUser} 
+          onClose={() => setSelectedListing(null)} 
+          schoolConfig={schoolConfig}
+          onUpdate={fetchListings}
+        />
+      )}
+
+      {/* Floating Inbox Button */}
+      <button
+        onClick={() => window.location.href = createPageUrl("MarketInbox")}
+        className="fixed bottom-24 right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full bg-white text-slate-700 shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 border border-slate-100"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </button>
     </div>
   );
 }
