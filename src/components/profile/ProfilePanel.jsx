@@ -397,6 +397,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
             Sign out
           </button>
         </div>
+        </div>
       </div>
     </div>
   );
