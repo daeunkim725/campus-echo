@@ -6,6 +6,16 @@ export default function Layout({ children, currentPageName }) {
   const [config, setConfig] = useState(getSchoolConfig(null));
 
   useEffect(() => {
+    const path = window.location.pathname.toLowerCase();
+    if (path.startsWith('/onboarding/') && path !== '/onboarding') {
+      const parts = path.split('/');
+      if (parts[2]) {
+        const page = parts[2].charAt(0).toUpperCase() + parts[2].slice(1);
+        window.location.href = `/Onboarding${page}`;
+        return;
+      }
+    }
+
     base44.auth.me().then(u => {
       const school = u?.school || (u?.role === 'admin' ? 'ETH' : null);
       setConfig(getSchoolConfig(school));
