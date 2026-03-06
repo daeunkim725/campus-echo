@@ -57,6 +57,9 @@ export default function Layout({ children, currentPageName }) {
         /* Modals and Overlays */
         .dark .fixed.inset-0.bg-black\\/50, .dark .fixed.inset-0.bg-black\\/40 { background-color: rgba(0,0,0,0.6) !important; }
         
+        /* Shadows (remove in dark mode, rely on borders) */
+        .dark .shadow-sm, .dark .shadow, .dark .shadow-md, .dark .shadow-lg, .dark .shadow-xl, .dark .shadow-2xl { box-shadow: none !important; }
+        
         /* Hover States */
         .dark .hover\\:bg-slate-50:hover, .dark .hover\\:bg-gray-50:hover, .dark .hover\\:bg-white:hover { background-color: var(--theme-elevated) !important; }
         .dark .hover\\:bg-slate-100:hover, .dark .hover\\:bg-gray-100:hover { background-color: var(--theme-border) !important; }
