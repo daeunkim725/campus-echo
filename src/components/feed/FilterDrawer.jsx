@@ -77,11 +77,11 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide flex-1 py-0.5">
           <button
             onClick={(e) => {
-              onChange({ ...filters, category: "all", level: "all", department: "all" });
+              onChange({ ...filters, category: "all" });
               e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
             }}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-              filters.category === "all" && filters.level === "all" && filters.department === "all"
+              filters.category === "all"
                 ? "bg-slate-800 text-white shadow-sm"
                 : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
             }`}
@@ -107,47 +107,6 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
               {categoryEmojis[cat]} {cat}
             </button>
           ))}
-
-          <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
-
-          {LEVELS.map(l => (
-            <button
-              key={l}
-              onClick={(e) => {
-                set("level", filters.level === l ? "all" : l);
-                e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-              }}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                filters.level === l
-                  ? "bg-slate-800 text-white shadow-sm"
-                  : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              🎓 {l}
-            </button>
-          ))}
-
-          {userSchool === "ETH" && (
-            <>
-              <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
-              {ETH_DEPTS.map(d => (
-                <button
-                  key={d.code}
-                  onClick={(e) => {
-                    set("department", filters.department === d.code ? "all" : d.code);
-                    e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-                  }}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    filters.department === d.code
-                      ? "bg-slate-800 text-white shadow-sm"
-                      : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  🏛️ {d.code}
-                </button>
-              ))}
-            </>
-          )}
         </div>
 
       </div>
