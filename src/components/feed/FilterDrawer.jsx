@@ -3,39 +3,7 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
-const ETH_DEPTS = [
-  { code: "D-ARCH", name: "Architecture" },
-  { code: "D-BAUG", name: "Civil Engineering" },
-  { code: "D-BSSE", name: "Biosystems" },
-  { code: "D-INFK", name: "Computer Science" },
-  { code: "D-ITET", name: "Electrical Eng." },
-  { code: "D-MATL", name: "Materials" },
-  { code: "D-MATH", name: "Mathematics" },
-  { code: "D-MAVT", name: "Mech. Eng." },
-  { code: "D-MTEC", name: "Management" },
-  { code: "D-PHYS", name: "Physics" },
-  { code: "D-USYS", name: "Env. Systems" },
-  { code: "D-ERDW", name: "Earth Sciences" },
-  { code: "D-BIOL", name: "Biology" },
-  { code: "D-CHAB", name: "Chemistry" },
-  { code: "D-GESS", name: "Humanities" },
-  { code: "D-HEST", name: "Health Sci." },
-];
 
-const OTHER_UNIS = [
-  { code: "EPFL", name: "EPFL" },
-  { code: "UNIZH", name: "Uni Zürich" },
-  { code: "UNIBASEL", name: "Uni Basel" },
-  { code: "UNIBE", name: "Uni Bern" },
-  { code: "UNIL", name: "Uni Lausanne" },
-  { code: "UNIFR", name: "Uni Fribourg" },
-  { code: "UNIGE", name: "Uni Genève" },
-  { code: "UNISG", name: "Uni St. Gallen" },
-  { code: "USI", name: "USI Lugano" },
-  { code: "UNILU", name: "Uni Lucerne" },
-];
-
-const LEVELS = ["BSc", "MSc", "PhD"];
 
 const categoryEmojis = {
   general: "💬", academics: "📚", housing: "🏠", food: "🍕",
