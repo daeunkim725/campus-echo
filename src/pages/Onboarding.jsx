@@ -341,7 +341,7 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-start justify-center px-4 py-6 relative">
+      <div className="flex-1 flex items-start justify-center px-4 py-6 relative z-10">
         <div className="w-full max-w-sm">
 
           {/* Step: Choose School */}
