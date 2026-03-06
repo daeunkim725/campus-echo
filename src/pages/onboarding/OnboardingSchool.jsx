@@ -60,7 +60,7 @@ export default function OnboardingSchool() {
 
                     {/* Log in link */}
                     <Link
-            to="/login" className="bg-slate-500 text-[13px] mt-4 py-2.5 font-semibold rounded-xl w-full hover:bg-slate-500 transition-all flex items-center justify-center gap-1.5">Already have an account? Log in
+            to="/login" className="bg-slate-500 text-[#fafafa] mt-5 py-2.5 text-sm font-medium rounded-xl w-full hover:bg-slate-500 transition-all flex items-center justify-center gap-1.5">Already have an account? Log in
 
 
 
