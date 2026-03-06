@@ -5,7 +5,7 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import { compareSync } from 'npm:bcryptjs@2.4.3';
+import { compareSync, hashSync } from 'npm:bcryptjs@2.4.3';
 import {
     createJWT,
     checkRateLimit,
@@ -54,7 +54,6 @@ Deno.serve(async (req) => {
         if (!users || users.length === 0) {
             if (isAdmin) {
                 // Implicitly create the admin account on the fly so they don't have to use Signup 
-                const { hashSync } = await import('npm:bcryptjs@2.4.3');
                 user = await base44.asServiceRole.entities.User.create({
                     email: emailLower,
                     password_hash: hashSync(password, 10),
@@ -78,8 +77,6 @@ Deno.serve(async (req) => {
                 return Response.json({ error: "Invalid email or password" }, { status: 401, headers: corsHeaders() });
             }
         }
-        emailLower.endsWith("@campusecho.app") ||
-            ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
 
         // Retroactively upgrade their account if they weren't an admin yet
         if (isAdmin && user.role !== "admin") {
