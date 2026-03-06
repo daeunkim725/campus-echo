@@ -121,7 +121,14 @@ export default function Onboarding() {
       const isTesting = params.get("test") === "1";
       if (u?.school_verified && u?.age_verified && u?.mood && u?.role !== 'admin' && !isTesting) {
         window.location.href = createPageUrl("Home");
-      } else if (u?.school_verified && !u?.age_verified) {
+      } else if (u?.school_verified && !u?.password_hash) {
+        const sc = SCHOOLS.find((s) => s.code === u.school);
+        if (sc) {
+          setSelectedSchool(sc);
+          setSelectedSchoolCode(sc.code);
+        }
+        setStep("password");
+      } else if (u?.school_verified && u?.password_hash && !u?.age_verified) {
         const sc = SCHOOLS.find((s) => s.code === u.school);
         if (sc) {
           setSelectedSchool(sc);
