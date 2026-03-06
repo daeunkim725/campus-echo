@@ -210,7 +210,8 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
           </div>
           <button 
             onClick={handleSave}
-            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-indigo-50 text-indigo-600' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-slate-600'}`}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? '' : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-slate-600'}`}
+            style={isSaved ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
@@ -223,7 +224,8 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
           </div>
           <button 
             onClick={handleSave}
-            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-indigo-50 text-indigo-600' : 'bg-white text-slate-400 hover:text-slate-600'}`}
+            className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? '' : 'bg-white text-slate-400 hover:text-slate-600'}`}
+            style={isSaved ? { backgroundColor: tokens.primaryLight, color: tokens.primary } : {}}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
