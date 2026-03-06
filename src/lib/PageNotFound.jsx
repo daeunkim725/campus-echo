@@ -1,11 +1,24 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 
 
 export default function PageNotFound({}) {
     const location = useLocation();
+    const navigate = useNavigate();
     const pageName = location.pathname.substring(1);
+
+    useEffect(() => {
+        const path = location.pathname.toLowerCase();
+        if (path.startsWith('/onboarding/')) {
+            const page = path.split('/')[2];
+            if (page) {
+                const capitalized = page.charAt(0).toUpperCase() + page.slice(1);
+                navigate(`/Onboarding${capitalized}`, { replace: true });
+            }
+        }
+    }, [location.pathname, navigate]);
 
     const { data: authData, isFetched } = useQuery({
         queryKey: ['user'],
