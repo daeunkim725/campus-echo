@@ -37,7 +37,7 @@ export default function Events() {
         window.location.href = createPageUrl("Onboarding");
         return;
       }
-      if (u?.role !== "admin" && u?.school !== schoolCode && schoolCode) {
+      if (u?.role !== "admin" && u?.school && u.school !== schoolCode) {
         window.location.href = createPageUrl("Events") + `?school=${u.school}`;
       }
     }).catch(() => base44.auth.redirectToLogin(createPageUrl("Events") + (schoolCode ? `?school=${schoolCode}` : "")));
