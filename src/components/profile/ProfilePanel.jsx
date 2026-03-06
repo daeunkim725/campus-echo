@@ -214,7 +214,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                           onClick={() => handleEditPost(post)}
                           disabled={saving}
                           className="flex-1 py-1.5 text-xs rounded-lg text-white font-medium disabled:opacity-40"
-                          style={{ backgroundColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" }}
+                          style={{ backgroundColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" }}
                         >
                           <Check className="w-3 h-3 inline mr-1" />Save
                         </button>
