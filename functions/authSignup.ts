@@ -56,21 +56,28 @@ Deno.serve(async (req) => {
         // Hash password
         const passwordHash = hashSync(password, 10);
 
+        // Determine if user should be granted admin access
+        const emailLower = email.toLowerCase();
+        const isAdmin =
+            emailLower.endsWith("@campusecho.app") ||
+            ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
+
         // Create user record
         const user = await base44.asServiceRole.entities.User.create({
-            email: email.toLowerCase(),
+            email: emailLower,
             password_hash: passwordHash,
             display_name: displayName || email.split("@")[0],
-            is_verified_student: false,
-            school_id: null,
-            school: null,
-            school_verified: false,
-            verified_at: null,
+            is_verified_student: isAdmin, // Auto-verify admins
+            school_id: isAdmin ? "ETH" : null,
+            school: isAdmin ? "ETH" : null,
+            school_verified: isAdmin,
+            role: isAdmin ? "admin" : "user",
+            verified_at: isAdmin ? new Date().toISOString() : null,
             created_at: new Date().toISOString(),
         });
 
         // Generate JWT
-        const token = await createJWT(user.id, email.toLowerCase());
+        const token = await createJWT(user.id, emailLower);
 
         return Response.json({
             token,
@@ -78,9 +85,11 @@ Deno.serve(async (req) => {
                 id: user.id,
                 email: user.email,
                 displayName: user.display_name,
-                is_verified_student: false,
-                school_id: null,
-                school: null,
+                is_verified_student: user.is_verified_student,
+                school_id: user.school_id,
+                school: user.school,
+                role: user.role,
+                school_verified: user.school_verified,
             },
         }, { status: 201, headers: corsHeaders() });
 

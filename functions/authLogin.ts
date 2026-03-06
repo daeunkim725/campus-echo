@@ -48,11 +48,33 @@ Deno.serve(async (req) => {
             return Response.json({ error: "Invalid email or password" }, { status: 401, headers: corsHeaders() });
         }
 
-        const user = users[0];
+        let user = users[0];
 
         // Verify password
         if (!user.password_hash || !compareSync(password, user.password_hash)) {
             return Response.json({ error: "Invalid email or password" }, { status: 401, headers: corsHeaders() });
+        }
+
+        // Determine if user should be granted admin access
+        const emailLower = email.toLowerCase();
+        const isAdmin =
+            emailLower.endsWith("@campusecho.app") ||
+            ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
+
+        // Retroactively upgrade their account if they weren't an admin yet
+        if (isAdmin && user.role !== "admin") {
+            await base44.asServiceRole.entities.User.update(user.id, {
+                is_verified_student: true,
+                school_id: "ETH",
+                school: "ETH",
+                school_verified: true,
+                role: "admin",
+                verified_at: user.verified_at || new Date().toISOString()
+            });
+
+            // Re-fetch the updated user record
+            const updatedUsers = await base44.asServiceRole.entities.User.filter({ id: user.id });
+            user = updatedUsers[0];
         }
 
         // Generate JWT (24h expiry)
