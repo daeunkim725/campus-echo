@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { X, Send, AlertTriangle, MapPin, Tag, ShieldCheck } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 const detectOffPlatform = (text) => {
@@ -229,7 +229,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
                   <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.content}</p>
                 </div>
                 <span className="text-[10px] text-slate-400 mt-1 px-1">
-                  {formatDistanceToNow(new Date(msg.created_date))} ago
+                  {getShortTimeAgo(msg.created_date)}
                 </span>
               </div>
             );
