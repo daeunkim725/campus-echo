@@ -40,7 +40,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
 
               {/* Logo + nav tabs */}
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 tracking-tight">fizz</h1>
+                <h1 className="text-xl font-black text-slate-900 tracking-tight">Echo</h1>
                 <div className="flex bg-slate-100 p-1 rounded-lg">
                   <button
                     onClick={() => window.location.href = createPageUrl("Home")}
@@ -71,6 +71,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
       {/* Floating Notification Button */}
       <button
         onClick={() => window.location.href = createPageUrl("Notifications")}
+        title="Echo pings"
         className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
