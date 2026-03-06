@@ -364,7 +364,6 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
             </div>
           )}
         </div>
-        </div>
 
         {/* Settings (Moved to bottom) */}
         <div className="p-3 border-t border-slate-100 space-y-0.5 bg-slate-50 mt-auto">
