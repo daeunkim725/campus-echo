@@ -8,6 +8,7 @@ import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { BatSilhouette, SonarPulse } from "@/components/ui/BatIcons";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
