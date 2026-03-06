@@ -79,7 +79,13 @@ export const SCHOOL_CONFIG = {
       border: "#E2E8F0",
       primaryLight: "#DCE5F2",
     },
-    dark: { ...NEUTRAL_DARK, primary: "#4AA4F0", primaryLight: "rgba(74,164,240,0.14)" },
+    dark: {
+      primary: "#2F80ED", primaryLight: "rgba(47,128,237,0.14)",
+      bg: "#07121D", surface: "#0F1D2E", elevated: "#14263B",
+      border: "#223A52", divider: "#1A2C41", text: "#EAF2FF",
+      textMuted: "#A7B6CC", textFaint: "#6E819B",
+      secondary: "#1E88E5"
+    },
   },
   UNIBASEL: {
     name: "Uni Basel",
