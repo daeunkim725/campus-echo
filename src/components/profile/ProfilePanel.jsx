@@ -282,6 +282,14 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                     )}
                   </div>
                 ))}
+                {myPosts.length > visiblePostsCount && (
+                  <button
+                    onClick={() => setVisiblePostsCount(prev => prev + 5)}
+                    className="w-full py-2 mt-2 text-xs font-semibold text-slate-500 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100 transition-colors"
+                  >
+                    Show more posts
+                  </button>
+                )}
               </div>
             )
           ) : (
