@@ -95,9 +95,7 @@ export default function Onboarding() {
          }
       }
 
-      if (u?.role === 'admin') {
-        window.location.href = createPageUrl("Home");
-      } else if (u?.school_verified && u?.age_verified && u?.mood) {
+      if (u?.school_verified && u?.age_verified && u?.mood && u?.role !== 'admin') {
         window.location.href = createPageUrl("Home");
       } else if (u?.school_verified && !u?.age_verified) {
         setStep("age");
@@ -230,6 +228,15 @@ export default function Onboarding() {
 
       <div className="flex-1 flex items-start justify-center px-4 py-8">
         <div className="w-full max-w-xl">
+          
+          {currentUser?.role === 'admin' && (
+            <div className="mb-6 p-4 bg-violet-50 border border-violet-100 rounded-2xl flex items-center justify-between">
+              <p className="text-sm text-violet-800 font-medium">Viewing as Admin</p>
+              <button onClick={() => window.location.href = createPageUrl("Home")} className="text-sm font-bold text-violet-600 hover:text-violet-800">
+                Go to Feed →
+              </button>
+            </div>
+          )}
 
           {/* Step: Choose School */}
           {step === "school" && (
