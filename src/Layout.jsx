@@ -62,6 +62,5 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </div>
     </div>
-    </div>
   );
 }
