@@ -130,10 +130,10 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     <>
       <div
         onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
-        className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
+        className="bg-white rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] shadow-sm"
               style={{ backgroundColor: primaryLight }}>
@@ -212,22 +212,22 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Title */}
         {localPost.title && (
-          <p className="font-semibold text-slate-900 text-[15px] mb-1 line-clamp-2">{localPost.title}</p>
+          <p className="font-semibold text-slate-900 text-sm mb-0.5 line-clamp-2">{localPost.title}</p>
         )}
 
         {/* Content */}
         {localPost.deleted ? (
-          <p className="text-slate-400 italic text-sm leading-relaxed mb-3">[deleted]</p>
+          <p className="text-slate-400 italic text-[13px] leading-relaxed mb-2">[deleted]</p>
         ) : (
-          <div className="mb-3">
-            {localPost.content && <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{localPost.content}</p>}
-            {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
+          <div className="mb-2">
+            {localPost.content && <p className="text-slate-600 text-[13px] leading-relaxed line-clamp-3">{localPost.content}</p>}
+            {localPost.edited && <span className="text-[10px] text-slate-400 italic">edited</span>}
           </div>
         )}
 
         {/* Poll Options */}
         {localPost.post_type === "poll" && localPost.poll_options && (
-          <div className="space-y-2 mb-3" onClick={e => e.stopPropagation()}>
+          <div className="space-y-1.5 mb-2" onClick={e => e.stopPropagation()}>
             {localPost.poll_options.map((opt, i) => {
               const pct = totalPollVotes > 0 ? Math.round((opt.votes || 0) / totalPollVotes * 100) : 0;
               const myVote = opt.voted_by?.includes(userId);
@@ -236,7 +236,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
                   key={i}
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
-                  className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${
+                  className={`w-full text-left rounded-xl border px-3 py-2 text-sm font-medium transition-all relative overflow-hidden ${
                     hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
                   }`}
                   style={myVote ? { borderColor: primary, color: primary } : {}}
@@ -257,7 +257,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="flex items-center gap-4 text-xs text-slate-500 mb-3 flex-wrap">
+          <div className="flex items-center gap-3 text-[11px] text-slate-500 mb-2 flex-wrap">
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
               <span className="font-medium">{localPost.event_date}</span>
@@ -277,12 +277,12 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         {!localPost.deleted && (
           <>
             {localPost.gif_url ? (
-              <div className="mb-3 rounded-xl overflow-hidden bg-slate-100">
-                <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-96" />
+              <div className="mb-2 rounded-xl overflow-hidden bg-slate-100">
+                <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-64" />
               </div>
             ) : localPost.image_url ? (
-              <div className="mb-3 rounded-xl overflow-hidden">
-                <img src={localPost.image_url} alt="" className="w-full max-h-64 object-cover" />
+              <div className="mb-2 rounded-xl overflow-hidden">
+                <img src={localPost.image_url} alt="" className="w-full max-h-48 object-cover" />
               </div>
             ) : null}
           </>
