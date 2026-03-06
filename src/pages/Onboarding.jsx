@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2, Smile } from "lucide-react";
+import { GraduationCap, Mail, CheckCircle, ArrowRight, Loader2, Smile, Lock } from "lucide-react";
 
 const MOODS = [
   { value: "happy", label: "Happy 😊" },
@@ -19,8 +19,17 @@ const MOODS = [
 ];
 
 const SCHOOLS = [
-  { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#1A5276" },
-  { code: "UNIZH", name: "Uni Zürich", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#2980B9" },
+  { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#215CAF", featured: true },
+  { code: "UNIZH", name: "Uni Zürich", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#0028A5", featured: true },
+  { code: "EPFL", name: "EPFL", domains: ["@epfl.ch"], color: "#E74C3C" },
+  { code: "UNIBASEL", name: "Uni Basel", domains: ["@unibas.ch"], color: "#8E44AD" },
+  { code: "UNIBE", name: "Uni Bern", domains: ["@unibe.ch", "@students.unibe.ch"], color: "#D35400" },
+  { code: "UNIL", name: "Uni Lausanne", domains: ["@unil.ch"], color: "#27AE60" },
+  { code: "UNIFR", name: "Uni Fribourg", domains: ["@unifr.ch"], color: "#C0392B" },
+  { code: "UNIGE", name: "Uni Genève", domains: ["@unige.ch", "@etu.unige.ch"], color: "#1ABC9C" },
+  { code: "UNISG", name: "Uni St. Gallen", domains: ["@unisg.ch", "@student.unisg.ch"], color: "#2C3E50" },
+  { code: "USI", name: "USI Lugano", domains: ["@usi.ch", "@student.usi.ch"], color: "#E67E22" },
+  { code: "UNILU", name: "Uni Lucerne", domains: ["@unilu.ch", "@student.unilu.ch"], color: "#16A085" },
 ];
 
 function CountdownTimer({ targetDate }) {
@@ -232,19 +241,39 @@ export default function Onboarding() {
                 <h2 className="text-2xl font-bold text-slate-900 mb-1">Choose your school</h2>
                 <p className="text-slate-500 text-sm">Select the university you're enrolled at. You'll only see your school's community.</p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {SCHOOLS.map(school => (
+              {/* Featured schools */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {SCHOOLS.filter(s => s.featured).map(school => (
                   <button
                     key={school.code}
                     onClick={() => handleSchoolSelect(school)}
-                    className="bg-white border border-slate-200 rounded-2xl p-4 text-left hover:border-violet-300 hover:shadow-sm transition-all active:scale-95"
+                    className="border-2 rounded-2xl p-4 text-left hover:shadow-md transition-all active:scale-95 relative overflow-hidden"
+                    style={{ borderColor: school.color, backgroundColor: school.color + "08" }}
                   >
-                    <div className="w-8 h-8 rounded-lg mb-2 flex items-center justify-center text-white text-xs font-bold"
+                    <div className="w-10 h-10 rounded-xl mb-3 flex items-center justify-center text-white text-xs font-bold"
+                      style={{ backgroundColor: school.color }}>
+                      {school.code.slice(0, 3)}
+                    </div>
+                    <p className="font-bold text-slate-800 text-sm">{school.name}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{school.domains[0]}</p>
+                    <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: school.color }}>LIVE</span>
+                  </button>
+                ))}
+              </div>
+              {/* Other schools */}
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-1">Other schools (coming soon)</p>
+              <div className="grid grid-cols-2 gap-2">
+                {SCHOOLS.filter(s => !s.featured).map(school => (
+                  <button
+                    key={school.code}
+                    onClick={() => handleSchoolSelect(school)}
+                    className="bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-slate-300 hover:shadow-sm transition-all active:scale-95 opacity-60"
+                  >
+                    <div className="w-6 h-6 rounded-md mb-1.5 flex items-center justify-center text-white text-[9px] font-bold"
                       style={{ backgroundColor: school.color }}>
                       {school.code.slice(0, 2)}
                     </div>
-                    <p className="font-semibold text-slate-800 text-sm">{school.name}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">{school.domains[0]}</p>
+                    <p className="font-semibold text-slate-700 text-xs">{school.name}</p>
                   </button>
                 ))}
               </div>
