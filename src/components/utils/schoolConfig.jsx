@@ -59,7 +59,13 @@ export const SCHOOL_CONFIG = {
       border: "#E2E8F0",
       primaryLight: "#BDC9E8",
     },
-    dark: { ...NEUTRAL_DARK, primary: "#7C97FF", primaryLight: "rgba(124,151,255,0.14)" },
+    dark: {
+      primary: "#7C97FF", primaryLight: "rgba(124,151,255,0.14)",
+      bg: "#070B1A", surface: "#10183A", elevated: "#17234A",
+      border: "#24305B", divider: "#1B2546", text: "#EAF0FF",
+      textMuted: "#A9B6D1", textFaint: "#6F7FA3",
+      secondary: "#4AC9E3"
+    },
   },
   UNIL: {
     name: "Uni Lausanne",
