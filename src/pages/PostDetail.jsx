@@ -225,7 +225,7 @@ export default function PostDetail() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
-        <div className="max-w-2xl mx-auto px-4 py-3.5 flex items-center gap-3">
+        <div className="max-w-3xl mx-auto px-4 py-3.5 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -233,7 +233,7 @@ export default function PostDetail() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-4">
+      <div className="max-w-3xl mx-auto px-4 py-4">
         {/* Post */}
         <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-100">
           <div className="flex items-center gap-2 mb-4">
@@ -467,7 +467,7 @@ export default function PostDetail() {
 
       {/* Comment Input (Fixed to bottom) */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-2 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)]">
-        <div className="max-w-2xl mx-auto px-1">
+        <div className="max-w-3xl mx-auto px-1">
           {gifUrl && (
             <div className="relative inline-block mb-3 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
               <img src={stillUrl} alt="selected gif" className="h-32 object-cover" />
