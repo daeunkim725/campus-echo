@@ -154,6 +154,9 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
 
     await base44.entities.Post.create(postData);
     setLoading(false);
+    toast.success(isEvent ? "Event echo sent successfully." : "Echo sent successfully.", {
+      icon: <Radar className="w-5 h-5 text-indigo-500 animate-[spin_3s_linear_infinite]" />
+    });
     onCreated?.();
     onClose();
   };
