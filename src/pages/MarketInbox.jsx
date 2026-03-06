@@ -16,7 +16,8 @@ export default function MarketInbox() {
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedThread, setSelectedThread] = useState(null);
 
-  const schoolConfig = getSchoolConfig(currentUser?.school);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
@@ -68,14 +69,14 @@ export default function MarketInbox() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
-      {currentUser?.school ? (
+      {effectiveSchool ? (
         <SchoolTopBar
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
           onPost={handleBackToMarket}
           activePage="market"
           schoolConfig={schoolConfig}
-          schoolCode={currentUser.school}
+          schoolCode={effectiveSchool}
           hideFABs={true} />
       ) : (
         <TopBar
