@@ -396,21 +396,23 @@ export default function Market() {
           </div>
         ) : listings.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 px-6 max-w-md mx-auto shadow-sm my-10">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5">
-              <Tag className="w-10 h-10 text-slate-300" />
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5 relative group">
+              <div className="absolute inset-0 rounded-full border border-indigo-200 animate-ping opacity-20"></div>
+              <div className="absolute inset-2 rounded-full border border-indigo-200 animate-ping opacity-20" style={{ animationDelay: '500ms' }}></div>
+              <Radar className="w-10 h-10 text-slate-300" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Your Campus Market</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Nothing on the radar nearby</h3>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-              Buy and sell safely with verified students. Got textbooks, a bike, or an old monitor? Turn it into cash today.
+              It's quiet in here. Send out an echo by listing your first item today.
             </p>
             <button
               onClick={() => setShowCreate(true)} 
-              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
+              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 hover:shadow-md"
               style={{ backgroundColor: tokens.primary }}>
               <Plus className="w-4 h-4" /> Start Selling
             </button>
             <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
-              <ShieldCheck className="w-3 h-3" /> 100% verified student community
+              <BatBadge className="w-3 h-3 text-indigo-400" /> 100% verified student community
             </p>
           </div>
         ) : (
