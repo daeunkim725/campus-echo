@@ -358,26 +358,26 @@ export default function PostDetail() {
           )}
 
           {/* Tags */}
-          <div className="flex items-center gap-1.5 flex-wrap mb-4">
+          <div className="flex items-center gap-1 flex-wrap mb-4">
             {post.department && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full font-medium border"
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md font-medium border"
                 style={{ backgroundColor: primaryLight, color: primary, borderColor: primaryLight }}>
                 {post.department}
               </span>
             )}
             {post.academic_level && post.academic_level !== "all" && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500 font-medium">
                 {post.academic_level}
               </span>
             )}
             {post.category && (
-              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium capitalize ${categoryColors[post.category] || categoryColors.general}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium capitalize ${categoryColors[post.category] || categoryColors.general}`}>
                 {post.category}
               </span>
             )}
             {post.post_type === "poll" && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium flex items-center gap-1">
-                <BarChart2 className="w-[10px] h-[10px]" /> Poll
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-green-50 text-green-600 font-medium flex items-center gap-1">
+                <BarChart2 className="w-[9px] h-[9px]" /> Poll
               </span>
             )}
           </div>

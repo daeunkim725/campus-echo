@@ -48,27 +48,27 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Events from './pages/Events';
-import Notifications from './pages/Notifications';
-import Onboarding from './pages/Onboarding';
+import Home from './pages/Home';
+import Market from './pages/Market';
 import MarketInbox from './pages/MarketInbox';
 import Moderation from './pages/Moderation';
-import Home from './pages/Home';
-import SchoolFeed from './pages/SchoolFeed';
+import Notifications from './pages/Notifications';
+import Onboarding from './pages/Onboarding';
 import PostDetail from './pages/PostDetail';
-import Market from './pages/Market';
+import SchoolFeed from './pages/SchoolFeed';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Events": Events,
-    "Notifications": Notifications,
-    "Onboarding": Onboarding,
+    "Home": Home,
+    "Market": Market,
     "MarketInbox": MarketInbox,
     "Moderation": Moderation,
-    "Home": Home,
-    "SchoolFeed": SchoolFeed,
+    "Notifications": Notifications,
+    "Onboarding": Onboarding,
     "PostDetail": PostDetail,
-    "Market": Market,
+    "SchoolFeed": SchoolFeed,
 }
 
 export const pagesConfig = {
