@@ -9,7 +9,7 @@ const SCHOOLS = [
 
 export default function OnboardingSchool() {
     const navigate = useNavigate();
-    const { updateUser } = useAuth();
+    const { updateUser, navigateToLogin } = useAuth();
 
     const handleSelect = (school) => {
         updateUser({ school_id: school.code, school: school.code });
