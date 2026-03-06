@@ -6,7 +6,7 @@ import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
-import { BatSilhouette } from "@/components/ui/BatIcons";
+import { BatSilhouette, RippleButton } from "@/components/ui/BatIcons";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -87,13 +87,13 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
       </button>
 
       {/* Floating Post Button */}
-      <button
+      <RippleButton
         onClick={onPost}
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95"
         style={{ backgroundColor: primary }}
       >
         <Plus className="w-6 h-6" />
-      </button>
+      </RippleButton>
 
       {showProfile && (
         <ProfilePanel

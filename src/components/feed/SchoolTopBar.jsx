@@ -7,7 +7,7 @@ import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
-import { BatSilhouette } from "@/components/ui/BatIcons";
+import { BatSilhouette, RippleButton } from "@/components/ui/BatIcons";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -106,13 +106,13 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
       </button>
 
       {/* Floating Post Button */}
-      <button
+      <RippleButton
         onClick={onPost}
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 opacity-70 hover:opacity-100"
         style={{ backgroundColor: primary }}
       >
         <Plus className="w-6 h-6" />
-      </button>
+      </RippleButton>
 
       {/* Admin school picker */}
       {showSchoolPicker && (
