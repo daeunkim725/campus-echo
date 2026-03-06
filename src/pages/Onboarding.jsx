@@ -168,7 +168,7 @@ export default function Onboarding() {
                 <div className="w-12 h-12 rounded-2xl bg-violet-100 flex items-center justify-center mb-4">
                   <GraduationCap className="w-6 h-6 text-violet-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-1">Choose your school</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-1">Let's calibrate your radar.</h2>
                 <p className="text-slate-500 text-sm">Select the university you're enrolled at. You'll only see your school's community.</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
