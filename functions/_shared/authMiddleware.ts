@@ -179,7 +179,13 @@ export function checkRateLimit(req: Request, namespace: string, maxRequests: num
     if (!rateLimit(key, maxRequests, windowMs)) {
         return Response.json(
             { error: "Too many requests. Please try again later." },
-            { status: 429, headers: { "Retry-After": String(Math.ceil(windowMs / 1000)) } }
+            {
+                status: 429,
+                headers: {
+                    "Retry-After": String(Math.ceil(windowMs / 1000)),
+                    ...corsHeaders()
+                }
+            }
         );
     }
     return null;
