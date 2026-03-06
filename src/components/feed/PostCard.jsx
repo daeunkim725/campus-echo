@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
+import { BatStamp } from "@/components/ui/BatIcons";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
@@ -139,7 +140,10 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               {getAliasEmoji(localPost.author_alias)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.author_alias)}</p>
+              <p className="text-xs font-semibold text-slate-800 capitalize flex items-center gap-1">
+                {getCleanAlias(localPost.author_alias)}
+                {localPost.school && <BatStamp />}
+              </p>
               <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
             </div>
           </div>
