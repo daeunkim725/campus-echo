@@ -72,11 +72,39 @@ function LoginForm({ onSwitch, navigate }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    const ADMIN_EMAILS = ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"];
+
+    const isAdminEmail = (em) => {
+        const lower = em.toLowerCase();
+        return lower.endsWith("@campusecho.app") || ADMIN_EMAILS.includes(lower);
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
         setLoading(true);
         try {
+            if (isAdminEmail(email)) {
+                // Client-side admin bypass — skip the backend entirely
+                const adminUser = {
+                    id: "admin_" + Date.now(),
+                    email: email.toLowerCase(),
+                    displayName: email.split("@")[0],
+                    is_verified_student: true,
+                    school_id: "ETH",
+                    school: "ETH",
+                    school_verified: true,
+                    role: "admin",
+                    verified_at: new Date().toISOString(),
+                };
+                // Create a simple base64 token that AuthContext can work with
+                const fakeToken = btoa(JSON.stringify({ sub: adminUser.id, email: adminUser.email, role: "admin", exp: Date.now() + 86400000 }));
+                localStorage.setItem("campus_echo_token", fakeToken);
+                localStorage.setItem("campus_echo_user", JSON.stringify(adminUser));
+                navigate("/");
+                window.location.reload();
+                return;
+            }
             await apiLogin(email, password);
             navigate("/");
             window.location.reload();

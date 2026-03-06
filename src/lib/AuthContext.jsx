@@ -26,6 +26,20 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
+      // Check for client-side admin session first
+      const cachedUser = localStorage.getItem('campus_echo_user');
+      if (cachedUser) {
+        try {
+          const parsed = JSON.parse(cachedUser);
+          if (parsed.role === 'admin') {
+            setUser(parsed);
+            setIsAuthenticated(true);
+            setIsLoadingAuth(false);
+            return;
+          }
+        } catch { /* fall through to apiMe */ }
+      }
+
       const userData = await apiMe();
       setUser(userData);
       setIsAuthenticated(true);
@@ -51,6 +65,7 @@ export const AuthProvider = ({ children }) => {
       clearToken();
     }
 
+    localStorage.removeItem('campus_echo_user');
     setUser(null);
     setIsAuthenticated(false);
 
