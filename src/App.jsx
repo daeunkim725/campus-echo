@@ -18,10 +18,10 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-  const currentPath = window.location.pathname.replace(/^\//, '');
+  const currentPath = window.location.pathname.replace(/^\//, '').toLowerCase();
 
   // Public pages that don't require authentication
-  const publicPages = ['Login', 'Onboarding'];
+  const publicPages = ['login', 'onboarding'];
   const isPublicPage = publicPages.includes(currentPath);
 
   // Show loading spinner while checking auth (skip for public pages)
@@ -51,21 +51,24 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            publicPages.includes(path) ? (
-              <Page />
-            ) : (
-              <LayoutWrapper currentPageName={path}>
+      {Object.entries(Pages).map(([path, Page]) => {
+        const lowerPath = path.toLowerCase();
+        return (
+          <Route
+            key={path}
+            path={`/${lowerPath}`}
+            element={
+              publicPages.includes(lowerPath) ? (
                 <Page />
-              </LayoutWrapper>
-            )
-          }
-        />
-      ))}
+              ) : (
+                <LayoutWrapper currentPageName={path}>
+                  <Page />
+                </LayoutWrapper>
+              )
+            }
+          />
+        );
+      })}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
