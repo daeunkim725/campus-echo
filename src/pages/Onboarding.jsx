@@ -381,36 +381,43 @@ to join your community.</p>
           {/* Step: Enter School Email */}
           {step === "email" &&
           <div>
-              <button onClick={() => setStep("school")} className="text-sm text-slate-400 hover:text-slate-600 mb-5 flex items-center gap-1 font-medium transition-colors">
+              <button onClick={() => setStep("school")} className="text-[14px] text-[#64748B] hover:text-[#0B1220] mb-8 flex items-center gap-1.5 font-medium transition-colors">
                 ← Back
               </button>
-              <div className="mb-6 text-center">
-                <div className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ backgroundColor: accentColor + "1A", color: accentColor }}>
-                  <Mail className="w-6 h-6" />
+              <div className="mb-8 text-center">
+                <div className="w-14 h-14 rounded-[18px] mx-auto flex items-center justify-center mb-5" style={{ backgroundColor: accentColor + "1A", color: accentColor }}>
+                  <Mail className="w-7 h-7" />
                 </div>
-                <h2 className="text-[22px] font-extrabold text-slate-900 mb-1.5 tracking-tight">Verify your {selectedSchool.name} email</h2>
-                <p className="text-slate-500 text-sm">Enter your official student email to receive a verification code.</p>
+                <h2 className="text-[24px] font-bold text-[#0B1220] mb-2 tracking-tight">Verify your {selectedSchool.name} email</h2>
+                <p className="text-[#64748B] text-[15px]">Enter your official student email to receive a verification code.</p>
               </div>
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">School Email</p>
+              <div className="bg-[#FFFFFF] rounded-[24px] border border-[#E5E7EB] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+                <label className="block text-[13px] font-bold text-[#64748B] uppercase tracking-wider mb-2.5">School Email</label>
                 <input
                 type="email"
                 value={schoolEmail}
                 onChange={(e) => {setSchoolEmail(e.target.value);setError("");}}
                 placeholder={`e.g. yourname${selectedSchool.domains[0]}`}
-                className="w-full text-slate-800 text-[15px] placeholder:text-slate-400 focus:outline-none border border-slate-200 rounded-xl px-4 py-3.5 transition-colors focus:border-slate-300"
-                onFocus={(e) => e.target.style.borderColor = accentColor}
-                onBlur={(e) => e.target.style.borderColor = ""}
+                className="w-full text-[#0B1220] text-[16px] placeholder:text-[#94A3B8] focus:outline-none border border-[#E5E7EB] rounded-[16px] px-4 py-4 transition-all"
+                onFocus={(e) => {
+                  e.target.style.borderColor = accentColor;
+                  e.target.style.boxShadow = `0 0 0 4px ${accentColor}25`;
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "";
+                  e.target.style.boxShadow = "";
+                }}
                 onKeyDown={(e) => e.key === "Enter" && handleSendCode()} />
 
-                {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+                {error && <p className="text-[#E74C3C] text-[13px] mt-2.5 font-medium">{error}</p>}
+                
                 <button
                 onClick={handleSendCode}
                 disabled={!schoolEmail || loading}
-                className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-[15px] disabled:opacity-40 transition-all hover:opacity-90 active:scale-[0.98]"
+                className="mt-6 w-full flex items-center justify-center gap-2 py-4 rounded-[16px] text-white font-semibold text-[16px] disabled:opacity-50 transition-all hover:opacity-90 active:scale-[0.98] shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
                 style={{ backgroundColor: accentColor }}>
 
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Send Code</>}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ArrowRight className="w-5 h-5" /> Send Code</>}
                 </button>
               </div>
             </div>
