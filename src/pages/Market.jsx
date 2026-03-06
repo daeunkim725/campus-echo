@@ -288,6 +288,7 @@ export default function Market() {
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterSort, setFilterSort] = useState("newest");
   const [filterIncludeSold, setFilterIncludeSold] = useState(false);
+  const [filterFree, setFilterFree] = useState(false);
 
   const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
@@ -319,6 +320,10 @@ export default function Market() {
         data = data.filter(l => l.status !== "sold");
       }
 
+      if (filterFree) {
+        data = data.filter(l => l.price === 0);
+      }
+
       if (filterCategory !== "all") {
         data = data.filter(l => l.category === filterCategory);
       }
@@ -335,7 +340,7 @@ export default function Market() {
     }
   };
 
-  useEffect(() => { fetchListings(); }, [configSchoolCode, filterCategory, filterSort, filterIncludeSold]);
+  useEffect(() => { fetchListings(); }, [configSchoolCode, filterCategory, filterSort, filterIncludeSold, filterFree]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
@@ -358,36 +363,73 @@ export default function Market() {
       )}
 
       {/* Filters Bar */}
-      <div className="sticky z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 top-[65px]">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3 overflow-x-auto scrollbar-hide">
-          <select
-            value={filterCategory}
-            onChange={e => setFilterCategory(e.target.value)}
-            className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
-          >
-            <option value="all">All Categories</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+      <div className="sticky z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 top-[65px] pt-3 pb-2">
+        <div className="max-w-3xl mx-auto px-4 flex flex-col gap-2">
+          {/* Row 1: Category & Features */}
+          <div className="flex items-center justify-between">
+            <select
+              value={filterCategory}
+              onChange={e => setFilterCategory(e.target.value)}
+              className="flex-shrink-0 bg-transparent text-slate-700 text-[13px] font-medium rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-100 cursor-pointer border border-transparent hover:border-slate-200"
+            >
+              <option value="all">All Categories</option>
+              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
 
-          <select
-            value={filterSort}
-            onChange={e => setFilterSort(e.target.value)}
-            className="flex-shrink-0 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-200"
-          >
-            <option value="newest">Newest First</option>
-            <option value="price_low">Price: Low to High</option>
-            <option value="price_high">Price: High to Low</option>
-          </select>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setFilterFree(!filterFree)}
+                className={`text-[11px] font-medium px-3 py-1 rounded-full transition-colors border ${filterFree
+                    ? "bg-slate-100 text-slate-800 border-slate-300"
+                    : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
+                  }`}
+                style={filterFree ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
+              >
+                Free
+              </button>
+              <button
+                onClick={() => setFilterIncludeSold(!filterIncludeSold)}
+                className={`text-[11px] font-medium px-3 py-1 rounded-full transition-colors border ${filterIncludeSold
+                    ? "bg-slate-100 text-slate-800 border-slate-300"
+                    : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
+                  }`}
+                style={filterIncludeSold ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
+              >
+                Include sold
+              </button>
+            </div>
+          </div>
 
-          <label className="flex items-center gap-1.5 ml-1 cursor-pointer flex-shrink-0 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
-            <input
-              type="checkbox"
-              checked={filterIncludeSold}
-              onChange={e => setFilterIncludeSold(e.target.checked)}
-              className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3 h-3"
-            />
-            Include sold
-          </label>
+          {/* Row 2: Sort Typography */}
+          <div className="flex items-center gap-3 px-1 mt-1">
+            <span className="text-[11px] text-slate-400 font-medium tracking-wide uppercase">Sort:</span>
+            <div className="flex items-center gap-3">
+              {[
+                { id: "newest", label: "Newest" },
+                { id: "price_low", label: "Price ↑" },
+                { id: "price_high", label: "Price ↓" }
+              ].map(sortOption => {
+                const isActive = filterSort === sortOption.id;
+                return (
+                  <button
+                    key={sortOption.id}
+                    onClick={() => setFilterSort(sortOption.id)}
+                    className={`text-[12px] font-semibold transition-colors relative pb-0.5 ${isActive ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    style={isActive ? { color: tokens.primary } : {}}
+                  >
+                    {sortOption.label}
+                    {isActive && (
+                      <span
+                        className="absolute bottom-0 left-0 right-0 h-[1.5px] rounded-full"
+                        style={{ backgroundColor: tokens.primary }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
