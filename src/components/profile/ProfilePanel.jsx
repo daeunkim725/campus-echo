@@ -140,7 +140,7 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   onClick={handleMoodSave}
                   disabled={!selectedMood || saving}
                   className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
-                  style={{ backgroundColor: darkMode ? "#6EA8FF" : primary, color: darkMode ? "#121922" : "#FFFFFF" }}
+                  style={{ backgroundColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" }}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>
