@@ -119,7 +119,7 @@ export default function Events() {
         />
       )}
 
-      <div className="max-w-xl mx-auto px-4 py-4 space-y-4">
+      <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
         {/* Actions Bar */}
         <div className="flex items-center justify-between bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
           <div className="flex gap-1">
