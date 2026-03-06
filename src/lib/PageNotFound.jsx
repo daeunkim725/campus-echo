@@ -10,16 +10,15 @@ export default function PageNotFound({}) {
     const pageName = location.pathname.substring(1);
 
     useEffect(() => {
-        console.log("PageNotFound mounted for path:", location.pathname);
         const path = location.pathname.toLowerCase();
         if (path.startsWith('/onboarding/')) {
             const page = path.split('/')[2];
             if (page) {
                 const capitalized = page.charAt(0).toUpperCase() + page.slice(1);
-                navigate(`/Onboarding${capitalized}`, { replace: true });
+                window.location.replace(`/Onboarding${capitalized}`);
             }
         }
-    }, [location.pathname, navigate]);
+    }, [location.pathname]);
 
     const { data: authData, isFetched } = useQuery({
         queryKey: ['user'],
