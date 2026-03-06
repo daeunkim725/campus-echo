@@ -12,7 +12,8 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
 
   return (
     <>
-      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
+      <div className="sticky top-0 z-40 backdrop-blur-md border-b"
+        style={{ backgroundColor: tokens.surface + "E6", borderColor: tokens.border }}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -28,23 +29,32 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
 
               {/* Logo + nav tabs */}
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 tracking-tight">fizz</h1>
-                <div className="flex bg-slate-100 p-1 rounded-lg">
+                <h1 className="text-xl font-black tracking-tight" style={{ color: tokens.text }}>fizz</h1>
+                <div className="flex p-1 rounded-lg" style={{ backgroundColor: tokens.divider }}>
                   <button
                     onClick={() => window.location.href = createPageUrl("Home")}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors`}
+                    style={activePage === "feed"
+                      ? { backgroundColor: tokens.surface, color: tokens.text, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }
+                      : { color: tokens.textMuted }}
                   >
                     Feed
                   </button>
                   <button
                     onClick={() => window.location.href = createPageUrl("Market")}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors`}
+                    style={activePage === "market"
+                      ? { backgroundColor: tokens.surface, color: tokens.text, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }
+                      : { color: tokens.textMuted }}
                   >
                     Market
                   </button>
                   <button
                     onClick={() => window.location.href = createPageUrl("Events")}
-                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors`}
+                    style={activePage === "events"
+                      ? { backgroundColor: tokens.surface, color: tokens.text, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }
+                      : { color: tokens.textMuted }}
                   >
                     Events
                   </button>

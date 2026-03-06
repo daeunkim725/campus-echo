@@ -445,7 +445,7 @@ export default function PostDetail() {
               onClick={handleComment}
               disabled={(!newComment.trim() && !gifUrl) || submitting}
               className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-all flex-shrink-0 shadow-sm hover:opacity-90"
-              style={{ backgroundColor: post.author_color || primary }}
+              style={{ backgroundColor: primary }}
             >
               {submitting ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

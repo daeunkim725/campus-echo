@@ -14,6 +14,24 @@ export function ThemeProvider({ children }) {
     );
 }
 
+// Default tokens used when no school config is available (fizz purple)
+const DEFAULT_TOKENS = {
+    primary: "#7C3AED",
+    primaryHover: "#6D28D9",
+    primaryLight: "#EDE9FE",
+    secondary: "#6D28D9",
+    background: "#F8F9FB",
+    surface: "#FFFFFF",
+    surfaceElevated: "#FFFFFF",
+    text: "#0F172A",
+    textMuted: "#64748B",
+    border: "#E2E8F0",
+    divider: "#F1F5F9",
+    success: "#16A34A",
+    warning: "#D97706",
+    danger: "#DC2626",
+};
+
 /**
  * useThemeTokens(schoolConfig)
  *
@@ -22,26 +40,24 @@ export function ThemeProvider({ children }) {
  *
  * Usage:
  *   const tokens = useThemeTokens(schoolConfig);
- *   // tokens.primary, tokens.bg, tokens.surface, tokens.text, ...
+ *   // tokens.primary, tokens.background, tokens.surface, tokens.text, ...
  */
 export function useThemeTokens(schoolConfig) {
     const { resolvedTheme } = useTheme();
     const mode = resolvedTheme === "dark" ? "dark" : "light";
 
     if (!schoolConfig) {
-        return {
-            primary: "#7C3AED",
-            secondary: "#6D28D9",
-            bg: "#F5F3FF",
-            surface: "#FFFFFF",
-            text: "#0F172A",
-            textMuted: "#475569",
-            border: "#E2E8F0",
-            primaryLight: "#EDE9FE",
-        };
+        return DEFAULT_TOKENS;
     }
 
-    return schoolConfig[mode] || schoolConfig.light;
+    const resolved = schoolConfig[mode] || schoolConfig.light;
+
+    // Backward compat: if consumer reads `bg`, give them `background`
+    if (resolved && !resolved.bg && resolved.background) {
+        resolved.bg = resolved.background;
+    }
+
+    return resolved || DEFAULT_TOKENS;
 }
 
 /**

@@ -104,7 +104,8 @@ export default function PostCard({ post, currentUser, onUpdate }) {
     <>
       <div
         onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
-        className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
+        className="rounded-2xl p-5 cursor-pointer hover:shadow-md transition-all duration-200 border"
+        style={{ backgroundColor: tokens.surface, borderColor: tokens.border }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
@@ -114,8 +115,8 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               {Array.from(localPost.author_alias || "A")[0]}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800 capitalize">{localPost.author_alias || "Anonymous"}</p>
-              <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap">{timeAgo}</p>
+              <p className="text-xs font-semibold capitalize" style={{ color: tokens.text }}>{localPost.author_alias || "Anonymous"}</p>
+              <p className="text-[10px] leading-tight whitespace-nowrap" style={{ color: tokens.textMuted }}>{timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -127,7 +128,8 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                 </span>
               )}
               {localPost.academic_level && localPost.academic_level !== "all" && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                  style={{ backgroundColor: tokens.divider, color: tokens.textMuted }}>
                   {localPost.academic_level}
                 </span>
               )}
@@ -148,21 +150,24 @@ export default function PostCard({ post, currentUser, onUpdate }) {
               <div className="relative ml-1" onClick={e => e.stopPropagation()}>
                 <button
                   onClick={() => setShowMenu(v => !v)}
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
+                  className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                  style={{ color: tokens.textMuted }}
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-32">
+                  <div className="absolute right-0 top-8 border rounded-xl shadow-lg z-20 py-1 w-32"
+                    style={{ backgroundColor: tokens.surfaceElevated, borderColor: tokens.border }}>
                     <button
                       onClick={(e) => { e.stopPropagation(); setShowMenu(false); setShowEdit(true); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors"
+                      style={{ color: tokens.text }}
                     >
                       <Pencil className="w-3.5 h-3.5" /> Edit
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> Delete
                     </button>
@@ -175,16 +180,16 @@ export default function PostCard({ post, currentUser, onUpdate }) {
 
         {/* Title */}
         {localPost.title && (
-          <p className="font-semibold text-slate-900 text-[15px] mb-1 line-clamp-2">{localPost.title}</p>
+          <p className="font-semibold text-[15px] mb-1 line-clamp-2" style={{ color: tokens.text }}>{localPost.title}</p>
         )}
 
         {/* Content */}
         {localPost.deleted ? (
-          <p className="text-slate-400 italic text-sm leading-relaxed mb-3">[deleted]</p>
+          <p className="italic text-sm leading-relaxed mb-3" style={{ color: tokens.textMuted }}>[deleted]</p>
         ) : (
           <div className="mb-3">
-            {localPost.content && <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{localPost.content}</p>}
-            {localPost.edited && <span className="text-xs text-slate-400 italic">edited</span>}
+            {localPost.content && <p className="text-sm leading-relaxed line-clamp-3" style={{ color: tokens.textMuted }}>{localPost.content}</p>}
+            {localPost.edited && <span className="text-xs italic" style={{ color: tokens.textMuted }}>edited</span>}
           </div>
         )}
 
@@ -199,40 +204,41 @@ export default function PostCard({ post, currentUser, onUpdate }) {
                   key={i}
                   onClick={(e) => handlePollVote(e, i)}
                   disabled={hasVotedPoll}
-                  className={`w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden ${hasVotedPoll ? (myVote ? "" : "border-slate-200 text-slate-600") : "border-slate-200 text-slate-700 hover:border-slate-300"
-                    }`}
-                  style={myVote ? { borderColor: primary, color: primary } : {}}
+                  className="w-full text-left rounded-xl border px-3 py-2.5 text-sm font-medium transition-all relative overflow-hidden"
+                  style={myVote
+                    ? { borderColor: primary, color: primary }
+                    : { borderColor: tokens.border, color: tokens.text }}
                 >
                   {hasVotedPoll && (
-                    <div className={`absolute inset-0 rounded-xl ${!myVote ? "bg-slate-50" : ""}`} style={{ width: `${pct}%`, ...(myVote ? { backgroundColor: primaryLight } : {}) }} />
+                    <div className="absolute inset-0 rounded-xl" style={{ width: `${pct}%`, backgroundColor: myVote ? primaryLight : tokens.divider }} />
                   )}
                   <span className="relative flex items-center justify-between">
                     <span>{opt.text}</span>
-                    {hasVotedPoll && <span className="text-xs text-slate-400">{pct}%</span>}
+                    {hasVotedPoll && <span className="text-xs" style={{ color: tokens.textMuted }}>{pct}%</span>}
                   </span>
                 </button>
               );
             })}
-            <p className="text-xs text-slate-400">{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
+            <p className="text-xs" style={{ color: tokens.textMuted }}>{totalPollVotes} vote{totalPollVotes !== 1 ? "s" : ""}</p>
           </div>
         )}
 
         {/* Event Details */}
         {localPost.category === "events" && localPost.event_date && !localPost.deleted && (
-          <div className="flex items-center gap-3 text-xs text-slate-600 mb-2 flex-wrap">
+          <div className="flex items-center gap-3 text-xs mb-2 flex-wrap" style={{ color: tokens.textMuted }}>
             <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-slate-400" />
+              <Calendar className="w-3 h-3" />
               <span>{localPost.event_date}</span>
             </div>
             {localPost.event_time && (
               <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-slate-400" />
+                <Clock className="w-3 h-3" />
                 <span>{localPost.event_time}</span>
               </div>
             )}
             {localPost.event_location && (
               <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-slate-400" />
+                <MapPin className="w-3 h-3" />
                 <span>{localPost.event_location}</span>
               </div>
             )}
@@ -243,7 +249,7 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         {!localPost.deleted && (
           <>
             {localPost.gif_url ? (
-              <div className="mb-3 rounded-xl overflow-hidden bg-slate-100">
+              <div className="mb-3 rounded-xl overflow-hidden" style={{ backgroundColor: tokens.divider }}>
                 <PlayableGif gifUrl={localPost.gif_url} stillUrl={localPost.still_url} className="w-full max-h-96" />
               </div>
             ) : localPost.image_url ? (
@@ -255,17 +261,20 @@ export default function PostCard({ post, currentUser, onUpdate }) {
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-1 pt-2 border-t border-slate-50">
+        <div className="flex items-center gap-1 pt-2 border-t" style={{ borderColor: tokens.divider }}>
           <button onClick={(e) => handleVote(e, "up")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedUp ? "bg-green-100 text-green-600" : ""}`}
+            style={!votedUp ? { color: tokens.textMuted } : {}}>
             <ArrowUp className="w-4 h-4" /><span>{localPost.upvotes || 0}</span>
           </button>
           <button onClick={(e) => handleVote(e, "down")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${votedDown ? "bg-red-100 text-red-500" : ""}`}
+            style={!votedDown ? { color: tokens.textMuted } : {}}>
             <ArrowDown className="w-4 h-4" /><span>{localPost.downvotes || 0}</span>
           </button>
           <button onClick={e => e.stopPropagation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all ml-auto">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ml-auto"
+            style={{ color: tokens.textMuted }}>
             <MessageCircle className="w-4 h-4" /><span>{localPost.comment_count || 0}</span>
           </button>
         </div>
