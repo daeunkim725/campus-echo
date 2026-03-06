@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { SlidersHorizontal, X } from "lucide-react";
+import React from "react";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
@@ -44,17 +43,10 @@ const categoryEmojis = {
 };
 
 export default function FilterDrawer({ filters, onChange, userSchool }) {
-  const [open, setOpen] = useState(false);
   const schoolConfig = getSchoolConfig(userSchool);
   const primary = schoolConfig?.primary || "#7C3AED";
 
   const set = (key, val) => onChange({ ...filters, [key]: val });
-
-  const activeCount = [
-    filters.category !== "all",
-    filters.department !== "all",
-    filters.level !== "all"
-  ].filter(Boolean).length;
 
   return (
     <>
