@@ -389,7 +389,7 @@ export default function Market() {
                   ? "bg-slate-100 text-slate-800 border-slate-300"
                   : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
                   }`}
-                style={filterFree ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
+                style={filterFree ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primary } : {}}
               >
                 Free
               </button>
@@ -399,7 +399,7 @@ export default function Market() {
                   ? "bg-slate-100 text-slate-800 border-slate-300"
                   : "border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-transparent"
                   }`}
-                style={filterIncludeSold ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primaryLight } : {}}
+                style={filterIncludeSold ? { backgroundColor: tokens.primaryLight, color: tokens.primary, borderColor: tokens.primary } : {}}
               >
                 Include sold
               </button>
