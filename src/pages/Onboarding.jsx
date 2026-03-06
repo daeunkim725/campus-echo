@@ -290,7 +290,7 @@ export default function Onboarding() {
             <div className="pb-32">
               <div className="mb-8 text-center">
                 <h2 className="text-[24px] font-bold text-[#0B1220] mb-2 tracking-tight">Choose your school</h2>
-                <p className="text-[#64748B] text-[15px]">Select the university you're enrolled at to join your community.</p>
+                <p className="text-[#64748B] text-[14px]">Select the university you're enrolled at to join your community.</p>
               </div>
 
               {/* Live schools */}
