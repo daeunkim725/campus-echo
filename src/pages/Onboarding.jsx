@@ -139,8 +139,8 @@ export default function Onboarding() {
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-1">All set!</h2>
-          <p className="text-slate-500">Welcome to the {selectedSchool?.name} community 🎉</p>
+          <h2 className="text-xl font-bold text-slate-900 mb-1">You're verified! Ready to fly.</h2>
+          <p className="text-slate-500">Welcome to the {selectedSchool?.name} community 🦇</p>
         </div>
       </div>
     );
