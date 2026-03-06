@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck, MapPin, Clock, Tag, ChevronRight, ChevronLeft } from "lucide-react";
+import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck, MapPin, Clock, Tag, ChevronRight, ChevronLeft, Radar, Radio } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
