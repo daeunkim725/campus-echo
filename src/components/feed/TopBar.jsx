@@ -26,8 +26,8 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
   return (
     <>
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
-        <div className="max-w-xl mx-auto px-4 py-3.5">
-          <div className="flex items-center justify-between mb-3">
+        <div className="max-w-xl mx-auto px-4 pt-3 pb-2">
+          <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-3">
               {/* Profile avatar */}
               <button
@@ -80,7 +80,7 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
       <button
         onClick={() => window.location.href = createPageUrl("Notifications")}
         title="Echo pings"
-        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+        className="fixed bottom-24 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
