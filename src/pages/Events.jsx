@@ -10,7 +10,6 @@ import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import EventCalendarView from "@/components/events/EventCalendarView";
 import EventFilterPanel from "@/components/events/EventFilterPanel";
 import { Filter, Calendar as CalendarIcon, List } from "lucide-react";
-import { BatSilhouette, SonarPulse } from "@/components/ui/BatIcons";
 import { isSameDay, isSameWeek, isSameMonth, parseISO } from "date-fns";
 
 export default function Events() {
@@ -158,10 +157,24 @@ export default function Events() {
 
         <div className="space-y-3">
           {loading ? (
-            <SonarPulse text="Listening..." />
+            Array(5).fill(0).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-200" />
+                  <div className="space-y-1">
+                    <div className="h-3 w-28 bg-slate-200 rounded" />
+                    <div className="h-2.5 w-16 bg-slate-100 rounded" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3.5 bg-slate-200 rounded w-full" />
+                  <div className="h-3.5 bg-slate-200 rounded w-4/5" />
+                </div>
+              </div>
+            ))
           ) : filteredPosts.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center">
-              <BatSilhouette className="w-12 h-12 text-slate-300 mb-4" />
+            <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
+              <div className="text-5xl mb-4">📅</div>
               <p className="text-slate-500 font-medium">No events found</p>
               <p className="text-slate-400 text-sm mt-1">Try changing your filters or post a new event!</p>
               <button

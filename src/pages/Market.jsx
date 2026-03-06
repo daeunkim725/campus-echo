@@ -9,7 +9,6 @@ import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import { BatStamp, RippleButton } from "@/components/ui/BatIcons";
 
 const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
@@ -256,7 +255,7 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
             </div>
             <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 flex items-center gap-1">
               {getCleanAlias(listing.author_alias)}
-              {listing.school && <BatStamp />}
+              {listing.school && <ShieldCheck className="w-3 h-3 text-green-500" />}
             </span>
           </div>
           <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
@@ -393,12 +392,12 @@ export default function Market() {
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
               Buy and sell safely with verified students. Got textbooks, a bike, or an old monitor? Turn it into cash today.
             </p>
-            <RippleButton
+            <button
               onClick={() => setShowCreate(true)} 
               className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: tokens.primary }}>
               <Plus className="w-4 h-4" /> Start Selling
-            </RippleButton>
+            </button>
             <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
               <ShieldCheck className="w-3 h-3" /> 100% verified student community
             </p>

@@ -7,7 +7,6 @@ import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
-import { BatSilhouette, RippleButton } from "@/components/ui/BatIcons";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -34,7 +33,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
   return (
     <>
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`}>
-        <div className="max-w-xl mx-auto px-4 pt-3 pb-2">
+        <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {/* Profile avatar with mood emoji */}
@@ -54,11 +53,11 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                     onClick={() => setShowSchoolPicker(true)}
                     className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
                   >
-                    Echo
+                    {schoolConfig?.name || "fizz"}
                     <ChevronDown className="w-4 h-4 text-slate-400" />
                   </button>
                 ) : (
-                  <h1 className="text-sm font-black text-slate-900 tracking-tight">Echo</h1>
+                  <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "fizz"}</h1>
                 )}
 
                 {/* Nav tabs */}
@@ -86,33 +85,26 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
             </div>
 
           </div>
-          <div className="mt-1.5">
-            <div className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-slate-100 transition-all">
-              <BatSilhouette className="w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Echo for textbooks, apartments, parties..." className="bg-transparent border-none outline-none text-[13px] w-full text-slate-700 placeholder:text-slate-400" />
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Floating Notification Button */}
       <button
         onClick={() => window.location.href = createPageUrl("Notifications")}
-        title="Echo pings"
-        className="fixed bottom-24 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white text-slate-600 shadow-lg border border-slate-100 transition-all hover:shadow-xl hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>}
       </button>
 
       {/* Floating Post Button */}
-      <RippleButton
+      <button
         onClick={onPost}
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105 active:scale-95 opacity-70 hover:opacity-100"
         style={{ backgroundColor: primary }}
       >
         <Plus className="w-6 h-6" />
-      </RippleButton>
+      </button>
 
       {/* Admin school picker */}
       {showSchoolPicker && (

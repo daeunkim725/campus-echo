@@ -1,6 +1,5 @@
 import React from "react";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
-import { BatSilhouette } from "@/components/ui/BatIcons";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
@@ -49,17 +48,16 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
               onChange({ ...filters, category: "all" });
               e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
             }}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 border ${
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
               filters.category === "all"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "bg-white border-slate-200 text-slate-500 hover:text-slate-700"
+                ? "bg-slate-800 text-white shadow-sm"
+                : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
             }`}
-            style={filters.category === "all" ? { borderColor: primary } : {}}
           >
-            {filters.category === "all" ? <BatSilhouette className="w-2.5 h-2.5" color={primary} /> : "✨"} All
+            ✨ All
           </button>
           
-          <div className="w-px h-4 bg-slate-200 flex-shrink-0 mx-1" />
+          <div className="w-px h-4 bg-slate-300 flex-shrink-0 mx-1" />
           
           {CATEGORIES.map(cat => (
             <button
@@ -68,14 +66,13 @@ export default function FilterDrawer({ filters, onChange, userSchool }) {
                 set("category", filters.category === cat ? "all" : cat);
                 e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
               }}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all capitalize flex items-center gap-1.5 border ${
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all capitalize ${
                 filters.category === cat
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "bg-white border-slate-200 text-slate-500 hover:text-slate-700"
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "bg-white border border-slate-200 text-slate-500 hover:text-slate-700"
               }`}
-              style={filters.category === cat ? { borderColor: primary } : {}}
             >
-              {filters.category === cat ? <BatSilhouette className="w-2.5 h-2.5" color={primary} /> : <span>{categoryEmojis[cat]}</span>} {cat}
+              {categoryEmojis[cat]} {cat}
             </button>
           ))}
         </div>

@@ -8,7 +8,6 @@ import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import { BatSilhouette, SonarPulse } from "@/components/ui/BatIcons";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -80,7 +79,7 @@ export default function Home() {
         schoolConfig={schoolConfig}
       />
       <div className={`sticky z-30 bg-white/70 backdrop-blur-md border-b border-slate-100 transition-all duration-300 ${scrollDirection === 'down' ? 'top-0' : 'top-[65px]'}`}>
-        <div className="max-w-xl mx-auto px-4 pt-1 pb-2.5">
+        <div className="max-w-xl mx-auto px-4 py-2.5">
           <FilterDrawer filters={filters} onChange={setFilters} userSchool={currentUser?.school} />
         </div>
       </div>
@@ -88,10 +87,25 @@ export default function Home() {
       {/* Feed */}
       <div className="max-w-xl mx-auto px-4 py-4 space-y-3">
         {loading ? (
-          <SonarPulse text="Listening..." />
+          Array(5).fill(0).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-full bg-slate-200" />
+                <div className="space-y-1">
+                  <div className="h-3 w-28 bg-slate-200 rounded" />
+                  <div className="h-2.5 w-16 bg-slate-100 rounded" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-3.5 bg-slate-200 rounded w-full" />
+                <div className="h-3.5 bg-slate-200 rounded w-4/5" />
+                <div className="h-3.5 bg-slate-200 rounded w-3/5" />
+              </div>
+            </div>
+          ))
         ) : posts.length === 0 ? (
-          <div className="text-center py-20 flex flex-col items-center">
-            <BatSilhouette className="w-12 h-12 text-slate-300 mb-4" />
+          <div className="text-center py-20">
+            <div className="text-5xl mb-4">👻</div>
             <p className="text-slate-500 font-medium">No posts yet</p>
             <p className="text-slate-400 text-sm mt-1">Be the first to post something!</p>
             <button

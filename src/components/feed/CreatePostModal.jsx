@@ -6,7 +6,6 @@ import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/school
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import { RippleButton } from "@/components/ui/BatIcons";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
@@ -387,7 +386,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
             </div> :
           <div />}
 
-          <RippleButton
+          <button
             onClick={handleSubmit}
             disabled={!isValid || loading}
             className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm hover:opacity-90"
@@ -395,7 +394,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
 
             {loading ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             Post
-          </RippleButton>
+          </button>
         </div>
       </div>
     </div>);
