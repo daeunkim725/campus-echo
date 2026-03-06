@@ -6,6 +6,7 @@ import ProfilePanel, { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
+import { BatSilhouette } from "@/components/ui/BatIcons";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -64,6 +65,13 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
               </div>
             </div>
 
+          </div>
+          
+          <div className="mt-1">
+            <div className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-slate-100 transition-all">
+              <BatSilhouette className="w-4 h-4 text-slate-400" />
+              <input type="text" placeholder="Echo for textbooks, apartments, parties..." className="bg-transparent border-none outline-none text-[13px] w-full text-slate-700 placeholder:text-slate-400" />
+            </div>
           </div>
         </div>
       </div>
