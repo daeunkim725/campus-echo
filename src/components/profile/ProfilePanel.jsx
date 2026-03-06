@@ -133,9 +133,10 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-sm bg-white h-full overflow-y-auto shadow-2xl animate-in slide-in-from-left"
+        className="relative w-full max-w-sm bg-white h-full shadow-2xl animate-in slide-in-from-left flex flex-col"
         onClick={e => e.stopPropagation()}
       >
+        <div className="flex-1 overflow-y-auto">
         {/* Header */}
         <div className="p-5 border-b border-slate-100" style={{ borderTopColor: primary, borderTopWidth: 4 }}>
           <div className="flex items-center justify-between mb-4">
