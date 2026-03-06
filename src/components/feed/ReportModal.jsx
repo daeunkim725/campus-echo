@@ -34,7 +34,7 @@ export default function ReportModal({ targetType, targetId, currentUser, onClose
           </button>
         </div>
         {submitted ? (
-          <p className="text-sm text-indigo-600 font-medium text-center py-4">Report sent. We'll tune into this.</p>
+          <p className="text-sm text-green-600 font-medium text-center py-4">Report submitted successfully. Thank you.</p>
         ) : (
           <>
             <p className="text-sm text-slate-600 mb-3">Please describe why you are reporting this content.</p>

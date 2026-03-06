@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck, MapPin, Clock, Tag, ChevronRight, ChevronLeft, Radar, Radio } from "lucide-react";
+import { Plus, Image as ImageIcon, X, Loader2, DollarSign, Bookmark, ShieldCheck, MapPin, Clock, Tag, ChevronRight, ChevronLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
@@ -9,17 +9,9 @@ import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import { toast } from "sonner";
 
 const CATEGORIES = ["Textbooks", "Electronics", "Furniture", "Clothing", "Housing", "Other"];
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
-
-const BatBadge = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 18s-2-2.5-4-2.5-4 1.5-4 1.5 2-4.5 2-6 2-4 4-4 2 2.5 2 6 2 4.5 4 4.5 4-1.5 4-1.5-2 4.5-4 4.5-4-2.5-4-2.5z" />
-    <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 15v-1" />
-  </svg>
-);
 
 function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
   const [step, setStep] = useState(1);
@@ -63,9 +55,6 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
         category,
         pickup_location: pickup,
         saved_by: []
-      });
-      toast.success("Echo sent successfully. Your listing is live!", {
-        icon: <Radar className="w-5 h-5 text-indigo-500 animate-[spin_3s_linear_infinite]" />
       });
       onCreated();
       onClose();
@@ -169,7 +158,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
             </div>
             
             <div className="p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex items-start gap-2">
-              <BatBadge className="w-4 h-4 shrink-0 mt-0.5 opacity-80" />
+              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
               <p>For your safety, only meet on campus during daylight hours. Never transfer money before seeing the item.</p>
             </div>
 
@@ -254,11 +243,7 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
           )}
           {listing.pickup_location && (
             <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium flex items-center gap-1">
-              <span className="relative flex h-2 w-2 mr-0.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
-              {listing.pickup_location}
+              <MapPin className="w-3 h-3" /> {listing.pickup_location}
             </span>
           )}
         </div>
@@ -270,7 +255,7 @@ function ListingCard({ listing, currentUser, onUpdate, schoolConfig }) {
             </div>
             <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 flex items-center gap-1">
               {getCleanAlias(listing.author_alias)}
-              {listing.school && <BatBadge className="w-3 h-3 text-indigo-500" />}
+              {listing.school && <ShieldCheck className="w-3 h-3 text-green-500" />}
             </span>
           </div>
           <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-400">
@@ -385,15 +370,6 @@ export default function Market() {
 
       {/* Feed */}
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
-        {loading && (
-          <div className="flex items-center justify-center gap-2 pb-4 text-slate-400 text-sm font-medium">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
-            </span>
-            Sending a ping...
-          </div>
-        )}
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {Array(6).fill(0).map((_, i) => (
@@ -409,23 +385,21 @@ export default function Market() {
           </div>
         ) : listings.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 px-6 max-w-md mx-auto shadow-sm my-10">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5 relative group">
-              <div className="absolute inset-0 rounded-full border border-indigo-200 animate-ping opacity-20"></div>
-              <div className="absolute inset-2 rounded-full border border-indigo-200 animate-ping opacity-20" style={{ animationDelay: '500ms' }}></div>
-              <Radar className="w-10 h-10 text-slate-300" />
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5">
+              <Tag className="w-10 h-10 text-slate-300" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Nothing on the radar nearby</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Your Campus Market</h3>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-              It's quiet in here. Send out an echo by listing your first item today.
+              Buy and sell safely with verified students. Got textbooks, a bike, or an old monitor? Turn it into cash today.
             </p>
             <button
               onClick={() => setShowCreate(true)} 
-              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 hover:shadow-md"
+              className="text-white w-full py-3.5 text-sm font-semibold rounded-xl transition-all hover:opacity-90 shadow-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: tokens.primary }}>
               <Plus className="w-4 h-4" /> Start Selling
             </button>
             <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
-              <BatBadge className="w-3 h-3 text-indigo-400" /> 100% verified student community
+              <ShieldCheck className="w-3 h-3" /> 100% verified student community
             </p>
           </div>
         ) : (
