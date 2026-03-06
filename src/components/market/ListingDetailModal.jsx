@@ -4,8 +4,10 @@ import { base44 } from "@/api/base44Client";
 import ChatModal from "./ChatModal";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { formatDistanceToNow } from "date-fns";
+import { useThemeTokens } from "@/components/utils/ThemeProvider";
 
 export default function ListingDetailModal({ listing, currentUser, onClose, schoolConfig, onUpdate }) {
+  const tokens = useThemeTokens(schoolConfig);
   const [showChat, setShowChat] = useState(false);
   const [thread, setThread] = useState(null);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -152,7 +154,8 @@ export default function ListingDetailModal({ listing, currentUser, onClose, scho
               <button 
                 onClick={handleMessageClick}
                 disabled={loadingChat || listing.status === 'sold'}
-                className="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl text-[15px] flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                className="w-full py-3.5 text-white font-bold rounded-xl text-[15px] flex items-center justify-center gap-2 hover:opacity-90 transition-colors disabled:opacity-50"
+                style={{ backgroundColor: tokens.primary, color: tokens.surface }}
               >
                 {loadingChat ? "Loading..." : listing.status === 'sold' ? "Item Sold" : <><MessageCircle className="w-5 h-5" /> Message Seller Anonymously</>}
               </button>
