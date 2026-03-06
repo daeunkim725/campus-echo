@@ -303,9 +303,17 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-[#0B1220]">
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-[#0B1220] relative">
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none opacity-60"
+        style={{
+          backgroundImage: "url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a9392c865db15df3b30230/c0bdbd7b6_makeitlighter.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
+      />
       {/* Header */}
-      <div className="bg-[#FFFFFF] border-b border-[#E5E7EB] px-4 py-3 sticky top-0 z-30">
+      <div className="bg-transparent border-b border-[#E5E7EB]/50 px-4 py-3 sticky top-0 z-30 relative">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-[10px] bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shadow-sm">
