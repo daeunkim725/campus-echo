@@ -215,7 +215,7 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
       {listing.image_url ? (
         <div className={`w-full h-40 sm:h-48 bg-slate-100 relative ${listing.status === 'sold' ? 'grayscale opacity-60' : ''}`}>
           <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm ${listing.status === 'sold' ? 'bg-slate-700 text-white' : listing.price === 0 ? 'bg-green-100 text-green-700' : 'bg-white/90 backdrop-blur-sm text-slate-900'}`}>
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-1.5 py-0.5 rounded-md text-[10px] sm:text-xs font-bold shadow-sm ${listing.status === 'sold' ? 'bg-slate-700 text-white' : listing.price === 0 ? 'bg-green-100 text-green-700' : 'bg-white/90 backdrop-blur-sm text-slate-900'}`}>
             {listing.status === 'sold' ? "SOLD" : listing.price === 0 ? "FREE" : `$${listing.price.toFixed(2)}`}
           </div>
           <button
@@ -230,7 +230,7 @@ function ListingCard({ listing, currentUser, onUpdate, onClick, schoolConfig }) 
       ) : (
         <div className="w-full h-32 sm:h-40 bg-slate-50 flex items-center justify-center relative">
           <Tag className="w-8 h-8 text-slate-300" />
-          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 rounded-lg text-xs sm:text-sm font-bold shadow-sm border ${listing.status === 'sold' ? 'bg-slate-700 text-white border-transparent' : listing.price === 0 ? 'bg-green-100 text-green-700 border-transparent' : 'bg-white/90 backdrop-blur-sm text-slate-900 border-slate-100'}`}>
+          <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 px-1.5 py-0.5 rounded-md text-[10px] sm:text-xs font-bold shadow-sm border ${listing.status === 'sold' ? 'bg-slate-700 text-white border-transparent' : listing.price === 0 ? 'bg-green-100 text-green-700 border-transparent' : 'bg-white/90 backdrop-blur-sm text-slate-900 border-slate-100'}`}>
             {listing.status === 'sold' ? "SOLD" : listing.price === 0 ? "FREE" : `$${listing.price.toFixed(2)}`}
           </div>
           <button
