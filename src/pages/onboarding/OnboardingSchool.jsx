@@ -59,14 +59,16 @@ export default function OnboardingSchool() {
                     </div>
 
                     {/* Log in link */}
-                    <Link
-            to="/login" className="bg-slate-500 text-[#fafafa] mt-5 py-2.5 text-sm font-medium rounded-xl w-full hover:bg-slate-500 transition-all flex items-center justify-center gap-1.5">Already have an account? Log in
-
-
-
-          </Link>
+                    <div className="flex justify-center mt-5">
+                        <Link
+                            to="/login"
+                            className="bg-slate-500 text-white py-2.5 px-8 text-[13px] font-semibold rounded-xl hover:bg-slate-600 active:bg-slate-700 transition-all shadow-sm"
+                        >
+                            or Log in
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>);
-
+        </div>
+    );
 }
