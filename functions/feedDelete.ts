@@ -1,6 +1,8 @@
 import { requireVerified, handleCORS } from './_shared/authMiddleware.ts';
 
-export default async function (req: Request) {
+import { withObservability } from './_shared/observability.ts';
+
+const handler = async function (req: Request) {
     const corsResponse = handleCORS(req);
     if (corsResponse) return corsResponse;
 
@@ -45,3 +47,5 @@ export default async function (req: Request) {
         return Response.json({ error: "Failed to delete post" }, { status: 500 });
     }
 }
+
+export default withObservability(handler, "feedDelete");

@@ -50,6 +50,19 @@ export default function Moderation() {
       }
     }
     await base44.entities.Report.update(report.id, { status: action === 'delete' ? 'resolved' : 'dismissed' });
+
+    // Log audit action to standard output (acting as observability log)
+    const auditLog = {
+      type: "AUDIT_LOG",
+      timestamp: new Date().toISOString(),
+      action: action === 'delete' ? "DELETED_CONTENT" : "DISMISSED_REPORT",
+      target_type: report.target_type,
+      target_id: report.target_id,
+      reported_by: report.reported_by_email,
+      report_id: report.id
+    };
+    console.info(JSON.stringify(auditLog));
+
     fetchReports();
   };
 

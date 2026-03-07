@@ -6,6 +6,8 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 import { compareSync } from 'npm:bcryptjs@2.4.3';
+
+import { withObservability } from './_shared/observability.ts';
 import {
     createJWT,
     checkRateLimit,
@@ -14,7 +16,7 @@ import {
     handleCORS,
 } from './_shared/authMiddleware.ts';
 
-Deno.serve(async (req) => {
+const handler = async (req: Request) => {
     // Handle CORS preflight
     const corsResp = handleCORS(req);
     if (corsResp) return corsResp;
@@ -78,4 +80,6 @@ Deno.serve(async (req) => {
         console.error("Login error:", error);
         return Response.json({ error: "Login failed. Please try again." }, { status: 500, headers: corsHeaders() });
     }
-});
+};
+
+Deno.serve(withObservability(handler, "authLogin"));

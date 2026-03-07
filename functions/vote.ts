@@ -1,12 +1,14 @@
 import { requireVerified, checkRateLimit, handleCORS } from './_shared/authMiddleware.ts';
 
+import { withObservability } from './_shared/observability.ts';
+
 function calculateScore(upvotes: number, downvotes: number, createdAt: number): number {
     const ageInHours = (Date.now() - createdAt) / (1000 * 60 * 60);
     const netVotes = upvotes - downvotes;
     return netVotes / Math.pow(ageInHours + 2, 1.5);
 }
 
-export default async function (req: Request) {
+const handler = async function (req: Request) {
     const corsResponse = handleCORS(req);
     if (corsResponse) return corsResponse;
 
@@ -111,3 +113,5 @@ export default async function (req: Request) {
         return Response.json({ error: "Failed to process vote" }, { status: 500 });
     }
 }
+
+export default withObservability(handler, "vote");
