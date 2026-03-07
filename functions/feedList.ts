@@ -44,6 +44,28 @@ export default async function (req: Request) {
         const startIndex = (page - 1) * limit;
         const paginatedPosts = allPosts.slice(startIndex, startIndex + limit);
 
+        // Gather all parent and root post IDs that need to be fetched for previews
+        const parentIdsToFetch = new Set<string>();
+        for (const p of paginatedPosts) {
+            if ((p.post_type === "repost" || p.post_type === "quote") && p.parent_post_id) {
+                parentIdsToFetch.add(p.parent_post_id);
+            }
+        }
+
+        // Fetch parent posts
+        const parentPostsMap: Record<string, any> = {};
+        if (parentIdsToFetch.size > 0) {
+            const parentPosts = await Promise.all(
+                Array.from(parentIdsToFetch).map(id => base44.asServiceRole.entities.Post.get(id).catch(() => null))
+            );
+            for (const p of parentPosts) {
+                if (p) {
+                    parentPostsMap[p.id] = { ...p };
+                    delete parentPostsMap[p.id].author_email;
+                }
+            }
+        }
+
         // Fetch current user's votes for these posts
         const postIds = paginatedPosts.map((p: any) => p.id);
         const userVotes = await base44.asServiceRole.entities.Vote.filter({
@@ -64,10 +86,17 @@ export default async function (req: Request) {
         // Sanitize and format the response
         const sanitizedPosts = paginatedPosts.map((p: any) => {
             const isOwn = (p.author_email === user.email) || (p.author_anon_id === myAnonId);
+
+            let parentData = null;
+            if (p.parent_post_id) {
+                 parentData = parentPostsMap[p.parent_post_id] || { id: p.parent_post_id, deleted_at: Date.now() }; // stub if deleted
+            }
+
             const safePost = {
                 ...p,
                 is_own_post: isOwn,
-                user_vote: voteMap[p.id] || 0 // 1 for up, -1 for down, 0 for none
+                user_vote: voteMap[p.id] || 0, // 1 for up, -1 for down, 0 for none
+                parent_post: parentData
             };
             // NEVER reveal real identity to the client
             delete safePost.author_email;

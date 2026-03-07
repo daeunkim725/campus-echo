@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
-import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag, Repeat, Quote } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
@@ -30,6 +30,8 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const [showEdit, setShowEdit] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showInterestMenu, setShowInterestMenu] = useState(false);
+  const [showRepostMenu, setShowRepostMenu] = useState(false);
+  const [showQuoteComposer, setShowQuoteComposer] = useState(false);
   const navigate = useNavigate();
 
   const userId = currentUser?.id || "anon";
@@ -134,6 +136,24 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     setShowEdit(false);
   };
 
+  const handleRepost = async (e) => {
+    e.stopPropagation();
+    setShowRepostMenu(false);
+    if (loading) return;
+    setLoading(true);
+    try {
+        await base44.entities.Post.create({
+            post_type: "repost",
+            parent_post_id: localPost.id
+        });
+        onUpdate?.();
+    } catch (err) {
+        console.error("Repost failed", err);
+    } finally {
+        setLoading(false);
+    }
+  };
+
   const totalPollVotes = localPost.poll_options?.reduce((s, o) => s + (o.votes || 0), 0) || 0;
   const hasVotedPoll = localPost.poll_options?.some(o => o.voted_by?.includes(userId));
 
@@ -147,6 +167,12 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         onClick={() => navigate(createPageUrl(`PostDetail?id=${localPost.id}`))}
         className="bg-white rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
       >
+        {localPost.post_type === "repost" && (
+            <div className="flex items-center gap-1.5 text-slate-400 mb-2">
+                <Repeat className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-medium">Reposted</span>
+            </div>
+        )}
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -235,9 +261,53 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           <p className="text-slate-400 italic text-[11px] leading-[16px] mb-2">[deleted]</p>
         ) : (
           <div className="mb-2">
-            {localPost.content && <p className="text-slate-800 text-[11px] leading-[16px] line-clamp-3">{localPost.content}</p>}
+            {localPost.content && <p className="text-slate-800 text-[11px] leading-[16px] whitespace-pre-wrap">{localPost.content}</p>}
             {localPost.edited && <span className="text-[10px] text-slate-400 italic">edited</span>}
           </div>
+        )}
+
+        {/* Embedded Parent Post (Repost/Quote) */}
+        {(localPost.post_type === "repost" || localPost.post_type === "quote") && localPost.parent_post && (
+            <div
+                className="mt-2 mb-3 rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-colors"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.id}`));
+                }}
+            >
+                {localPost.parent_post.deleted_at ? (
+                     <p className="text-slate-400 italic text-[11px] leading-[16px]">[Post removed]</p>
+                ) : (
+                    <>
+                        <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm bg-slate-100">
+                                    {getAliasEmoji(localPost.parent_post.author_alias)}
+                                </div>
+                                <p className="text-[11px] font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.parent_post.author_alias)}</p>
+                            </div>
+                            {localPost.parent_post.root_post_id && localPost.parent_post.root_post_id !== localPost.parent_post.id && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.root_post_id}`));
+                                    }}
+                                    className="text-[10px] text-blue-500 hover:underline"
+                                >
+                                    View original
+                                </button>
+                            )}
+                        </div>
+                        {localPost.parent_post.title && <p className="font-semibold text-slate-900 text-xs mb-0.5 line-clamp-1">{localPost.parent_post.title}</p>}
+                        {localPost.parent_post.content && <p className="text-slate-600 text-[11px] leading-[16px] line-clamp-2">{localPost.parent_post.content}</p>}
+                        {localPost.parent_post.image_url && (
+                             <div className="mt-1.5 rounded-lg overflow-hidden h-24">
+                                <img src={localPost.parent_post.image_url} alt="" className="w-full h-full object-cover" />
+                             </div>
+                        )}
+                    </>
+                )}
+            </div>
         )}
 
         {/* Poll Options */}
@@ -328,6 +398,26 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               </button>
             </>
           )}
+          <div className="relative ml-2">
+            <button
+                onClick={(e) => { e.stopPropagation(); setShowRepostMenu(!showRepostMenu); }}
+                className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all"
+            >
+                <Repeat className="w-3.5 h-3.5" />
+                <span>{(localPost.repost_count || 0) + (localPost.quote_count || 0)}</span>
+            </button>
+
+            {showRepostMenu && (
+                <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36">
+                  <button onClick={handleRepost} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50">
+                     <Repeat className="w-3.5 h-3.5" /> Repost
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); setShowRepostMenu(false); setShowQuoteComposer(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50">
+                     <Quote className="w-3.5 h-3.5" /> Quote repost
+                  </button>
+                </div>
+            )}
+          </div>
           {localPost.category === "events" && (
             <div className="relative">
               <button
@@ -374,6 +464,15 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           currentUser={currentUser}
           onClose={() => setShowReport(false)}
         />
+      )}
+      {showQuoteComposer && (
+          <CreatePostModal
+              onClose={() => setShowQuoteComposer(false)}
+              onCreated={() => { setShowQuoteComposer(false); onUpdate?.(); }}
+              currentUser={currentUser}
+              schoolConfig={schoolConfig}
+              quoteParentPost={localPost}
+          />
       )}
     </>
   );

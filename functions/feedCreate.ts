@@ -17,15 +17,18 @@ export default async function (req: Request) {
         }
 
         const body = await req.json();
-        const { content, category, post_type, poll_options } = body;
+        const { content, category, post_type, poll_options, parent_post_id } = body;
 
-        if (!content || typeof content !== "string" || content.trim().length === 0) {
+        let type = post_type;
+        if (["poll", "text", "repost", "quote"].indexOf(type) === -1) {
+            type = "text";
+        }
+
+        if (type !== "repost" && (!content || typeof content !== "string" || content.trim().length === 0)) {
             return Response.json({ error: "Content is required" }, { status: 400 });
         }
 
-        const type = post_type === "poll" ? "poll" : "text";
         let validPollOptions = null;
-
         if (type === "poll") {
             if (!Array.isArray(poll_options) || poll_options.length < 2) {
                 return Response.json({ error: "Polls require at least two options" }, { status: 400 });
@@ -37,6 +40,30 @@ export default async function (req: Request) {
             }));
         }
 
+        let root_post_id = null;
+        if ((type === "repost" || type === "quote") && parent_post_id) {
+            const parentPost = await base44.entities.Post.get(parent_post_id);
+            if (!parentPost || parentPost.deleted_at) {
+                return Response.json({ error: "Parent post not found or deleted" }, { status: 404 });
+            }
+            // Set root_post_id to parent's root_post_id if it exists, otherwise to the parent's own ID
+            root_post_id = parentPost.root_post_id || parentPost.id;
+
+            // Increment the respective counter on the root post
+            const rootPost = parentPost.id === root_post_id ? parentPost : await base44.entities.Post.get(root_post_id);
+            if (rootPost) {
+                 if (type === "repost") {
+                     await base44.entities.Post.update(root_post_id, {
+                         repost_count: (rootPost.repost_count || 0) + 1
+                     });
+                 } else if (type === "quote") {
+                     await base44.entities.Post.update(root_post_id, {
+                         quote_count: (rootPost.quote_count || 0) + 1
+                     });
+                 }
+            }
+        }
+
         // Generate consistent anonymous ID for this user via hash
         const anonId = await getAnonId(user.email);
 
@@ -45,13 +72,17 @@ export default async function (req: Request) {
             author_email: user.email,         // Internal (never returned to clients)
             author_anon_id: anonId,
             author_mood: user.mood || "chill",
-            content: content.trim(),
+            content: content ? content.trim() : "",
             category: category || "general",
             post_type: type,
             poll_options: validPollOptions,
+            parent_post_id: parent_post_id || null,
+            root_post_id: root_post_id,
             upvotes: 0,
             downvotes: 0,
             comment_count: 0,
+            repost_count: 0,
+            quote_count: 0,
             score: 0,                         // Computed for "hot" sort
             reported_count: 0,
             created_at: Date.now(),

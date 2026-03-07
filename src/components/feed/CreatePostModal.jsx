@@ -6,10 +6,11 @@ import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/school
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
 const CATEGORIES = ["general", "academics", "housing", "food", "rants", "confessions", "advice"];
 
-export default function CreatePostModal({ onClose, onCreated, currentUser, schoolConfig, isEvent = false }) {
+export default function CreatePostModal({ onClose, onCreated, currentUser, schoolConfig, isEvent = false, quoteParentPost }) {
   const schoolCode = currentUser?.school;
   const departments = getSchoolDepartments(schoolCode);
   const levels = getSchoolLevels(schoolCode);
@@ -79,11 +80,20 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
     if (pollOptions.length > 2) setPollOptions(pollOptions.filter((_, idx) => idx !== i));
   };
 
-  // Title is always required; content optional for text posts
-  let isValid = title.trim().length > 0 && (
-  postType === "text" ?
-  title.trim().length <= 200 :
-  pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2);
+  const isQuote = !!quoteParentPost;
+  const activePostType = isQuote ? "quote" : postType;
+
+  // Title is optional for quotes, required for original posts
+  let isValid = false;
+  if (isQuote) {
+      isValid = true;
+  } else if (title.trim().length > 0) {
+      if (activePostType === "text") {
+          isValid = title.trim().length <= 200;
+      } else {
+          isValid = pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2;
+      }
+  }
 
   if (isEvent) {
     isValid = isValid && !!eventDate && !!eventTime && eventLocation.trim().length > 0;
@@ -112,11 +122,12 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
 
     const postData = {
       title: title.trim(),
-      content: postType === "poll" ? pollQuestion.trim() : content.trim() || null,
+      content: activePostType === "poll" ? pollQuestion.trim() : content.trim() || null,
       category,
       department: department || null,
       academic_level: level || null,
-      post_type: postType,
+      post_type: activePostType,
+      parent_post_id: isQuote ? quoteParentPost.id : undefined,
       image_url,
       gif_url: gifUrl,
       still_url: stillUrl,
@@ -221,23 +232,25 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
             </div>
           }
 
-          {/* Title (mandatory) */}
-          <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-              Subject <span className="text-red-400">*</span>
-            </p>
-            <input
-              autoFocus
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="What's this about?"
-              maxLength={200}
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 placeholder:text-slate-400 text-[15px] focus:outline-none transition-all"
-              style={{ outline: title.trim() ? "none" : undefined }}
-              onFocus={(e) => e.target.style.borderColor = primary}
-              onBlur={(e) => e.target.style.borderColor = ""} />
+          {/* Title (mandatory for non-quotes) */}
+          {!isQuote && (
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                  Subject <span className="text-red-400">*</span>
+                </p>
+                <input
+                  autoFocus
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="What's this about?"
+                  maxLength={200}
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-800 placeholder:text-slate-400 text-[15px] focus:outline-none transition-all"
+                  style={{ outline: title.trim() ? "none" : undefined }}
+                  onFocus={(e) => e.target.style.borderColor = primary}
+                  onBlur={(e) => e.target.style.borderColor = ""} />
 
-          </div>
+              </div>
+          )}
 
           {/* Category */}
           {!isEvent &&
@@ -301,8 +314,22 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
             </div>
           </div>
 
+          {/* Quote Parent Preview */}
+          {isQuote && (
+              <div className="mb-4 rounded-xl border border-slate-200 p-3 bg-slate-50 opacity-80 pointer-events-none">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm bg-slate-100">
+                          {getAliasEmoji(quoteParentPost.author_alias)}
+                      </div>
+                      <p className="text-[11px] font-semibold text-slate-800 capitalize">{getCleanAlias(quoteParentPost.author_alias)}</p>
+                  </div>
+                  {quoteParentPost.title && <p className="font-semibold text-slate-900 text-xs mb-0.5 line-clamp-1">{quoteParentPost.title}</p>}
+                  {quoteParentPost.content && <p className="text-slate-600 text-[11px] leading-[16px] line-clamp-2">{quoteParentPost.content}</p>}
+              </div>
+          )}
+
           {/* Content or Poll */}
-          {postType === "text" ?
+          {activePostType === "text" || activePostType === "quote" ?
           <>
               <textarea
               value={content}
@@ -369,7 +396,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 pb-5 pt-3 border-t border-slate-100 flex-shrink-0 relative">
-          {postType === "text" ?
+          {activePostType === "text" || activePostType === "quote" ?
           <div className="flex items-center gap-2">
               <label className="cursor-pointer w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
                 <Image className="w-3.5 h-3.5" />
