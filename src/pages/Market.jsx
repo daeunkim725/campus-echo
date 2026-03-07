@@ -7,7 +7,6 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import ListingDetailModal from "@/components/market/ListingDetailModal";
 import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
-import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 

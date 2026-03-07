@@ -37,8 +37,9 @@ export default async function (req: Request) {
         });
 
         const voteMap: Record<string, number> = {};
+        const commentIdSet = new Set(commentIds);
         for (const v of userVotes) {
-            if (commentIds.includes((v as any).target_id)) {
+            if (commentIdSet.has((v as any).target_id)) {
                 voteMap[(v as any).target_id] = (v as any).vote_value;
             }
         }
