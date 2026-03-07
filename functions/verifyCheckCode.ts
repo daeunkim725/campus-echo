@@ -6,13 +6,15 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 import { compareSync } from 'npm:bcryptjs@2.4.3';
+
+import { withObservability } from './_shared/observability.ts';
 import {
     requireAuth,
     corsHeaders,
     handleCORS,
 } from './_shared/authMiddleware.ts';
 
-Deno.serve(async (req) => {
+const handler = async (req: Request) => {
     const corsResp = handleCORS(req);
     if (corsResp) return corsResp;
 
@@ -122,4 +124,6 @@ Deno.serve(async (req) => {
             { status: 500, headers: corsHeaders() }
         );
     }
-});
+};
+
+Deno.serve(withObservability(handler, "verifyCheckCode"));

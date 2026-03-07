@@ -1,9 +1,11 @@
 import { requireVerified, checkRateLimit, handleCORS, getAnonId } from './_shared/authMiddleware.ts';
 
+import { withObservability } from './_shared/observability.ts';
+
 const ALLOWED_CATEGORIES = ["electronics", "furniture", "clothing", "books", "other"];
 const ALLOWED_CONDITIONS = ["new", "like_new", "good", "fair", "poor"];
 
-export default async function (req: Request) {
+const handler = async function (req: Request) {
     const corsResponse = handleCORS(req);
     if (corsResponse) return corsResponse;
 
@@ -78,3 +80,5 @@ export default async function (req: Request) {
         return Response.json({ error: "Failed to create listing" }, { status: 500 });
     }
 }
+
+export default withObservability(handler, "marketCreateListing");

@@ -1,7 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 import { requireVerified, checkRateLimit, handleCORS, getAnonId } from './_shared/authMiddleware.ts';
 
-export default async function (req: Request) {
+import { withObservability } from './_shared/observability.ts';
+
+const handler = async function (req: Request) {
     const corsResponse = handleCORS(req);
     if (corsResponse) return corsResponse;
 
@@ -70,3 +72,5 @@ export default async function (req: Request) {
         return Response.json({ error: "Failed to create post" }, { status: 500 });
     }
 }
+
+export default withObservability(handler, "feedCreate");

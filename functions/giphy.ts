@@ -1,6 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
-Deno.serve(async (req) => {
+import { withObservability } from './_shared/observability.ts';
+
+const handler = async (req: Request) => {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
@@ -33,4 +35,6 @@ Deno.serve(async (req) => {
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
-});
+};
+
+Deno.serve(withObservability(handler, "giphy"));
