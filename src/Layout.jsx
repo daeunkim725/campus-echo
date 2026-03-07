@@ -8,16 +8,6 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     console.log("Layout mounted on path:", window.location.pathname);
     
-    // Auto-redirect nested onboarding paths to flattened paths
-    if (window.location.pathname.startsWith('/onboarding/')) {
-      const parts = window.location.pathname.split('/');
-      if (parts.length >= 3) {
-        const pageName = parts[2].charAt(0).toUpperCase() + parts[2].slice(1);
-        window.location.replace(`/Onboarding${pageName}`);
-        return;
-      }
-    }
-    
     // Global interceptor for onboarding links from frozen login page
     const handleGlobalClick = (e) => {
       const link = e.target.closest('a');
