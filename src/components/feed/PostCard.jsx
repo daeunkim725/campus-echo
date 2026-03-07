@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { ArrowUp, ArrowDown, MessageCircle, BarChart2, MoreHorizontal, Pencil, Trash2, Calendar, MapPin, Clock, Bell, Flag, Repeat, Quote } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import EditPostModal from "@/components/feed/EditPostModal";
 import ReportModal from "@/components/feed/ReportModal";
 import { PlayableGif } from "@/components/ui/PlayableGif";
+import CreatePostModal from "@/components/feed/CreatePostModal";
 import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 
@@ -33,6 +34,56 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const [showRepostMenu, setShowRepostMenu] = useState(false);
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
   const navigate = useNavigate();
+
+  const menuRef = useRef(null);
+  const interestMenuRef = useRef(null);
+  const repostMenuRef = useRef(null);
+
+  // Close menus when clicking outside or when another menu opens
+  useEffect(() => {
+    const handleGlobalClick = (e) => {
+      if (showMenu && menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+      if (showInterestMenu && interestMenuRef.current && !interestMenuRef.current.contains(e.target)) {
+        setShowInterestMenu(false);
+      }
+      if (showRepostMenu && repostMenuRef.current && !repostMenuRef.current.contains(e.target)) {
+        setShowRepostMenu(false);
+      }
+    };
+
+    const handleScroll = () => {
+      if (showMenu) setShowMenu(false);
+      if (showInterestMenu) setShowInterestMenu(false);
+      if (showRepostMenu) setShowRepostMenu(false);
+    };
+
+    const handleCloseOthers = (e) => {
+      if (e.detail?.postId !== localPost.id) {
+        setShowMenu(false);
+        setShowInterestMenu(false);
+        setShowRepostMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleGlobalClick);
+    document.addEventListener('touchstart', handleGlobalClick);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('menuOpened', handleCloseOthers);
+
+    return () => {
+      document.removeEventListener('mousedown', handleGlobalClick);
+      document.removeEventListener('touchstart', handleGlobalClick);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('menuOpened', handleCloseOthers);
+    };
+  }, [showMenu, showInterestMenu, showRepostMenu, localPost.id]);
+
+  const dispatchMenuOpened = () => {
+    window.dispatchEvent(new CustomEvent('menuOpened', { detail: { postId: localPost.id } }));
+  };
+
 
   const userId = currentUser?.id || "anon";
   const hasVotedBell = localPost.interested_users?.some(u => u.user_id === userId);
@@ -212,9 +263,9 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
             {/* Post menu */}
             {!localPost.deleted && (
-              <div className="relative ml-1" onClick={e => e.stopPropagation()}>
+              <div className="relative ml-1" ref={menuRef}>
                 <button
-                  onClick={() => setShowMenu(v => !v)}
+                  onClick={(e) => { e.stopPropagation(); const willShow = !showMenu; setShowMenu(willShow); if (willShow) dispatchMenuOpened(); }}
                   className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors"
                 >
                   <MoreHorizontal className="w-4 h-4" />
@@ -398,20 +449,9 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               </button>
             </>
           )}
-          <div className="relative ml-2">
+          <div className="relative ml-2" ref={repostMenuRef}>
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (showRepostMenu) setShowRepostMenu(false);
-                    else {
-                        // Close other menus if open, logic handled by state but click propagation is stopped
-                        setShowRepostMenu(true);
-                    }
-                }}
-                onBlur={() => {
-                     // small timeout to allow click to register before unmounting
-                     setTimeout(() => setShowRepostMenu(false), 200);
-                }}
+                onClick={(e) => { e.stopPropagation(); const willShow = !showRepostMenu; setShowRepostMenu(willShow); if (willShow) dispatchMenuOpened(); }}
                 className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${showRepostMenu ? "bg-slate-100 text-slate-800" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
             >
                 <Repeat className="w-3.5 h-3.5" />
@@ -430,12 +470,12 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
             )}
           </div>
           {localPost.category === "events" && (
-            <div className="relative">
+            <div className="relative" ref={interestMenuRef}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   if (hasVotedBell) handleRemoveInterest();
-                  else setShowInterestMenu(!showInterestMenu);
+                  else { const willShow = !showInterestMenu; setShowInterestMenu(willShow); if (willShow) dispatchMenuOpened(); }
                 }}
                 className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium transition-all ${hasVotedBell ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
               >

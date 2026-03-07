@@ -49,7 +49,7 @@ const AuthenticatedApp = () => {
   }
 
   // Not authenticated? Only allow login page
-  if (!isLoginPage && !isOnboardingPage && !isAuthenticated && authError?.type === 'auth_required') {
+  if (!isLoginPage && !isOnboardingPage && !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

@@ -63,11 +63,6 @@ import OnboardingSchool from './pages/OnboardingSchool';
 import OnboardingVerify from './pages/OnboardingVerify';
 import PostDetail from './pages/PostDetail';
 import SchoolFeed from './pages/SchoolFeed';
-import OnboardingAge from './pages/OnboardingAge';
-import OnboardingPassword from './pages/OnboardingPassword';
-import OnboardingProfile from './pages/OnboardingProfile';
-import OnboardingSchool from './pages/OnboardingSchool';
-import OnboardingVerify from './pages/OnboardingVerify';
 import __Layout from './Layout.jsx';
 
 
@@ -88,11 +83,6 @@ export const PAGES = {
     "OnboardingVerify": OnboardingVerify,
     "PostDetail": PostDetail,
     "SchoolFeed": SchoolFeed,
-    "OnboardingAge": OnboardingAge,
-    "OnboardingPassword": OnboardingPassword,
-    "OnboardingProfile": OnboardingProfile,
-    "OnboardingSchool": OnboardingSchool,
-    "OnboardingVerify": OnboardingVerify,
 }
 
 export const pagesConfig = {
