@@ -59,14 +59,12 @@ export default function OnboardingSchool() {
                     </div>
 
                     {/* Log in link */}
-                    <div className="flex justify-center mt-6">
-                        <button
-                            onClick={() => navigateToLogin()}
-                            className="px-8 py-2.5 rounded-xl bg-slate-600 text-white text-[13px] font-semibold hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                        >
-                            Already have an account? Log in
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => navigateToLogin()}
+                        className="bg-slate-500 text-[#fafafa] mt-5 py-2.5 text-sm font-medium rounded-xl w-full hover:bg-slate-600 active:bg-slate-700 transition-all flex items-center justify-center gap-1.5"
+                    >
+                        Already have an account? Log in
+                    </button>
                 </div>
             </div>
         </div>
