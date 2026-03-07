@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { ArrowLeft, Activity, Users, FileText, ShoppingBag, ShieldAlert, BarChart3, AlertCircle, Clock } from "lucide-react";
+import { ArrowLeft, Activity, Users, FileText, ShieldAlert, BarChart3, AlertCircle, Clock, MessageCircle } from "lucide-react";
 
 export default function Observability() {
   const [stats, setStats] = useState({
@@ -60,6 +60,7 @@ export default function Observability() {
       });
     } catch (err) {
       console.error("Failed to fetch stats", err);
+      // @ts-ignore
       if (window.base44_mock_mode) {
           setStats({ users: 142, posts: 89, comments: 412, reports: 3 });
       }
@@ -199,6 +200,3 @@ export default function Observability() {
     </div>
   );
 }
-
-// Ensure MessageCircle is imported for the stats icon
-import { MessageCircle } from "lucide-react";
