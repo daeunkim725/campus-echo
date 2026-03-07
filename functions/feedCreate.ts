@@ -24,7 +24,7 @@ export default async function (req: Request) {
             type = "text";
         }
 
-        if (type !== "repost" && (!content || typeof content !== "string" || content.trim().length === 0)) {
+        if (type !== "repost" && type !== "quote" && (!content || typeof content !== "string" || content.trim().length === 0)) {
             return Response.json({ error: "Content is required" }, { status: 400 });
         }
 

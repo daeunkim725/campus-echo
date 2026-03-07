@@ -142,7 +142,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     if (loading) return;
     setLoading(true);
     try {
-        await base44.entities.Post.create({
+        await base44.functions.invoke("feedCreate", {
             post_type: "repost",
             parent_post_id: localPost.id
         });
@@ -400,19 +400,30 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           )}
           <div className="relative ml-2">
             <button
-                onClick={(e) => { e.stopPropagation(); setShowRepostMenu(!showRepostMenu); }}
-                className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (showRepostMenu) setShowRepostMenu(false);
+                    else {
+                        // Close other menus if open, logic handled by state but click propagation is stopped
+                        setShowRepostMenu(true);
+                    }
+                }}
+                onBlur={() => {
+                     // small timeout to allow click to register before unmounting
+                     setTimeout(() => setShowRepostMenu(false), 200);
+                }}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${showRepostMenu ? "bg-slate-100 text-slate-800" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
             >
                 <Repeat className="w-3.5 h-3.5" />
                 <span>{(localPost.repost_count || 0) + (localPost.quote_count || 0)}</span>
             </button>
 
             {showRepostMenu && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36">
-                  <button onClick={handleRepost} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50">
+                <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={handleRepost} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
                      <Repeat className="w-3.5 h-3.5" /> Repost
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setShowRepostMenu(false); setShowQuoteComposer(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50">
+                  <button onClick={(e) => { e.stopPropagation(); setShowRepostMenu(false); setShowQuoteComposer(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
                      <Quote className="w-3.5 h-3.5" /> Quote repost
                   </button>
                 </div>

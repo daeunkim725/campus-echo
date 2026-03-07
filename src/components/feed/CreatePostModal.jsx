@@ -161,7 +161,11 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
       map((o) => ({ text: o.trim(), votes: 0, voted_by: [] }));
     }
 
-    await base44.entities.Post.create(postData);
+    try {
+        await base44.functions.invoke("feedCreate", postData);
+    } catch (err) {
+        console.error("Post creation failed", err);
+    }
     setLoading(false);
     onCreated?.();
     onClose();
