@@ -61,14 +61,14 @@ export default function OnboardingSchool() {
                     {/* Log in link */}
                     <div className="flex justify-center mt-5">
                         <Link
-              to="/login" className="bg-slate-500 text-[13px] px-4 py-1 font-semibold rounded-xl hover:bg-slate-600 active:bg-slate-700 transition-all shadow-sm">or Log in
-
-
-
-            </Link>
+                            to="/login"
+                            className="bg-slate-500 text-white py-2.5 px-8 text-[13px] font-semibold rounded-xl hover:bg-slate-600 active:bg-slate-700 transition-all shadow-sm"
+                        >
+                            or Log in
+                        </Link>
                     </div>
                 </div>
             </div>
-        </div>);
-
+        </div>
+    );
 }
