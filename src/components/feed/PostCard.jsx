@@ -136,7 +136,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
   const handleVote = async (e, type) => {
     e.stopPropagation();
-    if (loading) return;
+    if (loading || !currentUser) return;
     setLoading(true);
 
     let newVotedUp = [...(localPost.voted_up_by || [])];
@@ -144,18 +144,25 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     let newUpvotes = localPost.upvotes || 0;
     let newDownvotes = localPost.downvotes || 0;
 
+    let vote_value = 0;
     if (type === "up") {
-      if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; }
-      else { newVotedUp.push(userId); newUpvotes++; if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; } }
+      if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; vote_value = 0; }
+      else { vote_value = 1; newVotedUp.push(userId); newUpvotes++; if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; } }
     } else {
-      if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; }
-      else { newVotedDown.push(userId); newDownvotes++; if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; } }
+      if (votedDown) { newVotedDown = newVotedDown.filter(id => id !== userId); newDownvotes--; vote_value = 0; }
+      else { vote_value = -1; newVotedDown.push(userId); newDownvotes++; if (votedUp) { newVotedUp = newVotedUp.filter(id => id !== userId); newUpvotes--; } }
     }
 
     const updated = { ...localPost, upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown };
     setLocalPost(updated);
-    await base44.entities.Post.update(localPost.id, { upvotes: newUpvotes, downvotes: newDownvotes, voted_up_by: newVotedUp, voted_down_by: newVotedDown });
-    setLoading(false);
+
+    try {
+      await base44.functions.invoke("vote", { target_type: "post", target_id: localPost.id, vote_value });
+    } catch (err) {
+      console.error("Failed to vote", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePollVote = async (e, optionIndex) => {

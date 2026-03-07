@@ -15,6 +15,35 @@ import {
     handleCORS,
 } from './_shared/authMiddleware.ts';
 
+
+function generateRandomHandle() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const nums = '0123456789';
+    let letters = '';
+    let digits = '';
+    for (let i = 0; i < 1; i++) letters += chars.charAt(Math.floor(Math.random() * chars.length));
+    for (let i = 0; i < 3; i++) digits += nums.charAt(Math.floor(Math.random() * nums.length));
+
+    // Mix 1 letter and 3 numbers
+    const mixed = (letters + digits).split('').sort(() => 0.5 - Math.random()).join('');
+    return `#bat${mixed}`;
+}
+
+async function getUniqueLeaderboardHandle(base44) {
+    let handle;
+    let isUnique = false;
+    let attempts = 0;
+    while (!isUnique && attempts < 10) {
+        handle = generateRandomHandle();
+        const existing = await base44.asServiceRole.entities.User.filter({ leaderboard_handle: handle });
+        if (!existing || existing.length === 0) {
+            isUnique = true;
+        }
+        attempts++;
+    }
+    return handle;
+}
+
 Deno.serve(async (req) => {
     // Handle CORS preflight
     const corsResp = handleCORS(req);
@@ -62,8 +91,10 @@ Deno.serve(async (req) => {
             emailLower.endsWith("@campusecho.app") ||
             ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
 
+        const leaderboardHandle = await getUniqueLeaderboardHandle(base44);
         // Create user record
         const user = await base44.asServiceRole.entities.User.create({
+            leaderboard_handle: leaderboardHandle,
             email: emailLower,
             password_hash: passwordHash,
             display_name: displayName || email.split("@")[0],
