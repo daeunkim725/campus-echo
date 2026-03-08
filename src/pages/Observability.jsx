@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { apiLeaderboard } from "@/api/apiClient";
 import { createPageUrl } from "@/utils";
-import { ArrowLeft, Activity, Users, FileText, ShieldAlert, BarChart3, AlertCircle, Clock, MessageCircle } from "lucide-react";
+import { ArrowLeft, Activity, Users, FileText, ShieldAlert, BarChart3, AlertCircle, Clock, MessageCircle, Award } from "lucide-react";
 
 export default function Observability() {
   const [stats, setStats] = useState({
@@ -11,6 +12,7 @@ export default function Observability() {
     reports: 0
   });
   const [loading, setLoading] = useState(true);
+  const [leaderboardData, setLeaderboardData] = useState(null);
 
   // Mock data for API metrics and logs since we rely on standard output for the real ones
   const [apiMetrics] = useState({
@@ -46,11 +48,12 @@ export default function Observability() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const [users, posts, comments, reports] = await Promise.all([
+      const [users, posts, comments, reports, leaderboard] = await Promise.all([
         base44.entities.User.list(),
         base44.entities.Post.list(),
         base44.entities.Comment.list(),
-        base44.entities.Report.list()
+        base44.entities.Report.list(),
+        apiLeaderboard().catch(() => null)
       ]);
       setStats({
         users: users.length,
@@ -58,6 +61,8 @@ export default function Observability() {
         comments: comments.length,
         reports: reports.length
       });
+      // Always set leaderboardData so the section is visible
+      setLeaderboardData(leaderboard || { handle: "No Data", score: 0 });
     } catch (err) {
       console.error("Failed to fetch stats", err);
       // @ts-ignore
@@ -92,6 +97,24 @@ export default function Observability() {
           </div>
         ) : (
           <>
+            {/* Leaderboard */}
+            {leaderboardData && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-100 shadow-sm flex items-center justify-between mb-6">
+                 <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Award className="w-6 h-6 text-amber-500" />
+                      <span className="text-sm font-bold text-amber-600 uppercase tracking-wider">#1 User Leaderboard</span>
+                      <span className="text-[10px] font-medium text-amber-500/80 bg-amber-100 px-2 py-0.5 rounded-full ml-1">All-time</span>
+                    </div>
+                    <p className="text-2xl font-black text-slate-800 mt-1">{leaderboardData.handle || "N/A"}</p>
+                 </div>
+                 <div className="text-right">
+                    <p className="text-3xl font-black text-amber-600">{leaderboardData.score || 0}</p>
+                    <p className="text-xs font-semibold text-amber-600/70 uppercase">Net Votes</p>
+                 </div>
+              </div>
+            )}
+
             {/* Top Metrics Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
