@@ -50,6 +50,28 @@ export default function Moderation() {
       }
     }
     await base44.entities.Report.update(report.id, { status: action === 'delete' ? 'resolved' : 'dismissed' });
+
+    // Log audit action to backend
+    try {
+        const token = localStorage.getItem("campus_echo_token");
+        await fetch("/api/functions/auditLogCreate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                action: action === 'delete' ? "DELETED_CONTENT" : "DISMISSED_REPORT",
+                target_type: report.target_type,
+                target_id: report.target_id,
+                reported_by: report.reported_by_email,
+                report_id: report.id
+            })
+        });
+    } catch (err) {
+        console.error("Failed to log audit action", err);
+    }
+
     fetchReports();
   };
 

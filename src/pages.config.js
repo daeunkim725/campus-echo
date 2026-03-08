@@ -54,6 +54,7 @@ import Market from './pages/Market';
 import MarketInbox from './pages/MarketInbox';
 import Moderation from './pages/Moderation';
 import Notifications from './pages/Notifications';
+import Observability from './pages/Observability';
 import Onboarding from './pages/Onboarding';
 import OnboardingAge from './pages/OnboardingAge';
 import OnboardingPassword from './pages/OnboardingPassword';
@@ -73,6 +74,7 @@ export const PAGES = {
     "MarketInbox": MarketInbox,
     "Moderation": Moderation,
     "Notifications": Notifications,
+    "Observability": Observability,
     "Onboarding": Onboarding,
     "OnboardingAge": OnboardingAge,
     "OnboardingPassword": OnboardingPassword,

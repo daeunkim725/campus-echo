@@ -104,6 +104,14 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
               >
                 Events
               </button>
+              {isAdmin && (
+                <button
+                  onClick={() => window.location.href = createPageUrl("Observability")}
+                  className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "observability" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                >
+                  Stats
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import { requireVerified, checkRateLimit, handleCORS } from './_shared/authMiddleware.ts';
 
+import { withObservability } from './_shared/observability.ts';
+
 const ALLOWED_CATEGORIES = ["electronics", "furniture", "clothing", "books", "other"];
 const ALLOWED_CONDITIONS = ["new", "like_new", "good", "fair", "poor"];
 const ALLOWED_STATUSES = ["active", "reserved", "sold"];
 
-export default async function (req: Request) {
+const handler = async function (req: Request) {
     const corsResponse = handleCORS(req);
     if (corsResponse) return corsResponse;
 
@@ -113,3 +115,5 @@ export default async function (req: Request) {
         return Response.json({ error: "Failed to update listing" }, { status: 500 });
     }
 }
+
+export default withObservability(handler, "marketUpdateListing");
