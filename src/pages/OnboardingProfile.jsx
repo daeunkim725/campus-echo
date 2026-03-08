@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 
 const ACCESSORIES = [
@@ -15,7 +14,6 @@ const ACCESSORIES = [
 ];
 
 export default function OnboardingProfile() {
-    const navigate = useNavigate();
     const { updateUser } = useAuth();
     const [selectedAccessory, setSelectedAccessory] = useState("none");
 

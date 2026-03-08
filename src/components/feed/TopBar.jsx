@@ -7,7 +7,7 @@ import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 
-export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false, alwaysSticky = false }) {
+export default function TopBar({ currentUser, onUserUpdate, onPost, _postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false, alwaysSticky = false }) {
   const [showProfile, setShowProfile] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
