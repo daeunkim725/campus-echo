@@ -213,3 +213,10 @@ export const apiMarketDelete = async (listingId) => {
         params: { id: listingId }
     });
 };
+
+
+export const apiLeaderboard = async () => {
+    return apiFetch('leaderboard', {
+        method: 'GET'
+    });
+};

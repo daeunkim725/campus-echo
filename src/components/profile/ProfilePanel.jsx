@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { apiLogout } from "@/api/apiClient";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity } from "lucide-react";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { createPageUrl } from "@/utils";
@@ -438,13 +438,22 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
           {/* Settings (Moved to bottom) */}
           <div className="p-3 border-t border-slate-100 space-y-0.5 bg-slate-50 mt-auto">
             {currentUser?.role === 'admin' && (
-              <button
-                onClick={() => window.location.href = createPageUrl("Moderation")}
-                className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600 text-xs font-medium transition-all"
-              >
-                <ShieldAlert className="w-3.5 h-3.5" />
-                Moderation Queue
-              </button>
+              <>
+                <button
+                  onClick={() => window.location.href = createPageUrl("Moderation")}
+                  className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600 text-xs font-medium transition-all"
+                >
+                  <ShieldAlert className="w-3.5 h-3.5" />
+                  Moderation Queue
+                </button>
+                <button
+                  onClick={() => window.location.href = createPageUrl("Observability")}
+                  className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600 text-xs font-medium transition-all"
+                >
+                  <Activity className="w-3.5 h-3.5" />
+                  Dashboard
+                </button>
+              </>
             )}
             <div
               className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition-all"
