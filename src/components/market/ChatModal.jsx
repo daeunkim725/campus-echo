@@ -15,7 +15,7 @@ const detectOffPlatform = (text) => {
 export default function ChatModal({ thread, listing, currentUser, onClose, schoolConfig }) {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [showOfferForm, setShowOfferForm] = useState(false);
   const [offerPrice, setOfferPrice] = useState(listing?.price || "");
