@@ -360,7 +360,7 @@ export default function Market() {
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
           onPost={() => setShowCreate(true)}
-          postLabel="Sell"
+          _postLabel="Sell"
           activePage="market"
           schoolConfig={schoolConfig}
           alwaysSticky={true} />

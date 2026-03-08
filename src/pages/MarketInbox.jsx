@@ -83,7 +83,7 @@ export default function MarketInbox() {
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
           onPost={handleBackToMarket}
-          postLabel="Sell"
+          _postLabel="Sell"
           activePage="market"
           schoolConfig={schoolConfig}
           hideFABs={true} />
