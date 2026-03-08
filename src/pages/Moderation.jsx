@@ -32,7 +32,7 @@ export default function Moderation() {
           } else {
             newTargets[r.target_id] = await base44.entities.Comment.get(r.target_id);
           }
-        } catch(e) {
+        } catch {
           newTargets[r.target_id] = { content: "[Content not found or already deleted]" };
         }
       }
