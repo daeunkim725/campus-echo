@@ -48,9 +48,9 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Not authenticated? Only allow login page
+  // Not authenticated? Only allow login page and onboarding pages
   if (!isLoginPage && !isOnboardingPage && !isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/onboarding/school" replace />;
   }
 
   // Authenticated? Check onboarding completion
