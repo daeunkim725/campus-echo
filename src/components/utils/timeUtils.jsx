@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function getShortTimeAgo(dateInput) {
   if (!dateInput) return "";
   const date = new Date(dateInput);

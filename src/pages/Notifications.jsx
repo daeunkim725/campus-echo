@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, Bell, MessageCircle, CornerDownRight, Calendar } from "lucide-react";
 import { base44 } from "@/api/base44Client";

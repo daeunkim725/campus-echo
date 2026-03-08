@@ -41,8 +41,8 @@ export async function apiFetch(functionName, options = {}) {
 
     if (!response.ok) {
         const error = new Error(data.error || `Request failed with status ${response.status}`);
-        error.status = response.status;
-        error.data = data;
+        /** @type {any} */ (error).status = response.status;
+        /** @type {any} */ (error).data = data;
         throw error;
     }
 
