@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1180" viewBox="0 0 1600 1180" role="img" aria-labelledby="title desc">
+  <title id="title">Campus Echo User Journey</title>
+  <desc id="desc">Product user journey flow for auth, onboarding, navigation, modals, profile, and market flows.</desc>
+  <defs>
+    <style>
+      .bg { fill:#f8fafc; }
+      .title { font:700 28px Inter,Arial,sans-serif; fill:#0f172a; }
+      .section { fill:#ffffff; stroke:#cbd5e1; stroke-width:2; rx:16; }
+      .section-title { font:700 18px Inter,Arial,sans-serif; fill:#1e293b; }
+      .node { fill:#ffffff; stroke:#94a3b8; stroke-width:1.5; rx:10; }
+      .decision { fill:#fffbeb; stroke:#f59e0b; stroke-width:1.5; }
+      .label { font:600 13px Inter,Arial,sans-serif; fill:#0f172a; }
+      .small { font:500 12px Inter,Arial,sans-serif; fill:#334155; }
+      .arrow { stroke:#475569; stroke-width:1.8; fill:none; marker-end:url(#arr); }
+      .soft { stroke:#94a3b8; stroke-dasharray:4 4; }
+    </style>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1180"/>
+  <text class="title" x="40" y="48">Campus Echo — Product User Journey (SVG)</text>
+
+  <!-- Auth &amp; Onboarding -->
+  <rect class="section" x="30" y="80" width="760" height="420"/>
+  <text class="section-title" x="50" y="112">Auth &amp; Onboarding</text>
+
+  <rect class="node" x="60" y="140" width="120" height="44"/><text class="label" x="78" y="168">App start</text>
+  <polygon class="decision" points="240,140 320,162 240,184 160,162"/><text class="label" x="186" y="166">Token?</text>
+  <rect class="node" x="360" y="140" width="170" height="44"/><text class="label" x="374" y="168">AuthContext check</text>
+  <polygon class="decision" points="610,140 700,162 610,184 520,162"/><text class="label" x="578" y="166">Auth ok?</text>
+
+  <rect class="node" x="80" y="250" width="130" height="40"/><text class="small" x="95" y="275">School</text>
+  <rect class="node" x="230" y="250" width="130" height="40"/><text class="small" x="248" y="275">Verify email</text>
+  <rect class="node" x="380" y="250" width="130" height="40"/><text class="small" x="395" y="275">Set password</text>
+  <rect class="node" x="530" y="250" width="130" height="40"/><text class="small" x="562" y="275">Age gate</text>
+  <rect class="node" x="680" y="250" width="90" height="40"/><text class="small" x="690" y="275">Profile</text>
+
+  <polygon class="decision" points="560,330 650,352 560,374 470,352"/><text class="small" x="525" y="356">Age ≥ 18?</text>
+  <rect class="node" x="680" y="332" width="90" height="40"/><text class="small" x="695" y="357">Main app</text>
+  <rect class="node" x="350" y="332" width="110" height="40"/><text class="small" x="364" y="357">Lock until 18</text>
+
+  <line class="arrow" x1="180" y1="162" x2="160" y2="162"/>
+  <line class="arrow" x1="320" y1="162" x2="360" y2="162"/>
+  <line class="arrow" x1="530" y1="162" x2="520" y2="162"/>
+  <line class="arrow" x1="610" y1="184" x2="610" y2="250"/>
+  <line class="arrow" x1="145" y1="290" x2="295" y2="290"/>
+  <line class="arrow" x1="295" y1="290" x2="445" y2="290"/>
+  <line class="arrow" x1="445" y1="290" x2="595" y2="290"/>
+  <line class="arrow" x1="595" y1="290" x2="725" y2="290"/>
+  <line class="arrow" x1="575" y1="290" x2="560" y2="330"/>
+  <line class="arrow" x1="650" y1="352" x2="680" y2="352"/>
+  <line class="arrow" x1="470" y1="352" x2="460" y2="352"/>
+
+  <!-- Main Navigation -->
+  <rect class="section" x="820" y="80" width="750" height="220"/>
+  <text class="section-title" x="840" y="112">Main Navigation</text>
+  <rect class="node" x="850" y="140" width="150" height="44"/><text class="label" x="880" y="168">TopBar</text>
+  <rect class="node" x="1020" y="140" width="90" height="44"/><text class="small" x="1047" y="168">Feed</text>
+  <rect class="node" x="1125" y="140" width="90" height="44"/><text class="small" x="1146" y="168">Market</text>
+  <rect class="node" x="1230" y="140" width="90" height="44"/><text class="small" x="1255" y="168">Events</text>
+  <rect class="node" x="1335" y="140" width="90" height="44"/><text class="small" x="1362" y="168">Stats*</text>
+  <rect class="node" x="1450" y="140" width="95" height="44"/><text class="small" x="1467" y="168">Notif</text>
+  <rect class="node" x="1385" y="220" width="90" height="40"/><text class="small" x="1392" y="245">Notifications</text>
+  <rect class="node" x="1485" y="220" width="75" height="40"/><text class="small" x="1490" y="245">Inbox</text>
+  <line class="arrow" x1="1000" y1="162" x2="1020" y2="162"/>
+  <line class="arrow" x1="1000" y1="162" x2="1125" y2="162"/>
+  <line class="arrow" x1="1000" y1="162" x2="1230" y2="162"/>
+  <line class="arrow" x1="1000" y1="162" x2="1335" y2="162"/>
+  <line class="arrow" x1="1000" y1="162" x2="1450" y2="162"/>
+  <line class="arrow" x1="1498" y1="184" x2="1430" y2="220"/>
+  <line class="arrow" x1="1510" y1="184" x2="1518" y2="220"/>
+
+  <!-- Modal Openings -->
+  <rect class="section" x="820" y="320" width="750" height="220"/>
+  <text class="section-title" x="840" y="352">Modal Openings</text>
+  <rect class="node" x="850" y="380" width="150" height="42"/><text class="small" x="860" y="406">CreatePostModal</text>
+  <rect class="node" x="1020" y="380" width="160" height="42"/><text class="small" x="1034" y="406">CreateListingModal</text>
+  <rect class="node" x="1200" y="380" width="150" height="42"/><text class="small" x="1210" y="406">ListingDetailModal</text>
+  <rect class="node" x="1370" y="380" width="120" height="42"/><text class="small" x="1398" y="406">ChatModal</text>
+  <rect class="node" x="910" y="458" width="130" height="40"/><text class="small" x="925" y="483">ProfilePanel</text>
+  <rect class="node" x="1060" y="458" width="150" height="40"/><text class="small" x="1074" y="483">Logout confirm</text>
+  <line class="arrow" x1="1178" y1="401" x2="1200" y2="401"/>
+  <line class="arrow" x1="1350" y1="401" x2="1370" y2="401"/>
+  <line class="arrow" x1="975" y1="422" x2="975" y2="458"/>
+  <line class="arrow" x1="1040" y1="478" x2="1060" y2="478"/>
+
+  <!-- Profile flow -->
+  <rect class="section" x="30" y="530" width="760" height="300"/>
+  <text class="section-title" x="50" y="562">Profile Flow</text>
+  <rect class="node" x="60" y="590" width="130" height="40"/><text class="small" x="73" y="615">Posts tab</text>
+  <rect class="node" x="210" y="590" width="130" height="40"/><text class="small" x="232" y="615">Edit post</text>
+  <rect class="node" x="360" y="590" width="150" height="40"/><text class="small" x="372" y="615">Soft-delete post</text>
+  <rect class="node" x="530" y="590" width="130" height="40"/><text class="small" x="550" y="615">Listings tab</text>
+
+  <rect class="node" x="80" y="680" width="140" height="40"/><text class="small" x="97" y="705">Relist sold</text>
+  <rect class="node" x="240" y="680" width="170" height="40"/><text class="small" x="257" y="705">Archive/Delete sold</text>
+  <rect class="node" x="430" y="680" width="150" height="40"/><text class="small" x="444" y="705">Regenerate handle</text>
+  <rect class="node" x="600" y="680" width="140" height="40"/><text class="small" x="615" y="705">Toggle dark mode</text>
+
+  <line class="arrow" x1="190" y1="610" x2="210" y2="610"/>
+  <line class="arrow" x1="340" y1="610" x2="360" y2="610"/>
+  <line class="arrow" x1="510" y1="610" x2="530" y2="610"/>
+  <line class="arrow" x1="595" y1="630" x2="150" y2="680"/>
+  <line class="arrow" x1="595" y1="630" x2="325" y2="680"/>
+  <line class="arrow" x1="595" y1="630" x2="505" y2="680"/>
+  <line class="arrow" x1="595" y1="630" x2="670" y2="680"/>
+
+  <!-- Market flow -->
+  <rect class="section" x="820" y="560" width="750" height="350"/>
+  <text class="section-title" x="840" y="592">Market &amp; Listing Flow</text>
+  <polygon class="decision" points="920,630 1010,652 920,674 830,652"/><text class="small" x="860" y="656">School+age verified?</text>
+  <rect class="node" x="1040" y="632" width="130" height="40"/><text class="small" x="1063" y="657">Listings feed</text>
+  <rect class="node" x="1190" y="632" width="170" height="40"/><text class="small" x="1200" y="657">Filters + sort</text>
+  <rect class="node" x="1380" y="632" width="160" height="40"/><text class="small" x="1392" y="657">Create listing</text>
+
+  <rect class="node" x="930" y="720" width="170" height="40"/><text class="small" x="945" y="745">Listing detail modal</text>
+  <polygon class="decision" points="1200,720 1285,742 1200,764 1115,742"/><text class="small" x="1142" y="746">Viewer seller?</text>
+  <rect class="node" x="1310" y="722" width="120" height="40"/><text class="small" x="1328" y="747">Mark sold</text>
+  <rect class="node" x="1450" y="722" width="110" height="40"/><text class="small" x="1467" y="747">Go inbox</text>
+
+  <rect class="node" x="930" y="808" width="120" height="40"/><text class="small" x="955" y="833">Open thread</text>
+  <rect class="node" x="1070" y="808" width="100" height="40"/><text class="small" x="1098" y="833">Chat</text>
+  <rect class="node" x="1190" y="808" width="90" height="40"/><text class="small" x="1215" y="833">Text</text>
+  <rect class="node" x="1300" y="808" width="90" height="40"/><text class="small" x="1324" y="833">Offer</text>
+  <rect class="node" x="1410" y="808" width="140" height="40"/><text class="small" x="1419" y="833">Meetup + code</text>
+
+  <line class="arrow" x1="1010" y1="652" x2="1040" y2="652"/>
+  <line class="arrow" x1="1170" y1="652" x2="1190" y2="652"/>
+  <line class="arrow" x1="1360" y1="652" x2="1380" y2="652"/>
+  <line class="arrow" x1="1105" y1="652" x2="1015" y2="720"/>
+  <line class="arrow" x1="1100" y1="740" x2="1115" y2="742"/>
+  <line class="arrow" x1="1285" y1="742" x2="1310" y2="742"/>
+  <line class="arrow" x1="1430" y1="742" x2="1450" y2="742"/>
+  <line class="arrow" x1="1115" y1="742" x2="1050" y2="808"/>
+  <line class="arrow" x1="1050" y1="828" x2="1070" y2="828"/>
+  <line class="arrow" x1="1170" y1="828" x2="1190" y2="828"/>
+  <line class="arrow" x1="1280" y1="828" x2="1300" y2="828"/>
+  <line class="arrow" x1="1390" y1="828" x2="1410" y2="828"/>
+
+  <!-- Files used -->
+  <rect class="section" x="30" y="850" width="1540" height="300"/>
+  <text class="section-title" x="50" y="882">Files used</text>
+  <text class="small" x="60" y="915">src/App.jsx · src/lib/AuthContext.jsx · src/pages/Login.jsx · src/pages/onboarding/* · src/components/feed/TopBar.jsx · src/components/feed/SchoolTopBar.jsx</text>
+  <text class="small" x="60" y="940">src/pages/Market.jsx · src/components/market/ListingDetailModal.jsx · src/components/market/ChatModal.jsx · src/pages/MarketInbox.jsx · src/components/profile/ProfilePanel.jsx</text>
+  <text class="small" x="60" y="972">Download this file: user_journey.svg</text>
+
+  <text class="small" x="60" y="1035">* Notes: Stats tab is admin-only. Onboarding lock loops until unlock_at date.</text>
+  <text class="small" x="60" y="1060">Generated as a static SVG for easy download/share.</text>
+</svg>
