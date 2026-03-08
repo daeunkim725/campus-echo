@@ -12,6 +12,8 @@ import {
     verifyJWT,
     corsHeaders,
     handleCORS,
+    generateHandle,
+    getAnonId,
 } from './_shared/authMiddleware.ts';
 
 const handler = async (req: Request) => {
@@ -51,7 +53,37 @@ const handler = async (req: Request) => {
             return Response.json({ error: "User not found" }, { status: 404, headers: corsHeaders() });
         }
 
-        const user = users[0];
+        let user = users[0];
+
+        // Migrate existing users (missing handle or anon_id)
+        let needsUpdate = false;
+        const updates: any = {};
+
+        if (!user.handle) {
+            let newHandle = "";
+            let isUnique = false;
+            while (!isUnique) {
+                newHandle = generateHandle();
+                const existingWithHandle = await base44.asServiceRole.entities.User.filter({ handle: newHandle });
+                if (!existingWithHandle || existingWithHandle.length === 0) {
+                    isUnique = true;
+                }
+            }
+            updates.handle = newHandle;
+            user.handle = newHandle;
+            needsUpdate = true;
+        }
+
+        if (!user.anon_id) {
+            const anonId = await getAnonId(user.email);
+            updates.anon_id = anonId;
+            user.anon_id = anonId;
+            needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+            await base44.asServiceRole.entities.User.update(user.id, updates);
+        }
 
         return Response.json({
             id: user.id,
@@ -65,6 +97,8 @@ const handler = async (req: Request) => {
             mood: user.mood || null,
             role: user.role || null,
             verified_at: user.verified_at || null,
+            handle: user.handle,
+            anon_id: user.anon_id,
         }, { headers: corsHeaders() });
 
     } catch (error) {

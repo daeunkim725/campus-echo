@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { ArrowUp, ArrowDown, CornerDownRight, Send, Smile, X, MoreHorizontal, Pencil, Trash2, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
@@ -111,7 +111,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
     if (!replyText.trim() && !gifUrl) return;
     setLoading(true);
 
-    const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
+    const alias = "Anonymous";
     const color = primary;
 
     await base44.entities.Comment.create({

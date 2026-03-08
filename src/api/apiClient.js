@@ -83,6 +83,10 @@ export async function apiMe() {
     return await apiFetch("authMe", { method: "GET" });
 }
 
+export async function apiRegenerateHandle() {
+    return await apiFetch("usersHandleRegenerate", { method: "POST" });
+}
+
 // ──────────────────────────────────────────
 // Verification API
 // ──────────────────────────────────────────

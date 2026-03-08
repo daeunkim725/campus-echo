@@ -55,7 +55,15 @@ const handler = async function (req: Request) {
             return Response.json({ handle: null, score: 0 }, { status: 200 });
         }
 
-        const handle = "#" + topUser.substring(0, 7);
+        // Fetch real handle from topUser (anon_id)
+        let handle = "#" + topUser.substring(0, 7); // fallback
+        const userMatches = await base44.asServiceRole.entities.User.filter({ anon_id: topUser });
+        if (userMatches && userMatches.length > 0) {
+            const userMatch = userMatches[0];
+            if (userMatch.handle) {
+                handle = userMatch.handle;
+            }
+        }
 
         return Response.json({
             handle,
