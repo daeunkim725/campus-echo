@@ -65,9 +65,7 @@ const handler = async (req: Request) => {
         }
 
         // Generate 6-digit OTP code
-        const randomValues = new Uint32Array(1);
-        crypto.getRandomValues(randomValues);
-        const plainCode = (100000 + (randomValues[0] % 900000)).toString();
+        const plainCode = Math.floor(100000 + Math.random() * 900000).toString();
         const codeHash = hashSync(plainCode, 6); // lower rounds for OTP — 15min expiry anyway
         const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
