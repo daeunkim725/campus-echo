@@ -43,7 +43,7 @@ export default function MarketInbox() {
           try {
             const l = await base44.entities.MarketListing.get(id);
             listings[id] = l;
-          } catch {
+          } catch (e) {
             // listing deleted
           }
         } else {
@@ -83,7 +83,7 @@ export default function MarketInbox() {
           currentUser={currentUser}
           onUserUpdate={(u) => setCurrentUser(u)}
           onPost={handleBackToMarket}
-          _postLabel="Sell"
+          postLabel="Sell"
           activePage="market"
           schoolConfig={schoolConfig}
           hideFABs={true} />

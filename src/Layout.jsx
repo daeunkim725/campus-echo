@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 
-export default function Layout({ children, _currentPageName }) {
+export default function Layout({ children, currentPageName }) {
   const [config, setConfig] = useState(getSchoolConfig(null));
 
   useEffect(() => {

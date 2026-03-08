@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { apiLogin } from "@/api/apiClient";
 import { Mail, Lock, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 
@@ -11,6 +11,7 @@ function isAdminEmail(email) {
 }
 
 export default function Login() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPw, setShowPw] = useState(false);
