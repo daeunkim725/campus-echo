@@ -14,6 +14,8 @@ import {
     validateEmail,
     corsHeaders,
     handleCORS,
+    generateHandle,
+    getAnonId,
 } from './_shared/authMiddleware.ts';
 
 const handler = async (req: Request) => {
@@ -50,11 +52,41 @@ const handler = async (req: Request) => {
             return Response.json({ error: "Invalid email or password" }, { status: 401, headers: corsHeaders() });
         }
 
-        const user = users[0];
+        let user = users[0];
 
         // Verify password
         if (!user.password_hash || !compareSync(password, user.password_hash)) {
             return Response.json({ error: "Invalid email or password" }, { status: 401, headers: corsHeaders() });
+        }
+
+        // Migrate existing users (missing handle or anon_id)
+        let needsUpdate = false;
+        const updates: any = {};
+
+        if (!user.handle) {
+            let newHandle = "";
+            let isUnique = false;
+            while (!isUnique) {
+                newHandle = generateHandle();
+                const existingWithHandle = await base44.asServiceRole.entities.User.filter({ handle: newHandle });
+                if (!existingWithHandle || existingWithHandle.length === 0) {
+                    isUnique = true;
+                }
+            }
+            updates.handle = newHandle;
+            user.handle = newHandle;
+            needsUpdate = true;
+        }
+
+        if (!user.anon_id) {
+            const anonId = await getAnonId(user.email);
+            updates.anon_id = anonId;
+            user.anon_id = anonId;
+            needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+            await base44.asServiceRole.entities.User.update(user.id, updates);
         }
 
         // Generate JWT (24h expiry)
@@ -73,6 +105,8 @@ const handler = async (req: Request) => {
                 role: user.role || null,
                 school_email: user.school_email || null,
                 verified_at: user.verified_at || null,
+                handle: user.handle,
+                anon_id: user.anon_id,
             },
         }, { headers: corsHeaders() });
 

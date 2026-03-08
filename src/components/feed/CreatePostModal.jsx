@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { X, Image, Send, BarChart2, Plus, Trash2, Smile } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { getMoodLabel } from "@/components/profile/ProfilePanel";
 import { getSchoolDepartments, getSchoolLevels } from "@/components/utils/schoolDepartments";
 import GiphyBrowser from "@/components/feed/GiphyBrowser";
 import { PlayableGif } from "@/components/ui/PlayableGif";
@@ -111,7 +110,7 @@ export default function CreatePostModal({ onClose, onCreated, currentUser, schoo
     if (!isValid) return;
     setLoading(true);
 
-    const alias = getMoodLabel(currentUser?.mood) || "Anonymous";
+    const alias = "Anonymous";
     const color = primary;
 
     let image_url = null;

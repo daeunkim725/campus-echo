@@ -15,6 +15,8 @@ import {
     validateEmail,
     corsHeaders,
     handleCORS,
+    generateHandle,
+    getAnonId,
 } from './_shared/authMiddleware.ts';
 
 const handler = async (req: Request) => {
@@ -64,6 +66,19 @@ const handler = async (req: Request) => {
             emailLower.endsWith("@campusecho.app") ||
             ["admin@admin.com", "daeunkim725@gmail.com", "daeunkim@gmail.com", "daeun.kim725@gmail.com"].includes(emailLower);
 
+        // Generate a unique handle
+        let newHandle = "";
+        let isUnique = false;
+        while (!isUnique) {
+            newHandle = generateHandle();
+            const existingWithHandle = await base44.asServiceRole.entities.User.filter({ handle: newHandle });
+            if (!existingWithHandle || existingWithHandle.length === 0) {
+                isUnique = true;
+            }
+        }
+
+        const anonId = await getAnonId(emailLower);
+
         // Create user record
         const user = await base44.asServiceRole.entities.User.create({
             email: emailLower,
@@ -76,6 +91,8 @@ const handler = async (req: Request) => {
             role: isAdmin ? "admin" : "user",
             verified_at: isAdmin ? new Date().toISOString() : null,
             created_at: new Date().toISOString(),
+            handle: newHandle,
+            anon_id: anonId,
         });
 
         // Generate JWT
@@ -92,6 +109,8 @@ const handler = async (req: Request) => {
                 school: user.school,
                 role: user.role,
                 school_verified: user.school_verified,
+                handle: user.handle,
+                anon_id: user.anon_id,
             },
         }, { status: 201, headers: corsHeaders() });
 

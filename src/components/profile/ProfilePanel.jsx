@@ -1,45 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { apiLogout } from "@/api/apiClient";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity } from "lucide-react";
-import { getMoodEmoji } from "@/components/utils/moodUtils";
+import { apiLogout, apiRegenerateHandle } from "@/api/apiClient";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity, RefreshCw } from "lucide-react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { createPageUrl } from "@/utils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
-
-const MOODS = [
-  { value: "happy", label: "Happy 😊" },
-  { value: "sleepy", label: "Sleepy 😴" },
-  { value: "anxious", label: "Anxious 😰" },
-  { value: "focused", label: "Focused 🎯" },
-  { value: "bored", label: "Bored 😐" },
-  { value: "excited", label: "Excited 🤩" },
-  { value: "stressed", label: "Stressed 😤" },
-  { value: "chill", label: "Chill 😎" },
-  { value: "hungry", label: "Hungry 🍕" },
-  { value: "caffeinated", label: "Caffeinated ☕" },
-  { value: "lost", label: "Lost 🗺️" },
-  { value: "vibing", label: "Vibing 🎵" },
-];
-
-export function getMoodLabel(val) {
-  return MOODS.find(m => m.value === val)?.label || val || "Anonymous";
-}
 
 export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoolConfig }) {
   const [myPosts, setMyPosts] = useState([]);
   const [myListings, setMyListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingMood, setEditingMood] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [isSoldCollapsed, setIsSoldCollapsed] = useState(true);
-  const [selectedMood, setSelectedMood] = useState(currentUser?.mood || "");
   const [editingPost, setEditingPost] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [visiblePostsCount, setVisiblePostsCount] = useState(5);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [regeneratingHandle, setRegeneratingHandle] = useState(false);
 
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
@@ -96,12 +75,19 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
     fetchMyPosts();
   };
 
-  const handleMoodSave = async () => {
-    setSaving(true);
-    await base44.auth.updateMe({ mood: selectedMood });
-    onUserUpdate({ ...currentUser, mood: selectedMood });
-    setEditingMood(false);
-    setSaving(false);
+  const handleRegenerateHandle = async () => {
+    if (!window.confirm("Are you sure you want to get a new handle? You can only do this once every 24 hours.")) return;
+    setRegeneratingHandle(true);
+    try {
+      const res = await apiRegenerateHandle();
+      onUserUpdate({ ...currentUser, handle: res.handle });
+      alert(`Success! Your new handle is ${res.handle}`);
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to regenerate handle. Please try again later.");
+    } finally {
+      setRegeneratingHandle(false);
+    }
   };
 
   const handleToggleDark = () => {
@@ -216,57 +202,28 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
               </button>
             </div>
 
-            {/* Avatar + mood */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
-                style={{ backgroundColor: tokens.primaryLight }}>
-                {getMoodEmoji(currentUser?.mood)}
-              </div>
-              <div>
-                <p className="font-bold text-slate-900 text-base">{getMoodLabel(currentUser?.mood)}</p>
-                <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+            {/* Avatar + handle */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
+                  style={{ backgroundColor: tokens.primaryLight }}>
+                  🦇
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900 text-base">{currentUser?.handle || "Anonymous"}</p>
+                  <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+                </div>
               </div>
             </div>
 
-            {/* Change mood */}
-            {editingMood ? (
-              <div className="mt-4">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">How are you feeling?</p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {MOODS.map(m => (
-                    <button
-                      key={m.value}
-                      onClick={() => setSelectedMood(m.value)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${selectedMood === m.value
-                        ? "text-white border-transparent"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
-                        }`}
-                      style={selectedMood === m.value ? { backgroundColor: primary, borderColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" } : {}}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => setEditingMood(false)} className="flex-1 py-2 rounded-xl border border-slate-200 text-sm text-slate-500">Cancel</button>
-                  <button
-                    onClick={handleMoodSave}
-                    disabled={!selectedMood || saving}
-                    className="flex-1 py-2 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
-                    style={{ backgroundColor: primary, color: darkMode ? tokens.surface : "#FFFFFF" }}
-                  >
-                    {saving ? "Saving..." : "Save"}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => setEditingMood(true)}
-                className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:border-slate-300 transition-all"
-              >
-                <Pencil className="w-3 h-3" /> Change mood
-              </button>
-            )}
+            {/* Change handle */}
+            <button
+              onClick={handleRegenerateHandle}
+              disabled={regeneratingHandle}
+              className="mt-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:border-slate-300 transition-all disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3 h-3 ${regeneratingHandle ? 'animate-spin' : ''}`} /> Get new handle
+            </button>
           </div>
 
           {/* Tabs for Posts and Listings */}

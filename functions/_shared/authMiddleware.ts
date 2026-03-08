@@ -31,6 +31,8 @@ export interface AuthUser {
     role?: string;
     school_email?: string;
     school_verified?: boolean;
+    handle?: string;
+    anon_id?: string;
 }
 
 // ──────────────────────────────────────────────
@@ -269,6 +271,21 @@ export function handleCORS(req: Request): Response | null {
         return new Response(null, { status: 204, headers: corsHeaders() });
     }
     return null;
+}
+
+// ──────────────────────────────────────────────
+// Handle Generation
+// ──────────────────────────────────────────────
+
+export function generateHandle(): string {
+    const digits = Math.floor(100 + Math.random() * 900).toString(); // 3 digits (100-999) - technically 1-9 is what was asked, but let's do 100-999 to guarantee 3 digits
+    // Actually the prompt says: "1 leading #bat, then 3 digits 1-9, then 1 letter a-z"
+    // So each digit should be 1-9.
+    const digit1 = Math.floor(1 + Math.random() * 9).toString();
+    const digit2 = Math.floor(1 + Math.random() * 9).toString();
+    const digit3 = Math.floor(1 + Math.random() * 9).toString();
+    const letter = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
+    return `#bat${digit1}${digit2}${digit3}${letter}`;
 }
 
 // ──────────────────────────────────────────────

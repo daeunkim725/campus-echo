@@ -23,7 +23,7 @@ const categoryColors = {
 };
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import CommentItem from "@/components/post/CommentItem";
-import { getMoodEmoji, getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
+import { getCleanAlias, getAliasEmoji } from "@/components/utils/moodUtils";
 
 // Extract mood key from alias like "😴 sleepy" → "sleepy"
 function getMoodFromAlias(alias) {
@@ -128,7 +128,7 @@ export default function PostDetail() {
     if ((!newComment.trim() && !gifUrl) || !post) return;
     setSubmitting(true);
 
-    const alias = currentUser?.mood ? `${getMoodEmoji(currentUser.mood)} ${currentUser.mood}` : "👤 anonymous";
+    const alias = "Anonymous";
     const color = primary;
 
     await base44.entities.Comment.create({

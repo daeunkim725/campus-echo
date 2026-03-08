@@ -18,14 +18,10 @@ export function getMoodEmoji(mood) {
 }
 
 export function getCleanAlias(alias) {
-  if (!alias) return "Anonymous";
-  const regex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\u200D]/gu;
-  return alias.replace(regex, "").trim() || "Anonymous";
+  return "Anonymous";
 }
 
 // Extracts the first emoji from an alias
 export function getAliasEmoji(alias) {
-  if (!alias) return "👤";
-  const match = alias.match(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u);
-  return match ? match[0] : "👤";
+  return "🦇";
 }
