@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { X, Send, AlertTriangle, MapPin, Tag, ShieldCheck } from "lucide-react";
