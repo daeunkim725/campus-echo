@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import SchoolTopBar from "@/components/feed/SchoolTopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
-import { Award, TrendingUp, Clock, Users, MessageCircle, FileText, ShoppingBag, Trophy, ArrowUp } from "lucide-react";
+import { Award, Users, MessageCircle, FileText, ShoppingBag, Trophy } from "lucide-react";
 
 export default function Leaderboard() {
     const params = new URLSearchParams(window.location.search);

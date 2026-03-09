@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { apiLogout, apiRegenerateHandle } from "@/api/apiClient";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity, RefreshCw, Trophy } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, RefreshCw, Trophy } from "lucide-react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { createPageUrl } from "@/utils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
