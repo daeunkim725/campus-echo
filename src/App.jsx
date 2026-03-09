@@ -16,6 +16,7 @@ import Notifications from './pages/Notifications';
 import PostDetail from './pages/PostDetail';
 import Moderation from './pages/Moderation';
 import Observability from './pages/Observability';
+import Leaderboard from './pages/Leaderboard';
 import Login from './pages/Login';
 import Layout from './Layout.jsx';
 
@@ -96,6 +97,7 @@ const AuthenticatedApp = () => {
       <Route path="/postdetail" element={<LayoutWrapper currentPageName="PostDetail"><PostDetail /></LayoutWrapper>} />
       <Route path="/moderation" element={<LayoutWrapper currentPageName="Moderation"><Moderation /></LayoutWrapper>} />
       <Route path="/observability" element={<LayoutWrapper currentPageName="Observability"><Observability /></LayoutWrapper>} />
+      <Route path="/Leaderboard" element={<LayoutWrapper currentPageName="Leaderboard"><Leaderboard /></LayoutWrapper>} />
 
       {/* Catch-all */}
       <Route path="*" element={<PageNotFound />} />

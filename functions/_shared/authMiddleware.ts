@@ -219,7 +219,7 @@ export function validateEmail(email: string): boolean {
 // ──────────────────────────────────────────────
 
 export const SCHOOL_DOMAINS: Record<string, string[]> = {
-    ETH: ["@ethz.ch", "@student.ethz.ch"],
+    ETHZ: ["@ethz.ch", "@student.ETHZ.ch"],
     EPFL: ["@epfl.ch"],
     UNIZH: ["@uzh.ch", "@student.uzh.ch"],
     UNIBASEL: ["@unibas.ch"],
@@ -261,7 +261,7 @@ export function getSchoolForEmail(email: string): string | null {
 export function corsHeaders(): Record<string, string> {
     return {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-METHZods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-App-Id",
     };
 }

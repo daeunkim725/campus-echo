@@ -7,7 +7,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     console.log("Layout mounted on path:", window.location.pathname);
-    
+
     // Global interceptor for onboarding links from frozen login page
     const handleGlobalClick = (e) => {
       const link = e.target.closest('a');
@@ -17,16 +17,16 @@ export default function Layout({ children, currentPageName }) {
         window.location.href = '/OnboardingSchool';
       }
     };
-    
+
     document.addEventListener('click', handleGlobalClick, true);
     return () => document.removeEventListener('click', handleGlobalClick, true);
   }, []);
 
   useEffect(() => {
     base44.auth.me().then(u => {
-      const school = u?.school || (u?.role === 'admin' ? 'ETH' : null);
+      const school = u?.school || (u?.role === 'admin' ? 'ETHZ' : null);
       setConfig(getSchoolConfig(school));
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   const d = config.dark;

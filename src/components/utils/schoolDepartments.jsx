@@ -5,7 +5,7 @@
 // ============================================================
 
 export const SCHOOL_DEPARTMENTS = {
-  ETH: [
+  ETHZ: [
     { code: "D-ARCH", name: "Architecture" },
     { code: "D-BAUG", name: "Civil Engineering" },
     { code: "D-BSSE", name: "Biosystems Science" },
@@ -58,7 +58,7 @@ export const SCHOOL_DEPARTMENTS = {
 
 // Academic levels per school — edit as needed
 export const SCHOOL_LEVELS = {
-  ETH: ["BSc", "MSc", "PhD"],
+  ETHZ: ["BSc", "MSc", "PhD"],
   EPFL: ["BSc", "MSc", "PhD"],
   UNIZH: ["BSc", "MSc", "PhD"],
   UNIBASEL: ["BSc", "MSc", "PhD"],

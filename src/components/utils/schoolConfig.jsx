@@ -13,7 +13,7 @@ export const NEUTRAL_DARK = {
 };
 
 export const SCHOOL_CONFIG = {
-  ETH: {
+  ETHZ: {
     name: "ETH Zürich",
     light: {
       primary: "#215CAF",
@@ -214,6 +214,7 @@ export const DEFAULT_SCHOOL = {
   dark: { ...NEUTRAL_DARK, primary: "#6EA8FF" },
 };
 
-export function getSchoolConfig(school) {
-  return SCHOOL_CONFIG[school] || DEFAULT_SCHOOL;
+export function getSchoolConfig(schoolId) {
+  const config = SCHOOL_CONFIG[schoolId] || DEFAULT_SCHOOL;
+  return { ...config, id: schoolId || 'DEFAULT' };
 }

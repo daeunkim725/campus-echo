@@ -23,7 +23,7 @@ export default function Onboarding() {
     }
 
     if (user?.school_verified || user?.is_verified_student || user?.role === "admin") {
-      const school = user?.school || "ETH";
+      const school = user?.school || "ETHZ";
       window.location.href = createPageUrl("SchoolFeed") + `?school=${school}`;
     } else {
       // Not verified — redirect to Login which handles the signup/verify flow

@@ -16,7 +16,7 @@ export default function MarketInbox() {
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedThread, setSelectedThread] = useState(null);
 
-  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
 
@@ -34,7 +34,7 @@ export default function MarketInbox() {
     try {
       const allThreads = await base44.entities.MarketThread.list("-created_date", 100);
       const myThreads = allThreads.filter(t => t.buyer_email === currentUser.email || t.seller_email === currentUser.email);
-      
+
       // Fetch listings for these threads
       const listingIds = [...new Set(myThreads.map(t => t.listing_id))];
       const listings = {};
@@ -50,8 +50,8 @@ export default function MarketInbox() {
           listings[id] = listingsCache[id];
         }
       }
-      
-      setListingsCache(prev => ({...prev, ...listings}));
+
+      setListingsCache(prev => ({ ...prev, ...listings }));
       setThreads(myThreads);
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ export default function MarketInbox() {
   }, [currentUser]);
 
   const handleBackToMarket = () => {
-    const school = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+    const school = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
     window.location.href = createPageUrl("Market") + (school ? `?school=${school}` : "");
   };
 
@@ -99,7 +99,7 @@ export default function MarketInbox() {
 
         {loading ? (
           <div className="space-y-3">
-            {[1,2,3].map(i => <div key={i} className="h-20 bg-white rounded-xl animate-pulse border border-slate-100"></div>)}
+            {[1, 2, 3].map(i => <div key={i} className="h-20 bg-white rounded-xl animate-pulse border border-slate-100"></div>)}
           </div>
         ) : threads.length === 0 ? (
           <div className="text-center py-10 bg-white rounded-2xl border border-slate-100 px-5 max-w-sm mx-auto shadow-sm my-6">
@@ -120,12 +120,12 @@ export default function MarketInbox() {
             {threads.map(thread => {
               const listing = listingsCache[thread.listing_id];
               if (!listing) return null;
-              
+
               const isSeller = thread.seller_email === currentUser.email;
-              
+
               return (
-                <div 
-                  key={thread.id} 
+                <div
+                  key={thread.id}
                   onClick={() => setSelectedThread(thread)}
                   className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex gap-4 items-center"
                 >
@@ -163,7 +163,7 @@ export default function MarketInbox() {
       </div>
 
       {selectedThread && listingsCache[selectedThread.listing_id] && (
-        <ChatModal 
+        <ChatModal
           thread={selectedThread}
           listing={listingsCache[selectedThread.listing_id]}
           currentUser={currentUser}

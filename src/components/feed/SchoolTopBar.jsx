@@ -7,10 +7,10 @@ import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
+import AdminSchoolSwitcher from "@/components/utils/AdminSchoolSwitcher";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode, hideFABs = false, alwaysSticky = false }) {
   const [showProfile, setShowProfile] = useState(false);
-  const [showSchoolPicker, setShowSchoolPicker] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
   const isAdmin = currentUser?.role === "admin";
@@ -47,16 +47,11 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
     }
   }, [currentUser]);
 
-  const navigateToSchool = (code) => {
-    setShowSchoolPicker(false);
-    window.location.href = createPageUrl("SchoolFeed") + `?school=${code}`;
-  };
-
   return (
     <>
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 ${alwaysSticky
-          ? "top-0"
-          : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
+        ? "top-0"
+        : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
         }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
@@ -72,13 +67,16 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
               </button>
 
               {isAdmin ? (
-                <button
-                  onClick={() => setShowSchoolPicker(true)}
-                  className="flex items-center gap-1 text-sm font-black text-slate-900 tracking-tight hover:opacity-75 transition-opacity"
-                >
-                  {schoolConfig?.name || "🦇 Echo"}
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                </button>
+                <AdminSchoolSwitcher
+                  currentSchool={schoolCode || schoolConfig?.id || currentUser?.school || 'ETHZ'}
+                  onSchoolChange={(code) => {
+                    onUserUpdate({ school: code });
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('school', code);
+                    window.location.href = window.location.pathname + '?' + params.toString();
+                  }}
+                  tokens={tokens}
+                />
               ) : (
                 <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
               )}
@@ -104,14 +102,12 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
               >
                 Events
               </button>
-              {isAdmin && (
-                <button
-                  onClick={() => window.location.href = createPageUrl("Observability")}
-                  className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "observability" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-                >
-                  Stats
-                </button>
-              )}
+              <button
+                onClick={() => window.location.href = createPageUrl("Leaderboard") + `?school=${schoolCode}`}
+                className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "leaderboard" || activePage === "stats" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Stats
+              </button>
             </div>
           </div>
         </div>
@@ -168,31 +164,6 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
             <Plus className="w-6 h-6" />
           </button>
         </>
-      )}
-
-      {/* Admin school picker */}
-      {showSchoolPicker && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowSchoolPicker(false)}>
-          <div className="bg-white w-full max-w-xl rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Switch School</h2>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(SCHOOL_CONFIG).map(([code, cfg]) => (
-                <button
-                  key={code}
-                  onClick={() => navigateToSchool(code)}
-                  className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left ${schoolCode === code ? "border-current" : "border-slate-100 hover:border-slate-200"}`}
-                  style={schoolCode === code ? { borderColor: cfg.primary, backgroundColor: cfg.bg } : {}}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ backgroundColor: cfg.primary }}>
-                    {code.slice(0, 2)}
-                  </div>
-                  <span className="text-sm font-semibold text-slate-800">{cfg.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
       )}
 
       {showProfile && (

@@ -2,7 +2,7 @@ import { withObservability } from './_shared/observability.ts';
 
 const handler = async function (req: Request) {
     if (req.method !== "GET") {
-        return Response.json({ error: "Method not allowed" }, { status: 405 });
+        return Response.json({ error: "METHZod not allowed" }, { status: 405 });
     }
 
     // Return mock metrics as requested

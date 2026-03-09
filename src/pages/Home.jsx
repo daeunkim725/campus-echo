@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { apiFeedList } from "@/api/apiClient";
 import { createPageUrl } from "@/utils";
 import PostCard from "@/components/feed/PostCard";
 import FilterDrawer from "@/components/feed/FilterDrawer";
@@ -9,6 +10,7 @@ import TopBar from "@/components/feed/TopBar";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
+import { useAuth } from "@/lib/AuthContext";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
@@ -17,63 +19,57 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [showCreate, setShowCreate] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const { user: currentUser, updateUser } = useAuth();
   const scrollDirection = useScrollDirection();
 
-  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
 
   useEffect(() => {
-    base44.auth.me().then(u => {
-      setCurrentUser(u);
-      if ((!u?.school_verified || !u?.age_verified) && u?.role !== 'admin') {
-        window.location.href = createPageUrl("Onboarding");
-        return;
-      }
-      // Redirect to school-specific page
-      const school = u?.school || (u?.role === 'admin' ? 'ETH' : null);
-      if (school) {
-        window.location.href = createPageUrl("SchoolFeed") + `?school=${school}`;
-      }
-    }).catch(() => base44.auth.redirectToLogin(createPageUrl("Home")));
-  }, []);
+    if (!currentUser) return;
+
+    console.log("[Home.jsx] Route Guard", {
+      is_admin: currentUser.role === 'admin',
+      school: currentUser.school,
+      handle: currentUser.handle
+    });
+
+    // Admin users stay on Home to view all, or go to SchoolFeed? Regular users must go to their school feed.
+    const school = currentUser?.school;
+    if (currentUser?.role !== 'admin' && school) {
+      window.location.href = createPageUrl("SchoolFeed") + `?school=${school}`;
+    }
+  }, [currentUser]);
 
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      let data = await base44.entities.Post.list("-created_date", 100);
+      const response = await apiFeedList(filters.sort, 1, 100, effectiveSchool);
+      const data = response.posts || [];
 
-      // Only show posts from the user's school community or untagged posts
-      if (currentUser?.school) {
-        data = data.filter(p => !p.department || p.department === "all" || p.department.startsWith("D-") && currentUser.school === "ETH" || p.department === currentUser.school);
-      }
+      let filteredData = data;
 
-      if (filters.category !== "all") data = data.filter(p => p.category === filters.category);
-      else data = data.filter(p => p.category !== "events");
-      if (filters.department !== "all") data = data.filter(p => p.department === filters.department);
-      if (filters.level !== "all") data = data.filter(p => p.academic_level === filters.level);
+      if (filters.category !== "all") filteredData = filteredData.filter(p => p.category === filters.category);
+      else filteredData = filteredData.filter(p => p.category !== "events");
+      if (filters.department !== "all") filteredData = filteredData.filter(p => p.department === filters.department);
+      if (filters.level !== "all") filteredData = filteredData.filter(p => p.academic_level === filters.level);
 
-      if (filters.sort === "hot") {
-        data = data.sort((a, b) => ((b.upvotes || 0) + (b.comment_count || 0)) - ((a.upvotes || 0) + (a.comment_count || 0)));
-      } else if (filters.sort === "top") {
-        data = data.sort((a, b) => ((b.upvotes || 0) - (b.downvotes || 0)) - ((a.upvotes || 0) - (a.downvotes || 0)));
-      }
-      // "new" is default (already sorted by -created_date)
-
-      setPosts(data);
+      setPosts(filteredData);
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchPosts(); }, [filters]);
+  useEffect(() => { fetchPosts(); }, [filters, effectiveSchool]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: tokens.bg }}>
       <TopBar
         currentUser={currentUser}
-        onUserUpdate={u => setCurrentUser(u)}
+        onUserUpdate={u => updateUser(u)}
         onPost={() => setShowCreate(true)}
         postLabel="Post"
         activePage="feed"

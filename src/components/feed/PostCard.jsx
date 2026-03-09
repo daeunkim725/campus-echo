@@ -112,7 +112,7 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
   const votedUp = localPost.voted_up_by?.includes(userId);
   const votedDown = localPost.voted_down_by?.includes(userId);
 
-  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = propSchoolConfig || getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
   const { resolvedTheme } = useTheme();
@@ -193,15 +193,15 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
     if (loading) return;
     setLoading(true);
     try {
-        await base44.functions.invoke("feedCreate", {
-            post_type: "repost",
-            parent_post_id: localPost.id
-        });
-        onUpdate?.();
+      await base44.functions.invoke("feedCreate", {
+        post_type: "repost",
+        parent_post_id: localPost.id
+      });
+      onUpdate?.();
     } catch (err) {
-        console.error("Repost failed", err);
+      console.error("Repost failed", err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -219,10 +219,10 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         className="bg-white rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-slate-100 hover:border-slate-200"
       >
         {localPost.post_type === "repost" && (
-            <div className="flex items-center gap-1.5 text-slate-400 mb-2">
-                <Repeat className="w-3.5 h-3.5" />
-                <span className="text-[11px] font-medium">Reposted</span>
-            </div>
+          <div className="flex items-center gap-1.5 text-slate-400 mb-2">
+            <Repeat className="w-3.5 h-3.5" />
+            <span className="text-[11px] font-medium">Reposted</span>
+          </div>
         )}
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
@@ -319,46 +319,46 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
 
         {/* Embedded Parent Post (Repost/Quote) */}
         {(localPost.post_type === "repost" || localPost.post_type === "quote") && localPost.parent_post && (
-            <div
-                className="mt-2 mb-3 rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-colors"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.id}`));
-                }}
-            >
-                {localPost.parent_post.deleted_at ? (
-                     <p className="text-slate-400 italic text-[11px] leading-[16px]">[Post removed]</p>
-                ) : (
-                    <>
-                        <div className="flex items-center justify-between mb-1.5">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm bg-slate-100">
-                                    {getAliasEmoji(localPost.parent_post.author_alias)}
-                                </div>
-                                <p className="text-[11px] font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.parent_post.author_alias)}</p>
-                            </div>
-                            {localPost.parent_post.root_post_id && localPost.parent_post.root_post_id !== localPost.parent_post.id && (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.root_post_id}`));
-                                    }}
-                                    className="text-[10px] text-blue-500 hover:underline"
-                                >
-                                    View original
-                                </button>
-                            )}
-                        </div>
-                        {localPost.parent_post.title && <p className="font-semibold text-slate-900 text-xs mb-0.5 line-clamp-1">{localPost.parent_post.title}</p>}
-                        {localPost.parent_post.content && <p className="text-slate-600 text-[11px] leading-[16px] line-clamp-2">{localPost.parent_post.content}</p>}
-                        {localPost.parent_post.image_url && (
-                             <div className="mt-1.5 rounded-lg overflow-hidden h-24">
-                                <img src={localPost.parent_post.image_url} alt="" className="w-full h-full object-cover" />
-                             </div>
-                        )}
-                    </>
+          <div
+            className="mt-2 mb-3 rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.id}`));
+            }}
+          >
+            {localPost.parent_post.deleted_at ? (
+              <p className="text-slate-400 italic text-[11px] leading-[16px]">[Post removed]</p>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm bg-slate-100">
+                      {getAliasEmoji(localPost.parent_post.author_alias)}
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-800 capitalize">{getCleanAlias(localPost.parent_post.author_alias)}</p>
+                  </div>
+                  {localPost.parent_post.root_post_id && localPost.parent_post.root_post_id !== localPost.parent_post.id && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(createPageUrl(`PostDetail?id=${localPost.parent_post.root_post_id}`));
+                      }}
+                      className="text-[10px] text-blue-500 hover:underline"
+                    >
+                      View original
+                    </button>
+                  )}
+                </div>
+                {localPost.parent_post.title && <p className="font-semibold text-slate-900 text-xs mb-0.5 line-clamp-1">{localPost.parent_post.title}</p>}
+                {localPost.parent_post.content && <p className="text-slate-600 text-[11px] leading-[16px] line-clamp-2">{localPost.parent_post.content}</p>}
+                {localPost.parent_post.image_url && (
+                  <div className="mt-1.5 rounded-lg overflow-hidden h-24">
+                    <img src={localPost.parent_post.image_url} alt="" className="w-full h-full object-cover" />
+                  </div>
                 )}
-            </div>
+              </>
+            )}
+          </div>
         )}
 
         {/* Poll Options */}
@@ -430,8 +430,8 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               <button
                 onClick={(e) => handleVote(e, "up")}
                 className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all border ${votedUp
-                    ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
-                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
+                  ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
+                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
                   }`}
                 style={votedUp ? activeUpvoteStyle : {}}
               >
@@ -440,8 +440,8 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
               <button
                 onClick={(e) => handleVote(e, "down")}
                 className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all border ${votedDown
-                    ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
-                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
+                  ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
+                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-600")
                   }`}
                 style={votedDown ? activeDownvoteStyle : {}}
               >
@@ -451,22 +451,22 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
           )}
           <div className="relative ml-2" ref={repostMenuRef}>
             <button
-                onClick={(e) => { e.stopPropagation(); const willShow = !showRepostMenu; setShowRepostMenu(willShow); if (willShow) dispatchMenuOpened(); }}
-                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${showRepostMenu ? "bg-slate-100 text-slate-800" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
+              onClick={(e) => { e.stopPropagation(); const willShow = !showRepostMenu; setShowRepostMenu(willShow); if (willShow) dispatchMenuOpened(); }}
+              className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs font-medium transition-all ${showRepostMenu ? "bg-slate-100 text-slate-800" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"}`}
             >
-                <Repeat className="w-3.5 h-3.5" />
-                <span>{(localPost.repost_count || 0) + (localPost.quote_count || 0)}</span>
+              <Repeat className="w-3.5 h-3.5" />
+              <span>{(localPost.repost_count || 0) + (localPost.quote_count || 0)}</span>
             </button>
 
             {showRepostMenu && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36" onClick={(e) => e.stopPropagation()}>
-                  <button onClick={handleRepost} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
-                     <Repeat className="w-3.5 h-3.5" /> Repost
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); setShowRepostMenu(false); setShowQuoteComposer(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
-                     <Quote className="w-3.5 h-3.5" /> Quote repost
-                  </button>
-                </div>
+              <div className="absolute bottom-full left-0 mb-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 w-36" onClick={(e) => e.stopPropagation()}>
+                <button onClick={handleRepost} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
+                  <Repeat className="w-3.5 h-3.5" /> Repost
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); setShowRepostMenu(false); setShowQuoteComposer(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-[11px] text-slate-700 hover:bg-slate-50 transition-colors">
+                  <Quote className="w-3.5 h-3.5" /> Quote repost
+                </button>
+              </div>
             )}
           </div>
           {localPost.category === "events" && (
@@ -517,13 +517,13 @@ export default function PostCard({ post, currentUser, onUpdate, schoolConfig: pr
         />
       )}
       {showQuoteComposer && (
-          <CreatePostModal
-              onClose={() => setShowQuoteComposer(false)}
-              onCreated={() => { setShowQuoteComposer(false); onUpdate?.(); }}
-              currentUser={currentUser}
-              schoolConfig={schoolConfig}
-              quoteParentPost={localPost}
-          />
+        <CreatePostModal
+          onClose={() => setShowQuoteComposer(false)}
+          onCreated={() => { setShowQuoteComposer(false); onUpdate?.(); }}
+          currentUser={currentUser}
+          schoolConfig={schoolConfig}
+          quoteParentPost={localPost}
+        />
       )}
     </>
   );

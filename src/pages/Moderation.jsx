@@ -22,7 +22,7 @@ export default function Moderation() {
     setLoading(true);
     const data = await base44.entities.Report.filter({ status: "pending" }, "-created_date", 100);
     setReports(data);
-    
+
     const newTargets = {};
     for (const r of data) {
       if (!newTargets[r.target_id]) {
@@ -32,7 +32,7 @@ export default function Moderation() {
           } else {
             newTargets[r.target_id] = await base44.entities.Comment.get(r.target_id);
           }
-        } catch(e) {
+        } catch (e) {
           newTargets[r.target_id] = { content: "[Content not found or already deleted]" };
         }
       }
@@ -53,23 +53,23 @@ export default function Moderation() {
 
     // Log audit action to backend
     try {
-        const token = localStorage.getItem("campus_echo_token");
-        await fetch("/api/functions/auditLogCreate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                action: action === 'delete' ? "DELETED_CONTENT" : "DISMISSED_REPORT",
-                target_type: report.target_type,
-                target_id: report.target_id,
-                reported_by: report.reported_by_email,
-                report_id: report.id
-            })
-        });
+      const token = localStorage.getItem("campus_echo_token");
+      await fetch("/api/functions/auditLogCreate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          action: action === 'delete' ? "DELETED_CONTENT" : "DISMISSED_REPORT",
+          target_type: report.target_type,
+          target_id: report.target_id,
+          reported_by: report.reported_by_email,
+          report_id: report.id
+        })
+      });
     } catch (err) {
-        console.error("Failed to log audit action", err);
+      console.error("Failed to log audit action", err);
     }
 
     fetchReports();
@@ -84,7 +84,7 @@ export default function Moderation() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900">Moderation Queue</h1>
         </div>
-        
+
         {loading ? (
           <p className="text-slate-500">Loading reports...</p>
         ) : reports.length === 0 ? (

@@ -78,8 +78,8 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                   key={range}
                   onClick={() => setDateRange(range)}
                   className={`px-2.5 py-1.5 rounded-md font-medium text-xs transition-all ${dateRange === range
-                      ? "text-white shadow-sm"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    ? "text-white shadow-sm"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
                   style={{
                     backgroundColor: dateRange === range ? tokens.primary : undefined
@@ -103,8 +103,8 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                   key={type}
                   onClick={() => setLocationType(type)}
                   className={`px-2.5 py-1.5 rounded-md font-medium text-xs transition-all ${locationType === type
-                      ? "text-white shadow-sm"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    ? "text-white shadow-sm"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
                   style={{
                     backgroundColor: locationType === type ? tokens.primary : undefined
@@ -128,8 +128,8 @@ export default function EventFilterPanel({ filters, onFilterChange, schoolConfig
                   key={cat.id}
                   onClick={() => toggleCategory(cat.id)}
                   className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${selectedCategories.includes(cat.id)
-                      ? "text-white shadow-sm"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    ? "text-white shadow-sm"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
                   style={{
                     backgroundColor: selectedCategories.includes(cat.id) ? tokens.primary : undefined

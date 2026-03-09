@@ -22,7 +22,7 @@ const handler = async (req: Request) => {
     if (corsResp) return corsResp;
 
     if (req.method !== "POST") {
-        return Response.json({ error: "Method not allowed" }, { status: 405, headers: corsHeaders() });
+        return Response.json({ error: "METHZod not allowed" }, { status: 405, headers: corsHeaders() });
     }
 
     try {
@@ -104,7 +104,14 @@ const handler = async (req: Request) => {
         }, { status: 200, headers: corsHeaders() });
 
     } catch (error) {
-        if (error instanceof Response) return error;
+        if (error instanceof Response) {
+            // Ensure corsHeaders are appended since authMiddleware may throw without them
+            const newHeaders = new Headers(error.headers);
+            for (const [k, v] of Object.entries(corsHeaders())) {
+                newHeaders.set(k, v);
+            }
+            return new Response(error.body, { status: error.status, headers: newHeaders });
+        }
         console.error("Send code error:", error);
         return Response.json(
             { error: "Failed to send verification code. Please try again." },

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { apiLogout, apiRegenerateHandle } from "@/api/apiClient";
-import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity, RefreshCw } from "lucide-react";
+import { X, Sun, Moon, LogOut, Pencil, Trash2, Check, ShieldAlert, RotateCcw, Archive, ChevronDown, ChevronRight, Activity, RefreshCw, Trophy } from "lucide-react";
 import { getShortTimeAgo } from "@/components/utils/timeUtils";
 import { createPageUrl } from "@/utils";
 import { useThemeTokens, useTheme } from "@/components/utils/ThemeProvider";
@@ -48,8 +48,8 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
       price: listing.price,
       image_url: listing.image_url,
       school: listing.school,
-      author_alias: listing.author_alias,
-      author_color: listing.author_color,
+      author_alias: "Anonymous",
+      author_color: "#6C63FF",
       condition: listing.condition,
       category: listing.category,
       pickup_location: listing.pickup_location,
@@ -210,8 +210,14 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   🦇
                 </div>
                 <div>
-                  <p className="font-bold text-slate-900 text-base">{currentUser?.handle || "Anonymous"}</p>
-                  <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-0.5">Bat ID</p>
+                  <p className="font-bold text-slate-900 text-lg leading-tight">{currentUser?.handle || "Unassigned"}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-xs text-slate-400">{currentUser?.school || "fizz community"}</p>
+                    {currentUser?.role === "admin" && (
+                      <span className="bg-indigo-100 text-indigo-700 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded">Admin</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -404,11 +410,11 @@ export default function ProfilePanel({ currentUser, onClose, onUserUpdate, schoo
                   Moderation Queue
                 </button>
                 <button
-                  onClick={() => window.location.href = createPageUrl("Observability")}
+                  onClick={() => window.location.href = createPageUrl("Leaderboard") + `?school=${schoolConfig?.id || currentUser?.school || 'ETHZ'}`}
                   className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600 text-xs font-medium transition-all"
                 >
-                  <Activity className="w-3.5 h-3.5" />
-                  Dashboard
+                  <Trophy className="w-3.5 h-3.5" />
+                  Stats / Leaderboard
                 </button>
               </>
             )}

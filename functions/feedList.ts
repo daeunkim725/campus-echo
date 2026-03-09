@@ -10,15 +10,15 @@ const handler = async function (req: Request) {
         const { user, base44 } = await requireVerified(req);
 
         if (req.method !== "GET") {
-            return Response.json({ error: "Method not allowed" }, { status: 405 });
+            return Response.json({ error: "METHZod not allowed" }, { status: 405 });
         }
 
         const url = new URL(req.url);
         const sort = url.searchParams.get("sort") || "new"; // new, hot, top
         const page = parseInt(url.searchParams.get("page") || "1", 10);
         const limit = parseInt(url.searchParams.get("limit") || "20", 10);
-        // Fallback to ETH if user has no school somehow
-        const userSchool = user.school || "ETH";
+        // Fallback to ETHZ if user has no school somehow
+        const userSchool = user.school || "ETHZ";
 
         // Fetch all posts for the school. 
         // We use asServiceRole to bypass base RLS rules, we filter Manually
@@ -91,7 +91,7 @@ const handler = async function (req: Request) {
 
             let parentData = null;
             if (p.parent_post_id) {
-                 parentData = parentPostsMap[p.parent_post_id] || { id: p.parent_post_id, deleted_at: Date.now() }; // stub if deleted
+                parentData = parentPostsMap[p.parent_post_id] || { id: p.parent_post_id, deleted_at: Date.now() }; // stub if deleted
             }
 
             const safePost = {

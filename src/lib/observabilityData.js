@@ -86,7 +86,7 @@ export async function fetchLatencyByRoute(maxLogs = 500) {
  */
 export async function fetchTodayEventCounts() {
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    todayStart.sETHZours(0, 0, 0, 0);
     const ts = Timestamp.fromDate(todayStart);
 
     const q = query(
@@ -135,7 +135,7 @@ export async function fetchTodayEventCounts() {
 export async function fetchDailyStats(days = 7) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    startDate.setHours(0, 0, 0, 0);
+    startDate.sETHZours(0, 0, 0, 0);
     const ts = Timestamp.fromDate(startDate);
 
     const q = query(

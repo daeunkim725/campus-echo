@@ -21,13 +21,13 @@ export default function Events() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  
+
   const [viewMode, setViewMode] = useState("list");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({ locationType: "all", interests: [], dateRange: "all" });
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
   const tokens = useThemeTokens(schoolConfig);
 
@@ -53,7 +53,7 @@ export default function Events() {
       if (configSchoolCode) {
         data = data.filter(p => {
           if (!p.department || p.department === "all") return true;
-          if (configSchoolCode === "ETH") return p.department.startsWith("D-") || p.department === "ETH";
+          if (configSchoolCode === "ETHZ") return p.department.startsWith("D-") || p.department === "ETHZ";
           return p.department === configSchoolCode;
         });
       }
@@ -149,10 +149,10 @@ export default function Events() {
         </div>
 
         {viewMode === "calendar" && (
-          <EventCalendarView 
-            events={posts} 
-            onSelectDate={(date) => setSelectedDate(date)} 
-            schoolConfig={schoolConfig} 
+          <EventCalendarView
+            events={posts}
+            onSelectDate={(date) => setSelectedDate(date)}
+            schoolConfig={schoolConfig}
           />
         )}
 

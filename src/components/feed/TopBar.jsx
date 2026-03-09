@@ -6,6 +6,7 @@ import ProfilePanel from "@/components/profile/ProfilePanel";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
+import AdminSchoolSwitcher from "@/components/utils/AdminSchoolSwitcher";
 
 export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = "Post", activePage = "feed", schoolConfig, hideFABs = false, alwaysSticky = false }) {
   const [showProfile, setShowProfile] = useState(false);
@@ -47,8 +48,8 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
   return (
     <>
       <div className={`sticky z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 ${alwaysSticky
-          ? "top-0"
-          : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
+        ? "top-0"
+        : `transition-all duration-300 ${scrollDirection === 'down' ? '-top-20' : 'top-0'}`
         }`}>
         <div className="max-w-xl mx-auto px-4 py-3.5">
           <div className="flex items-center justify-between">
@@ -62,7 +63,15 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
               >
                 {getMoodEmoji(currentUser?.mood)}
               </button>
-              <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
+              {currentUser?.role === 'admin' ? (
+                <AdminSchoolSwitcher
+                  currentSchool={schoolConfig?.id || currentUser?.school || 'ETHZ'}
+                  onSchoolChange={(schoolId) => onUserUpdate({ school: schoolId })}
+                  tokens={tokens}
+                />
+              ) : (
+                <h1 className="text-sm font-black text-slate-900 tracking-tight">{schoolConfig?.name || "🦇 Echo"}</h1>
+              )}
             </div>
 
             {/* Right: Nav tabs */}
@@ -85,14 +94,12 @@ export default function TopBar({ currentUser, onUserUpdate, onPost, postLabel = 
               >
                 Events
               </button>
-              {currentUser?.role === "admin" && (
-                <button
-                  onClick={() => window.location.href = createPageUrl("Observability")}
-                  className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "observability" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-                >
-                  Stats
-                </button>
-              )}
+              <button
+                onClick={() => window.location.href = createPageUrl("Leaderboard") + (schoolConfig?.id ? `?school=${schoolConfig.id}` : "")}
+                className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "leaderboard" || activePage === "stats" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Stats
+              </button>
             </div>
           </div>
         </div>

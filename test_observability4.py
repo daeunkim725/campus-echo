@@ -26,7 +26,7 @@ def test_observability():
                 email: "admin@campusecho.app",
                 displayName: "Admin",
                 role: "admin",
-                school: "ETH",
+                school: "ETHZ",
                 school_verified: true,
                 age_verified: true,
                 profile_complete: true,

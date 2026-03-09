@@ -5,7 +5,7 @@ import { apiSendVerificationCode, apiVerifyCode } from "@/api/apiClient";
 import { Mail, Loader2, ChevronLeft, AlertCircle } from "lucide-react";
 
 const SCHOOL_DOMAINS = {
-    ETH: ["@ethz.ch", "@student.ethz.ch"],
+    ETHZ: ["@ethz.ch", "@student.ETHZ.ch"],
     UNIZH: ["@uzh.ch", "@student.uzh.ch"],
 };
 
@@ -19,7 +19,7 @@ export default function OnboardingVerify() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const schoolCode = user?.school_id || "ETH";
+    const schoolCode = user?.school_id || "ETHZ";
     const domains = SCHOOL_DOMAINS[schoolCode] || [];
 
     const handleSendCode = async () => {

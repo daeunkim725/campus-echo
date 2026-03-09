@@ -10,7 +10,7 @@ const handler = async function (req: Request) {
         const { user, base44 } = await requireVerified(req);
 
         if (req.method !== "GET") {
-            return Response.json({ error: "Method not allowed" }, { status: 405 });
+            return Response.json({ error: "METHZod not allowed" }, { status: 405 });
         }
 
         const url = new URL(req.url);
@@ -21,7 +21,7 @@ const handler = async function (req: Request) {
         const page = parseInt(url.searchParams.get("page") || "1", 10);
         const limit = parseInt(url.searchParams.get("limit") || "20", 10);
 
-        const userSchool = user.school || "ETH";
+        const userSchool = user.school || "ETHZ";
 
         // Fetch bare minimum filter using SDK, then refine locally
         let filters: any = { school_id: userSchool };

@@ -52,7 +52,7 @@ export default function PostDetail() {
   const [showInterestMenu, setShowInterestMenu] = useState(false);
   const scrollDirection = useScrollDirection();
 
-  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
   const { resolvedTheme } = useTheme();
@@ -390,8 +390,8 @@ export default function PostDetail() {
                 <button
                   onClick={() => handleVote("up")}
                   className={`flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium transition-all border ${votedUp
-                      ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
-                      : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50")
+                    ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
+                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50")
                     }`}
                   style={votedUp ? activeUpvoteStyle : {}}
                 >
@@ -401,8 +401,8 @@ export default function PostDetail() {
                 <button
                   onClick={() => handleVote("down")}
                   className={`flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium transition-all border ${votedDown
-                      ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
-                      : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50")
+                    ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
+                    : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-50")
                     }`}
                   style={votedDown ? activeDownvoteStyle : {}}
                 >

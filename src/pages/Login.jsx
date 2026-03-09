@@ -30,8 +30,8 @@ export default function Login() {
                     email: email.toLowerCase(),
                     displayName: email.split("@")[0],
                     is_verified_student: true,
-                    school_id: "ETH",
-                    school: "ETH",
+                    school_id: "ETHZ",
+                    school: "ETHZ",
                     school_verified: true,
                     email_verified: true,
                     password_set: true,
@@ -49,7 +49,7 @@ export default function Login() {
             await apiLogin(email, password);
             window.location.replace("/");
         } catch (err) {
-            setError(err.message || "Something went wrong.");
+            setError(err.message || "SomETHZing went wrong.");
         } finally {
             setLoading(false);
         }

@@ -22,7 +22,7 @@ const handler = async (req: Request) => {
     if (corsResp) return corsResp;
 
     if (req.method !== "GET" && req.method !== "POST") {
-        return Response.json({ error: "Method not allowed" }, { status: 405, headers: corsHeaders() });
+        return Response.json({ error: "METHZod not allowed" }, { status: 405, headers: corsHeaders() });
     }
 
     try {

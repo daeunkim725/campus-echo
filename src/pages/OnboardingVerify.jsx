@@ -7,7 +7,7 @@ import { Mail, Loader2, ChevronLeft, AlertCircle } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const SCHOOL_DOMAINS = {
-    ETH: ["@ethz.ch", "@student.ethz.ch"],
+    ETHZ: ["@ethz.ch", "@student.ETHZ.ch"],
     UNIZH: ["@uzh.ch", "@student.uzh.ch"],
 };
 
@@ -21,7 +21,7 @@ export default function OnboardingVerify() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const schoolCode = user?.school_id || "ETH";
+    const schoolCode = user?.school_id || "ETHZ";
     const domains = SCHOOL_DOMAINS[schoolCode] || [];
 
     const handleSendCode = async () => {
@@ -133,13 +133,13 @@ export default function OnboardingVerify() {
 
                             <div className="bg-white rounded-xl border border-slate-100 p-4">
                                 <label className="block text-[11px] font-medium text-slate-500 mb-2">6-digit code</label>
-                                
+
                                 <div className="flex justify-center w-full mb-3">
                                     <InputOTP
                                         maxLength={6}
                                         value={code}
                                         onChange={(val) => { setCode(val); setError(""); }}
-                                        onComplete={(val) => { if(val.length === 6) { handleVerifyCode() } }}
+                                        onComplete={(val) => { if (val.length === 6) { handleVerifyCode() } }}
                                     >
                                         <InputOTPGroup>
                                             <InputOTPSlot index={0} className="w-10 h-12 text-lg font-bold border-slate-300" />

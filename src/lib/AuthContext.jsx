@@ -72,6 +72,20 @@ export const AuthProvider = ({ children }) => {
       }
 
       const userData = await apiMe();
+
+      // Ensure role is correctly set for admins based on email if not explicitly in payload
+      if (!userData.role && isAdminEmail(userData.email)) {
+        userData.role = 'admin';
+      }
+
+      console.log("[AuthContext] Loaded Auth Payload:", {
+        is_admin: userData.role === 'admin',
+        handle: userData.handle,
+        school_id: userData.school_id || userData.school,
+        email: userData.email,
+        role: userData.role
+      });
+
       setUser(userData);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
@@ -92,6 +106,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = (updates) => {
     setUser(prev => {
       const updated = { ...prev, ...updates };
+      console.log("[AuthContext] Updating User:", updates);
       // Also update localStorage for admin users
       if (updated.role === 'admin') {
         localStorage.setItem('campus_echo_user', JSON.stringify(updated));

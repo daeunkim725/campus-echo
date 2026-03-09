@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 
 const SCHOOLS = [
-    { code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#1A5276", short: "ET" },
+    { code: "ETHZ", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ETHZ.ch"], color: "#1A5276", short: "ET" },
     { code: "UNIZH", name: "UZH", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#2980B9", short: "UZ" },
 ];
 

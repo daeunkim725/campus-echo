@@ -10,7 +10,7 @@ const handler = async function (req: Request) {
         const { user, base44 } = await requireVerified(req);
 
         if (req.method !== "GET") {
-            return Response.json({ error: "Method not allowed" }, { status: 405 });
+            return Response.json({ error: "METHZod not allowed" }, { status: 405 });
         }
 
         const url = new URL(req.url);

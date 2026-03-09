@@ -22,10 +22,10 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
   const [showMeetupForm, setShowMeetupForm] = useState(false);
   const [meetupLocation, setMeetupLocation] = useState(listing?.pickup_location || "");
   const [meetupTime, setMeetupTime] = useState("");
-  
+
   const tokens = useThemeTokens(schoolConfig);
   const messagesEndRef = useRef(null);
-  
+
   const isSeller = currentUser?.email === listing?.created_by;
   const myRole = isSeller ? "seller" : "buyer";
   const otherRoleName = isSeller ? "Buyer" : "Seller";
@@ -34,7 +34,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
     try {
       const msgs = await base44.entities.MarketMessage.list("+created_date", 100);
       const threadMsgs = msgs.filter(m => m.thread_id === thread.id);
-      
+
       // Mark unread messages from other user as read
       const unreadMsgs = threadMsgs.filter(m => m.sender_role !== myRole && m.sender_role !== "system" && !m.read);
       for (const m of unreadMsgs) {
@@ -101,7 +101,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
 
   const handleUpdateOffer = async (msgId, status) => {
     await base44.entities.MarketMessage.update(msgId, { offer_status: status });
-    
+
     // Add system message
     await base44.entities.MarketMessage.create({
       thread_id: thread.id,
@@ -109,11 +109,11 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
       type: "system",
       content: `Offer ${status} by ${isSeller ? "Seller" : "Buyer"}.`
     });
-    
+
     if (status === "accepted") {
       setShowMeetupForm(isSeller); // if accepted, someone should propose meetup. Let's say seller.
     }
-    
+
     fetchMessages();
   };
 
@@ -284,7 +284,7 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
                   </button>
                 )}
               </div>
-              
+
               <form onSubmit={handleSend} className="flex-1 relative flex items-center bg-slate-100 rounded-2xl border border-slate-200 focus-within:ring-2 transition-all overflow-hidden" style={{ "--tw-ring-color": tokens.primaryLight }}>
                 <input
                   type="text"
@@ -294,9 +294,9 @@ export default function ChatModal({ thread, listing, currentUser, onClose, schoo
                   disabled={thread.status === 'locked'}
                   className="w-full bg-transparent border-none px-4 py-3 text-[15px] focus:outline-none disabled:opacity-50"
                 />
-                <button 
-                  type="submit" 
-                  disabled={!inputText.trim() || thread.status === 'locked'} 
+                <button
+                  type="submit"
+                  disabled={!inputText.trim() || thread.status === 'locked'}
                   className="shrink-0 p-2 mr-1 text-white rounded-xl disabled:opacity-50 disabled:bg-slate-300 transition-colors"
                   style={{ backgroundColor: tokens.primary }}
                 >

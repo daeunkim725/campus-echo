@@ -15,7 +15,7 @@ const handler = async function (req: Request) {
         if (rateLimitResponse) return rateLimitResponse;
 
         if (req.method !== "POST") {
-            return Response.json({ error: "Method not allowed" }, { status: 405 });
+            return Response.json({ error: "METHZod not allowed" }, { status: 405 });
         }
 
         const body = await req.json();
@@ -54,15 +54,15 @@ const handler = async function (req: Request) {
             // Increment the respective counter on the root post
             const rootPost = parentPost.id === root_post_id ? parentPost : await base44.entities.Post.get(root_post_id);
             if (rootPost) {
-                 if (type === "repost") {
-                     await base44.entities.Post.update(root_post_id, {
-                         repost_count: (rootPost.repost_count || 0) + 1
-                     });
-                 } else if (type === "quote") {
-                     await base44.entities.Post.update(root_post_id, {
-                         quote_count: (rootPost.quote_count || 0) + 1
-                     });
-                 }
+                if (type === "repost") {
+                    await base44.entities.Post.update(root_post_id, {
+                        repost_count: (rootPost.repost_count || 0) + 1
+                    });
+                } else if (type === "quote") {
+                    await base44.entities.Post.update(root_post_id, {
+                        quote_count: (rootPost.quote_count || 0) + 1
+                    });
+                }
             }
         }
 
@@ -70,7 +70,7 @@ const handler = async function (req: Request) {
         const anonId = await getAnonId(user.email);
 
         const newPost = await base44.entities.Post.create({
-            school_id: user.school || "ETH",
+            school_id: user.school || "ETHZ",
             author_email: user.email,         // Internal (never returned to clients)
             author_anon_id: anonId,
             author_mood: user.mood || "chill",

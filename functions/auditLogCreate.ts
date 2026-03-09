@@ -13,7 +13,7 @@ const handler = async function (req: Request) {
         }
 
         if (req.method !== "POST") {
-            return Response.json({ error: "Method not allowed" }, { status: 405 });
+            return Response.json({ error: "METHZod not allowed" }, { status: 405 });
         }
 
         const body = await req.json();

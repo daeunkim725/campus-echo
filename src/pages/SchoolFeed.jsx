@@ -49,7 +49,7 @@ export default function SchoolFeed() {
       if (schoolCode) {
         data = data.filter(p => {
           if (!p.department || p.department === "all") return true;
-          if (schoolCode === "ETH") return p.department.startsWith("D-") || p.department === "ETH";
+          if (schoolCode === "ETHZ") return p.department.startsWith("D-") || p.department === "ETHZ";
           return p.department === schoolCode;
         });
       }

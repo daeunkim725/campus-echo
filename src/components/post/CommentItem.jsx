@@ -28,7 +28,7 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
   const [showReport, setShowReport] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(localComment.content || "");
-  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const effectiveSchool = currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(effectiveSchool);
   const tokens = useThemeTokens(schoolConfig);
   const { resolvedTheme } = useTheme();
@@ -236,24 +236,24 @@ export default function CommentItem({ comment, currentUser, onReply, depth = 0 }
             <button
               onClick={() => handleVote("up")}
               className={`flex items-center justify-center w-6 h-6 rounded border transition-colors ${votedUp
-                  ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
-                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
+                ? (isDark ? "" : "bg-green-100 text-green-600 border-transparent")
+                : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
                 }`}
               style={votedUp ? activeUpvoteStyle : {}}
             >
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
             <span className={`text-[11px] font-medium min-w-[12px] text-center ${votedUp ? (isDark ? "text-[#32D583]" : "text-green-600") :
-                votedDown ? (isDark ? "text-[#FF5C5C]" : "text-red-500") :
-                  "text-slate-600"
+              votedDown ? (isDark ? "text-[#FF5C5C]" : "text-red-500") :
+                "text-slate-600"
               }`}>
               {localComment.upvotes - Math.abs(localComment.downvotes || 0)}
             </span>
             <button
               onClick={() => handleVote("down")}
               className={`flex items-center justify-center w-6 h-6 rounded border transition-colors ${votedDown
-                  ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
-                  : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
+                ? (isDark ? "" : "bg-red-100 text-red-500 border-transparent")
+                : (isDark ? "bg-[#0C111A] border-[#1C2636] text-slate-400 hover:bg-[#101826] hover:text-slate-300" : "text-slate-400 border-transparent hover:bg-slate-100")
                 }`}
               style={votedDown ? activeDownvoteStyle : {}}
             >

@@ -219,8 +219,9 @@ export const apiMarketDelete = async (listingId) => {
 };
 
 
-export const apiLeaderboard = async () => {
+export const apiLeaderboard = async (schoolId, timeWindow) => {
     return apiFetch('leaderboard', {
-        method: 'GET'
+        method: 'POST',
+        body: JSON.stringify({ school_id: schoolId, time_window: timeWindow })
     });
 };

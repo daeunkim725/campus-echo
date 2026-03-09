@@ -3,21 +3,21 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 
 const SCHOOLS = [
-{ code: "ETH", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ethz.ch"], color: "#1A5276", short: "ET" },
-{ code: "UNIZH", name: "UZH", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#2980B9", short: "UZ" }];
+    { code: "ETHZ", name: "ETH Zürich", domains: ["@ethz.ch", "@student.ETHZ.ch"], color: "#1A5276", short: "ET" },
+    { code: "UNIZH", name: "UZH", domains: ["@uzh.ch", "@student.uzh.ch"], color: "#2980B9", short: "UZ" }];
 
 
 export default function OnboardingSchool() {
-  const navigate = useNavigate();
-  const { updateUser } = useAuth();
+    const navigate = useNavigate();
+    const { updateUser } = useAuth();
 
-  const handleSelect = (school) => {
-    updateUser({ school_id: school.code, school: school.code });
-    navigate("/onboarding/verify", { replace: true });
-  };
+    const handleSelect = (school) => {
+        updateUser({ school_id: school.code, school: school.code });
+        navigate("/onboarding/verify", { replace: true });
+    };
 
-  return (
-    <div className="min-h-screen bg-[#F6F8FC] flex flex-col">
+    return (
+        <div className="min-h-screen bg-[#F6F8FC] flex flex-col">
             <div className="px-4 pt-8 pb-2">
                 <div className="max-w-sm mx-auto flex items-center gap-2">
                     <span className="text-lg">🦇</span>
@@ -30,8 +30,8 @@ export default function OnboardingSchool() {
                     {/* Progress */}
                     <div className="flex gap-1 mb-6">
                         {[1, 2, 3, 4, 5].map((i) =>
-            <div key={i} className={`h-1 flex-1 rounded-full ${i === 1 ? "bg-slate-900" : "bg-slate-200"}`} />
-            )}
+                            <div key={i} className={`h-1 flex-1 rounded-full ${i === 1 ? "bg-slate-900" : "bg-slate-200"}`} />
+                        )}
                     </div>
 
                     <div className="mb-5">
@@ -41,13 +41,13 @@ export default function OnboardingSchool() {
 
                     <div className="grid grid-cols-2 gap-3">
                         {SCHOOLS.map((school) =>
-            <button
-              key={school.code}
-              onClick={() => handleSelect(school)}
-              className="flex items-center gap-2.5 bg-white rounded-xl border border-slate-100 px-3 py-3 text-left hover:border-slate-300 hover:shadow-sm transition-all group">
+                            <button
+                                key={school.code}
+                                onClick={() => handleSelect(school)}
+                                className="flex items-center gap-2.5 bg-white rounded-xl border border-slate-100 px-3 py-3 text-left hover:border-slate-300 hover:shadow-sm transition-all group">
 
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
-              style={{ backgroundColor: school.color }}>
+                                    style={{ backgroundColor: school.color }}>
                                     {school.short}
                                 </div>
                                 <div className="min-w-0">
@@ -55,7 +55,7 @@ export default function OnboardingSchool() {
                                     <p className="text-[10px] text-slate-400">{school.domains[0]}</p>
                                 </div>
                             </button>
-            )}
+                        )}
                     </div>
 
                     {/* Log in link */}

@@ -90,7 +90,7 @@ function CreateListingModal({ onClose, onCreated, currentUser, schoolConfig }) {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-sm font-semibold text-slate-700 block">Price</label>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => { setIsFree(!isFree); if (!isFree) setPrice(""); }}
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${isFree ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
@@ -292,7 +292,7 @@ export default function Market() {
   const [filterIncludeSold, setFilterIncludeSold] = useState(false);
   const [filterFree, setFilterFree] = useState(false);
 
-  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETH' : null);
+  const configSchoolCode = schoolCode || currentUser?.school || (currentUser?.role === 'admin' ? 'ETHZ' : null);
   const schoolConfig = getSchoolConfig(configSchoolCode);
   const tokens = useThemeTokens(schoolConfig);
 
