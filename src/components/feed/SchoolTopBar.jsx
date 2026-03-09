@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Plus, ChevronDown, Bell, MessageCircle } from "lucide-react";
+import { Plus, Bell, MessageCircle } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import ProfilePanel from "@/components/profile/ProfilePanel";
-import { SCHOOL_CONFIG } from "@/components/utils/schoolConfig";
 import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
