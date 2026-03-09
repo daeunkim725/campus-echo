@@ -26,18 +26,42 @@ export function hasToken() {
  */
 export async function apiFetch(functionName, options = {}) {
     const token = getToken();
+    const hasJsonContentType = !(options.headers && (options.headers["Content-Type"] || options.headers["content-type"]));
     const headers = {
-        "Content-Type": "application/json",
+        ...(hasJsonContentType ? { "Content-Type": "application/json" } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.headers || {}),
     };
 
-    const response = await fetch(`${FUNCTIONS_BASE}/${functionName}`, {
+    const queryString = options.params
+        ? `?${new URLSearchParams(
+            Object.entries(options.params)
+                .filter(([, value]) => value !== undefined && value !== null)
+                .map(([key, value]) => [key, String(value)])
+        ).toString()}`
+        : "";
+
+    const shouldStringifyBody =
+        options.body &&
+        typeof options.body === "object" &&
+        !(options.body instanceof FormData) &&
+        headers["Content-Type"] === "application/json";
+
+    const response = await fetch(`${FUNCTIONS_BASE}/${functionName}${queryString}`, {
         ...options,
+        body: shouldStringifyBody ? JSON.stringify(options.body) : options.body,
         headers,
     });
 
-    const data = await response.json();
+    const responseText = await response.text();
+    let data = {};
+    if (responseText) {
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            data = { error: responseText };
+        }
+    }
 
     if (!response.ok) {
         const error = new Error(data.error || `Request failed with status ${response.status}`);
