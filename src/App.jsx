@@ -97,7 +97,7 @@ const AuthenticatedApp = () => {
       <Route path="/postdetail" element={<LayoutWrapper currentPageName="PostDetail"><PostDetail /></LayoutWrapper>} />
       <Route path="/moderation" element={<LayoutWrapper currentPageName="Moderation"><Moderation /></LayoutWrapper>} />
       <Route path="/observability" element={<LayoutWrapper currentPageName="Observability"><Observability /></LayoutWrapper>} />
-      <Route path="/Leaderboard" element={<LayoutWrapper currentPageName="Leaderboard"><Leaderboard /></LayoutWrapper>} />
+      <Route path="/leaderboard" element={<LayoutWrapper currentPageName="Leaderboard"><Leaderboard /></LayoutWrapper>} />
 
       {/* Catch-all */}
       <Route path="*" element={<PageNotFound />} />
