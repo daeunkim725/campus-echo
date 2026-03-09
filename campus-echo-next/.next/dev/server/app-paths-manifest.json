@@ -1,0 +1,14 @@
+{
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/logout/route": "app/api/auth/logout/route.js",
+  "/api/auth/me/route": "app/api/auth/me/route.js",
+  "/api/feed/route": "app/api/feed/route.js",
+  "/api/leaderboard/route": "app/api/leaderboard/route.js",
+  "/api/market/listings/route": "app/api/market/listings/route.js",
+  "/events/page": "app/events/page.js",
+  "/feed/page": "app/feed/page.js",
+  "/leaderboard/page": "app/leaderboard/page.js",
+  "/login/page": "app/login/page.js",
+  "/market/page": "app/market/page.js",
+  "/notifications/page": "app/notifications/page.js"
+}

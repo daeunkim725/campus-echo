@@ -7,8 +7,10 @@ import { getMoodEmoji } from "@/components/utils/moodUtils";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 import AdminSchoolSwitcher from "@/components/utils/AdminSchoolSwitcher";
+import { useNavigate } from "react-router-dom";
 
 export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, activePage = "feed", schoolConfig, schoolCode, hideFABs = false, alwaysSticky = false }) {
+  const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const tokens = useThemeTokens(schoolConfig);
   const primary = tokens.primary;
@@ -84,25 +86,25 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
             {/* Right: Nav tabs */}
             <div className="flex bg-slate-100 p-1 rounded-lg">
               <button
-                onClick={() => window.location.href = createPageUrl("SchoolFeed") + `?school=${schoolCode}`}
+                onClick={() => navigate(createPageUrl("SchoolFeed") + `?school=${schoolCode}`)}
                 className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "feed" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
               >
                 Feed
               </button>
               <button
-                onClick={() => window.location.href = createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : "")}
+                onClick={() => navigate(createPageUrl("Market") + (schoolCode ? `?school=${schoolCode}` : ""))}
                 className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "market" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
               >
                 Market
               </button>
               <button
-                onClick={() => window.location.href = createPageUrl("Events") + `?school=${schoolCode}`}
+                onClick={() => navigate(createPageUrl("Events") + `?school=${schoolCode}`)}
                 className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "events" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
               >
                 Events
               </button>
               <button
-                onClick={() => window.location.href = createPageUrl("Leaderboard") + `?school=${schoolCode}`}
+                onClick={() => navigate(createPageUrl("Leaderboard") + `?school=${schoolCode}`)}
                 className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${activePage === "leaderboard" || activePage === "stats" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
               >
                 Stats
@@ -119,7 +121,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
             {showNotifMenu && (
               <div className="absolute bottom-14 left-0 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden py-2 animate-in slide-in-from-bottom-2 fade-in">
                 <button
-                  onClick={() => window.location.href = createPageUrl("Notifications")}
+                  onClick={() => navigate(createPageUrl("Notifications"))}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
                 >
                   <div className="relative">
@@ -129,7 +131,7 @@ export default function SchoolTopBar({ currentUser, onUserUpdate, onPost, active
                   <span className="text-sm font-medium text-slate-700">Notifications</span>
                 </button>
                 <button
-                  onClick={() => window.location.href = createPageUrl("MarketInbox")}
+                  onClick={() => navigate(createPageUrl("MarketInbox"))}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
                 >
                   <div className="relative">

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { getSchoolConfig } from "@/components/utils/schoolConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function Layout({ children, currentPageName }) {
+  const navigate = useNavigate();
   const [config, setConfig] = useState(getSchoolConfig(null));
 
   useEffect(() => {
@@ -14,7 +16,7 @@ export default function Layout({ children, currentPageName }) {
       if (link && link.getAttribute('href') === '/onboarding/school') {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = '/OnboardingSchool';
+        navigate('/onboarding/school');
       }
     };
 

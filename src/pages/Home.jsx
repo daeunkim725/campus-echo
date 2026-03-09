@@ -10,10 +10,12 @@ import { getSchoolConfig } from "@/components/utils/schoolConfig";
 import { useScrollDirection } from "@/components/utils/useScrollDirection";
 import { useThemeTokens } from "@/components/utils/ThemeProvider";
 import { useAuth } from "@/lib/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_FILTERS = { sort: "new", category: "all", department: "all", level: "all" };
 
 export default function Home() {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
@@ -37,9 +39,9 @@ export default function Home() {
     // Admin users stay on Home to view all, or go to SchoolFeed? Regular users must go to their school feed.
     const school = currentUser?.school;
     if (currentUser?.role !== 'admin' && school) {
-      window.location.href = createPageUrl("SchoolFeed") + `?school=${school}`;
+      navigate(createPageUrl("SchoolFeed") + `?school=${school}`, { replace: true });
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]); // Added navigate to dependency array
 
   const fetchPosts = async () => {
     setLoading(true);
